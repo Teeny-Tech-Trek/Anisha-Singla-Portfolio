@@ -497,6 +497,185 @@ export default function Hero() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600&family=Bebas+Neue&family=DM+Sans:wght@300;400;600;700&display=swap');
 
+        .hero-shell {
+          position: relative;
+          min-height: 100svh;
+          width: 100%;
+          max-width: 100%;
+          overflow: hidden;
+          display: flex;
+          align-items: stretch;
+          background: var(--hero-edge-color);
+          isolation: isolate;
+        }
+        .hero-media {
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          width: 100%;
+          max-width: 100%;
+          overflow: hidden;
+        }
+        .hero-video {
+          position: absolute;
+          top: 0;
+          left: 30%;
+          transform: translateX(-50%);
+          height: 100%;
+          width: min(54vw, 860px);
+          min-width: 540px;
+          max-width: none;
+          object-fit: cover;
+          object-position: center top;
+        }
+        .hero-vignette,
+        .hero-bottom-fade,
+        .hero-top-fade {
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+        }
+        .hero-vignette {
+          background: linear-gradient(to right, var(--hero-edge-color) 0%, rgba(13,12,11,0.85) 12%, rgba(13,12,11,0.08) 35%, rgba(13,12,11,0.05) 50%, rgba(13,12,11,0.62) 68%, rgba(13,12,11,0.93) 84%, var(--hero-edge-color) 100%);
+        }
+        .hero-bottom-fade {
+          background: linear-gradient(to top, var(--hero-edge-color) 0%, rgba(13,12,11,0.78) 8%, transparent 38%);
+        }
+        .hero-top-fade {
+          background: linear-gradient(to bottom, var(--hero-edge-color) 0%, rgba(13,12,11,0.35) 5%, transparent 20%);
+        }
+        .hero-content {
+          position: relative;
+          z-index: 10;
+          width: 100%;
+          max-width: 100%;
+          display: flex;
+          align-items: center;
+          min-height: 100svh;
+          padding: clamp(5rem, 11vh, 7rem) 0 clamp(2.5rem, 7vh, 4rem);
+          box-sizing: border-box;
+        }
+        .hero-inner {
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: 0 clamp(1.25rem, 4vw, 4rem);
+          width: 100%;
+          box-sizing: border-box;
+        }
+        .hero-copy {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          text-align: right;
+          margin-left: auto;
+          width: min(48%, 40rem);
+          max-width: 40rem;
+          overflow: hidden;
+        }
+        .hero-copy > * {
+          max-width: 100%;
+        }
+        .hero-eyebrow {
+          font-family: 'Dancing Script', cursive;
+          font-size: clamp(2.2rem, 4.2vw, 4rem);
+          font-weight: 500;
+          color: rgba(255,255,255,0.93);
+          line-height: 1;
+          letter-spacing: 0.01em;
+          margin: 0;
+          min-height: 1.2em;
+        }
+        .hero-name {
+          font-family: 'Bebas Neue', sans-serif;
+          font-size: clamp(4.5rem, 8vw, 8rem);
+          font-weight: 900;
+          color: #ffffff;
+          line-height: 0.88;
+          letter-spacing: 0.025em;
+          margin-top: 0.2rem;
+          margin-bottom: 0;
+          min-height: 1.9em;
+        }
+        .hero-badge-row {
+          margin-top: 1rem;
+          min-height: 2.6rem;
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          width: 100%;
+        }
+        .hero-badge {
+          max-width: 100%;
+          box-sizing: border-box;
+          font-family: 'DM Sans', sans-serif;
+          font-size: clamp(0.7rem, 1.1vw, 0.8rem);
+          font-weight: 700;
+          letter-spacing: 0.22em;
+          text-transform: uppercase;
+          background: rgba(0,0,0,0.88);
+          color: #ffffff;
+          padding: 0.6rem 1.7rem;
+          display: inline-block;
+        }
+        .hero-tagline {
+          font-family: 'DM Sans', sans-serif;
+          font-size: clamp(0.96rem, 1vw, 1rem);
+          font-style: italic;
+          font-weight: 300;
+          color: rgba(255,255,255,0.52);
+          margin-top: 1.4rem;
+          max-width: 24rem;
+          line-height: 1.65;
+          min-height: 3.4em;
+        }
+        .hero-actions {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 1rem;
+          margin-top: 2rem;
+          justify-content: flex-end;
+          width: 100%;
+        }
+        .hero-button {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 48px;
+          padding: 0.85rem 2.2rem;
+          box-sizing: border-box;
+          font-family: 'DM Sans', sans-serif;
+          font-size: clamp(0.68rem, 0.85vw, 0.72rem);
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+        }
+        .hero-link-row {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          margin-top: 1.5rem;
+          justify-content: flex-end;
+          width: 100%;
+          flex-wrap: wrap;
+        }
+        .hero-link-line {
+          width: 36px;
+          height: 1px;
+          background: rgba(201,168,76,0.6);
+          flex: 0 0 36px;
+        }
+        .hero-link {
+          max-width: 100%;
+          overflow-wrap: anywhere;
+          text-align: right;
+          font-family: 'DM Sans', sans-serif;
+          font-size: 0.65rem;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: rgba(255,255,255,0.38);
+          text-decoration: none;
+          transition: color 0.3s;
+        }
+
         .btn-shimmer {
           position: relative;
           overflow: hidden;
@@ -516,23 +695,159 @@ export default function Hero() {
           0%   { left: -75%; }
           100% { left: 125%; }
         }
+        @media (max-width: 1100px) {
+          .hero-video {
+            left: 26%;
+            width: min(60vw, 760px);
+            min-width: 480px;
+          }
+          .hero-copy {
+            width: min(56%, 36rem);
+          }
+        }
+        @media (max-width: 900px) {
+          .hero-content {
+            padding-top: clamp(5.5rem, 12vh, 7rem);
+          }
+          .hero-video {
+            left: 22%;
+            width: min(66vw, 720px);
+            min-width: 420px;
+          }
+          .hero-copy {
+            width: min(62%, 34rem);
+          }
+        }
+        @media (max-width: 768px) {
+          .hero-content {
+            align-items: flex-end;
+            padding: 6.25rem 0 2rem;
+          }
+          .hero-inner {
+            padding: 0 1rem;
+          }
+          .hero-video {
+            inset: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            min-width: 0;
+            transform: none;
+            object-position: 34% top;
+          }
+          .hero-vignette {
+            background: linear-gradient(to bottom, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.26) 26%, rgba(0,0,0,0.58) 70%, var(--hero-edge-color) 100%);
+          }
+          .hero-bottom-fade {
+            background: linear-gradient(to top, var(--hero-edge-color) 0%, rgba(13,12,11,0.88) 12%, transparent 42%);
+          }
+          .hero-top-fade {
+            background: linear-gradient(to bottom, rgba(0,0,0,0.42) 0%, transparent 22%);
+          }
+          .hero-copy {
+            width: 100%;
+            max-width: none;
+            align-items: center;
+            text-align: center;
+            margin-left: 0;
+          }
+          .hero-copy > * {
+            width: 100%;
+          }
+          .hero-name {
+            font-size: clamp(3.3rem, 16vw, 5.5rem);
+            min-height: auto;
+          }
+          .hero-badge-row,
+          .hero-actions,
+          .hero-link-row {
+            justify-content: center;
+          }
+          .hero-tagline {
+            max-width: 30rem;
+            margin-left: auto;
+            margin-right: auto;
+            min-height: 0;
+          }
+          .hero-actions {
+            flex-direction: column;
+            align-items: center;
+          }
+          .hero-button {
+            width: min(100%, 20rem);
+          }
+          .hero-link-row {
+            flex-direction: column;
+            gap: 0.65rem;
+          }
+          .hero-link {
+            text-align: center;
+          }
+        }
+        @media (max-width: 480px) {
+          .hero-content {
+            padding-top: 5.75rem;
+            padding-bottom: 1.5rem;
+          }
+          .hero-inner {
+            padding: 0 0.9rem;
+          }
+          .hero-eyebrow {
+            font-size: clamp(1.9rem, 10vw, 2.7rem);
+          }
+          .hero-name {
+            font-size: clamp(3rem, 17vw, 4.8rem);
+          }
+          .hero-badge-row {
+            margin-top: 0.85rem;
+            min-height: 2.2rem;
+          }
+          .hero-badge {
+            font-size: 0.68rem;
+            letter-spacing: 0.14em;
+            padding: 0.55rem 1rem;
+          }
+          .hero-tagline {
+            font-size: 0.94rem;
+            line-height: 1.55;
+            max-width: 21rem;
+          }
+          .hero-actions {
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+          }
+          .hero-button {
+            padding: 0.8rem 1rem;
+          }
+          .hero-link {
+            font-size: 0.58rem;
+            letter-spacing: 0.14em;
+          }
+        }
+        @media (max-height: 760px) and (min-width: 769px) {
+          .hero-content {
+            padding-top: 4.5rem;
+            padding-bottom: 2rem;
+          }
+          .hero-copy {
+            width: min(52%, 38rem);
+          }
+        }
       `}</style>
 
       <section
         id="home"
+        className="hero-shell"
         style={{
-          position: 'relative',
-          minHeight: '100vh',
-          overflow: 'hidden',
-          display: 'flex',
-          alignItems: 'stretch',
+          '--hero-edge-color': VIDEO_EDGE_COLOR,
           /* ✅ Background ab video ke edge color se match karta hai */
           background: VIDEO_EDGE_COLOR,
         }}
       >
         {/* ── VIDEO BACKGROUND ── */}
-        <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+        <div className="hero-media">
           <video
+            className="hero-video"
             ref={videoRef}
             src="/Final-Video.MP4"
             muted
@@ -541,79 +856,51 @@ export default function Hero() {
             onLoadedData={() => setIsVideoReady(true)}
             style={{
               /* ✅ Video ab center mein hai, marginLeft hata diya */
-              position: 'absolute',
-              top: 0,
-              left: '30%',
-              transform: 'translateX(-50%)',
-              height: '100vh',
-              width: 'auto',
-              objectFit: 'cover',
-              objectPosition: 'center top',
+              position: undefined,
+              top: undefined,
+              left: undefined,
+              transform: undefined,
+              height: undefined,
+              width: undefined,
+              objectFit: undefined,
+              objectPosition: undefined,
             }}
           />
 
 
 
           {/* ✅ Left vignette — VIDEO_EDGE_COLOR se fade karo taaki seamless blend ho */}
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: `linear-gradient(to right, ${VIDEO_EDGE_COLOR} 0%, rgba(13,12,11,0.85) 12%, rgba(13,12,11,0.08) 35%, rgba(13,12,11,0.05) 50%, rgba(13,12,11,0.62) 68%, rgba(13,12,11,0.93) 84%, ${VIDEO_EDGE_COLOR} 100%)`,
-          }} />
+          <div className="hero-vignette" />
 
           {/* Bottom fade */}
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: `linear-gradient(to top, ${VIDEO_EDGE_COLOR} 0%, rgba(13,12,11,0.78) 8%, transparent 38%)`,
-          }} />
+          <div className="hero-bottom-fade" />
 
           {/* Top fade */}
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: `linear-gradient(to bottom, ${VIDEO_EDGE_COLOR} 0%, rgba(13,12,11,0.35) 5%, transparent 20%)`,
-          }} />
+          <div className="hero-top-fade" />
         </div>
 
         {/* ── CONTENT ── */}
-        <div style={{ position: 'relative', zIndex: 10, width: '100%', display: 'flex', alignItems: 'center' }}>
-          <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 4rem', width: '100%' }}>
+        <div className="hero-content">
+          <div className="hero-inner">
 
             {/* Right-side text block */}
-            <div style={{
-              display: 'flex', flexDirection: 'column',
-              alignItems: 'flex-end', textAlign: 'right',
-              marginLeft: 'auto', width: '48%',
-              opacity: startTyping ? 1 : 0,
-              transform: startTyping ? 'translateY(0)' : 'translateY(20px)',
-              transition: 'opacity 0.6s ease, transform 0.6s ease',
-            }}>
+            <div
+              className="hero-copy"
+              style={{
+                opacity: startTyping ? 1 : 0,
+                transform: startTyping ? 'translateY(0)' : 'translateY(20px)',
+                transition: 'opacity 0.6s ease, transform 0.6s ease',
+              }}
+            >
 
               {/* LINE 1 — script greeting */}
-              <p style={{
-                fontFamily: "'Dancing Script', cursive",
-                fontSize: 'clamp(2.4rem, 4.5vw, 4rem)',
-                fontWeight: 500,
-                color: 'rgba(255,255,255,0.93)',
-                lineHeight: 1,
-                letterSpacing: '0.01em',
-                margin: 0,
-                minHeight: '1.2em',
-              }}>
+              <p className="hero-eyebrow">
                 {tw1.displayed}
                 {!tw1.done && tw1.displayed.length > 0 && <Cursor />}
               </p>
 
               {/* LINE 2 — bold name (2 lines) */}
-              <h1 style={{
-                fontFamily: "'Bebas Neue', sans-serif",
-                fontSize: 'clamp(4rem, 9vw, 8rem)',
-                fontWeight: 900,
-                color: '#ffffff',
-                lineHeight: 0.88,
-                letterSpacing: '0.025em',
-                marginTop: '0.2rem',
-                marginBottom: 0,
-                minHeight: '1.9em',
-              }}>
+              <h1 className="hero-name">
                 {nameL1}
                 {nameL2 === null && !tw2.done && tw2.displayed.length > 0 && <Cursor />}
                 {nameL2 !== null && (
@@ -626,19 +913,9 @@ export default function Hero() {
               </h1>
 
               {/* LINE 3 — badge */}
-              <div style={{ marginTop: '1rem', minHeight: '2.6rem', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+              <div className="hero-badge-row">
                 {tw3.displayed.length > 0 && (
-                  <span style={{
-                    fontFamily: "'DM Sans', sans-serif",
-                    fontSize: 'clamp(0.65rem, 1.3vw, 0.8rem)',
-                    fontWeight: 700,
-                    letterSpacing: '0.22em',
-                    textTransform: 'uppercase',
-                    background: 'rgba(0,0,0,0.88)',
-                    color: '#ffffff',
-                    padding: '0.6rem 1.7rem',
-                    display: 'inline-block',
-                  }}>
+                  <span className="hero-badge">
                     {tw3.displayed}
                     {!tw3.done && <Cursor />}
                   </span>
@@ -646,36 +923,25 @@ export default function Hero() {
               </div>
 
               {/* LINE 4 — tagline */}
-              <p style={{
-                fontFamily: "'DM Sans', sans-serif",
-                fontSize: '1rem',
-                fontStyle: 'italic',
-                fontWeight: 300,
-                color: 'rgba(255,255,255,0.52)',
-                marginTop: '1.4rem',
-                maxWidth: '360px',
-                lineHeight: 1.65,
-                minHeight: '3.4em',
-              }}>
+              <p className="hero-tagline">
                 {tw4.displayed}
                 {!tw4.done && tw4.displayed.length > 0 && <Cursor />}
               </p>
 
               {/* CTAs */}
-              <div style={{
-                display: 'flex', flexWrap: 'wrap', gap: '1rem',
-                marginTop: '2rem', justifyContent: 'flex-end',
-                opacity: showBtns ? 1 : 0,
-                transform: showBtns ? 'translateY(0)' : 'translateY(16px)',
-                transition: 'opacity 0.7s ease, transform 0.7s ease',
-              }}>
+              <div
+                className="hero-actions"
+                style={{
+                  opacity: showBtns ? 1 : 0,
+                  transform: showBtns ? 'translateY(0)' : 'translateY(16px)',
+                  transition: 'opacity 0.7s ease, transform 0.7s ease',
+                }}
+              >
                 <button
-                  className="btn-shimmer"
+                  className="hero-button btn-shimmer"
                   style={{
-                    fontFamily: "'DM Sans', sans-serif",
-                    fontWeight: 700, fontSize: '0.72rem',
-                    letterSpacing: '0.2em', textTransform: 'uppercase',
-                    color: '#000', padding: '0.85rem 2.2rem',
+                    fontWeight: 700,
+                    color: '#000',
                     border: 'none', cursor: 'pointer',
                   }}
                   onClick={() => document.getElementById('experience')?.scrollIntoView({ behavior: 'smooth' })}
@@ -683,11 +949,10 @@ export default function Hero() {
                   Explore My Work
                 </button>
                 <button
+                  className="hero-button"
                   style={{
-                    fontFamily: "'DM Sans', sans-serif",
-                    fontWeight: 600, fontSize: '0.72rem',
-                    letterSpacing: '0.2em', textTransform: 'uppercase',
-                    color: '#C9A84C', padding: '0.85rem 2.2rem',
+                    fontWeight: 600,
+                    color: '#C9A84C',
                     border: '1px solid #C9A84C', background: 'transparent',
                     cursor: 'pointer', transition: 'all 0.3s ease',
                   }}
@@ -700,21 +965,18 @@ export default function Hero() {
               </div>
 
               {/* LinkedIn */}
-              <div style={{
-                display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: '1.5rem',
-                opacity: showBtns ? 1 : 0,
-                transition: 'opacity 0.7s ease 0.2s',
-              }}>
-                <div style={{ width: '36px', height: '1px', background: 'rgba(201,168,76,0.6)' }} />
+              <div
+                className="hero-link-row"
+                style={{
+                  opacity: showBtns ? 1 : 0,
+                  transition: 'opacity 0.7s ease 0.2s',
+                }}
+              >
+                <div className="hero-link-line" />
                 <a
+                  className="hero-link"
                   href="https://www.linkedin.com/in/singlaanisha"
                   target="_blank" rel="noreferrer"
-                  style={{
-                    fontFamily: "'DM Sans', sans-serif",
-                    fontSize: '0.65rem', letterSpacing: '0.2em',
-                    textTransform: 'uppercase', color: 'rgba(255,255,255,0.38)',
-                    textDecoration: 'none', transition: 'color 0.3s',
-                  }}
                   onMouseEnter={(e) => (e.currentTarget.style.color = '#C9A84C')}
                   onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.38)')}
                 >

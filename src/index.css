@@ -6,6 +6,15 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 html { scroll-behavior: smooth; }
 
 body {
@@ -13,6 +22,25 @@ body {
   color: #fff;
   font-family: 'DM Sans', sans-serif;
   overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+img,
+video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+section,
+div {
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 ::-webkit-scrollbar { width: 3px; }
@@ -98,3 +126,14 @@ body::after {
   50%      { transform: translateY(-14px); }
 }
 .float { animation: float 6s ease-in-out infinite; }
+
+@media (max-width: 768px) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
+  * {
+    max-width: 100%;
+  }
+}

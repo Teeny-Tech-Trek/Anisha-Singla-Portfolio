@@ -16,6 +16,8 @@ export default function Contact() {
     color:'#fff', fontFamily:"'DM Sans',sans-serif",
     fontSize:'.95rem', padding:'.9rem 0', width:'100%', outline:'none',
     transition:'border-color .3s ease',
+    padding:'14px', // to offset the 1px border on focus
+    // borderRadius:'10',
   };
 
   return (

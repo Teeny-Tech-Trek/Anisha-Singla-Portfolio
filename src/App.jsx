@@ -1,5 +1,8 @@
+import { useState } from 'react';
 import Navbar        from './components/Navbar';
 import Hero          from './components/Hero';
+import Projects      from './components/Projects';
+import AllProjects   from './components/AllProjects';
 import About         from './components/About';
 import Services      from './components/Services';
 import Experience    from './components/Experience';
@@ -11,12 +14,19 @@ import Footer        from './components/Footer';
 import './index.css';
 
 export default function App() {
+  const [showAll, setShowAll] = useState(false);
+
+  if (showAll) {
+    return <AllProjects onBack={() => setShowAll(false)} />;
+  }
+
   return (
-    <div className="bg-black min-h-screen">
+    <div className="bg-black min-h-screen w-full max-w-full overflow-x-hidden">
       <Navbar />
       <Hero />
       <About />
       <Services />
+      <Projects onViewAll={() => setShowAll(true)} />
       <Experience />
       <Education />
       <Skills />

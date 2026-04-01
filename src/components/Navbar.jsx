@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { Menu, X } from 'lucide-react';
 
-const links = ['Home','About','Services','Experience','Education','Skills','Contact'];
+const links = ['Home','About','Services','Projects','Experience','Education','Skills','Contact'];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -30,15 +30,15 @@ export default function Navbar() {
 
   return (
     <nav ref={navRef}
-      className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
+      className="fixed top-0 left-0 right-0 z-50 w-full max-w-full overflow-x-hidden transition-all duration-500"
       style={{
         background:    scrolled ? 'rgba(0,0,0,0.88)' : 'transparent',
         backdropFilter:scrolled ? 'blur(18px)'        : 'none',
         borderBottom:  scrolled ? '1px solid rgba(201,168,76,0.15)' : '1px solid transparent',
       }}
     >
-      <div className="max-w-7xl mx-auto px-6 md:px-14 py-5 flex items-center justify-between">
-        <span className="font-title text-2xl tracking-[.3em] text-gold cursor-pointer"
+      <div className="mx-auto flex w-full max-w-7xl min-w-0 items-center justify-between px-4 py-5 sm:px-6 md:px-14">
+        <span className="max-w-[70vw] shrink min-w-0 cursor-pointer whitespace-nowrap font-title text-lg tracking-[.18em] text-gold sm:text-2xl sm:tracking-[.3em]"
           onClick={() => go('home')}>ANISHA.</span>
 
         {/* desktop */}
@@ -62,13 +62,13 @@ export default function Navbar() {
         </ul>
 
         {/* hamburger */}
-        <button className="md:hidden text-gold" onClick={() => setOpen(!open)}>
+        <button className="ml-4 shrink-0 text-gold md:hidden" onClick={() => setOpen(!open)}>
           {open ? <X size={24}/> : <Menu size={24}/>}
         </button>
       </div>
 
       {open && (
-        <div className="md:hidden bg-black/95 border-t border-gold/10 px-8 py-6 flex flex-col gap-5">
+        <div className="flex w-full max-w-full flex-col gap-5 overflow-x-hidden border-t border-gold/10 bg-black/95 px-5 py-6 sm:px-6 md:hidden">
           {links.map(l => (
             <button key={l} onClick={() => go(l)}
               className="font-body text-sm tracking-widest uppercase text-gray-300 hover:text-gold text-left transition-colors">
