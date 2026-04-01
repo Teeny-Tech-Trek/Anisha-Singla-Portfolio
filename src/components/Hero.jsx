@@ -322,11 +322,17 @@
 import { useEffect, useRef, useState } from 'react';
 
 // ── Typewriter hook ──────────────────────────────────────────────
-function useTypewriter(text, { startDelay = 1000, duration = 1000 } = {}) {
+function useTypewriter(text, { enabled = true, startDelay = 1000, duration = 1000 } = {}) {
   const [displayed, setDisplayed] = useState('');
   const [done, setDone] = useState(false);
 
   useEffect(() => {
+    if (!enabled) {
+      setDisplayed('');
+      setDone(false);
+      return undefined;
+    }
+
     if (!text) {
       setDisplayed('');
       setDone(true);
@@ -369,7 +375,7 @@ function useTypewriter(text, { startDelay = 1000, duration = 1000 } = {}) {
         window.cancelAnimationFrame(frameId);
       }
     };
-  }, [text, startDelay, duration]);
+  }, [text, enabled, startDelay, duration]);
 
   return { displayed, done };
 }
@@ -391,7 +397,8 @@ export default function Hero() {
   const LINE3 = 'AI Founder & Innovator';
   const LINE4 = 'Transforming businesses through the power of Artificial Intelligence — one solution at a time.';
 
-  const TEXT_START_DELAY_MS = 2000;
+  const VIDEO_READY_TEXT_DELAY_MS = 1000;
+  const TYPE_SEQUENCE_START_DELAY_MS = 0;
   const TEXT_TOTAL_DURATION_MS = 6000;
   const VIDEO_PLAY_DURATION_MS = 8000;
 
@@ -403,22 +410,40 @@ export default function Hero() {
   const LINE3_DURATION = getLineDuration(LINE3);
   const LINE4_DURATION = getLineDuration(LINE4);
 
-  const DELAY1 = TEXT_START_DELAY_MS;
+  const DELAY1 = TYPE_SEQUENCE_START_DELAY_MS;
   const DELAY2 = DELAY1 + LINE1_DURATION;
   const DELAY3 = DELAY2 + LINE2_DURATION;
   const DELAY4 = DELAY3 + LINE3_DURATION;
-  const DELAY_BTNS = TEXT_START_DELAY_MS + TEXT_TOTAL_DURATION_MS;
+  const DELAY_BTNS = TYPE_SEQUENCE_START_DELAY_MS + TEXT_TOTAL_DURATION_MS;
 
-  const tw1 = useTypewriter(LINE1, { startDelay: DELAY1, duration: LINE1_DURATION });
-  const tw2 = useTypewriter(LINE2, { startDelay: DELAY2, duration: LINE2_DURATION });
-  const tw3 = useTypewriter(LINE3, { startDelay: DELAY3, duration: LINE3_DURATION });
-  const tw4 = useTypewriter(LINE4, { startDelay: DELAY4, duration: LINE4_DURATION });
+  const [isVideoReady, setIsVideoReady] = useState(false);
+  const [startTyping, setStartTyping] = useState(false);
+
+  const tw1 = useTypewriter(LINE1, { enabled: startTyping, startDelay: DELAY1, duration: LINE1_DURATION });
+  const tw2 = useTypewriter(LINE2, { enabled: startTyping, startDelay: DELAY2, duration: LINE2_DURATION });
+  const tw3 = useTypewriter(LINE3, { enabled: startTyping, startDelay: DELAY3, duration: LINE3_DURATION });
+  const tw4 = useTypewriter(LINE4, { enabled: startTyping, startDelay: DELAY4, duration: LINE4_DURATION });
 
   const [showBtns, setShowBtns] = useState(false);
   useEffect(() => {
+    if (!startTyping) {
+      setShowBtns(false);
+      return undefined;
+    }
+
     const timeoutId = window.setTimeout(() => setShowBtns(true), DELAY_BTNS);
     return () => window.clearTimeout(timeoutId);
-  }, [DELAY_BTNS]);
+  }, [startTyping, DELAY_BTNS]);
+
+  useEffect(() => {
+    if (!isVideoReady) {
+      setStartTyping(false);
+      return undefined;
+    }
+
+    const timeoutId = window.setTimeout(() => setStartTyping(true), VIDEO_READY_TEXT_DELAY_MS);
+    return () => window.clearTimeout(timeoutId);
+  }, [isVideoReady, VIDEO_READY_TEXT_DELAY_MS]);
 
   const nameParts = tw2.displayed.split('\n');
   const nameL1 = nameParts[0] || '';
@@ -452,6 +477,10 @@ export default function Hero() {
     const playPromise = videoElement.play();
     if (playPromise?.catch) {
       playPromise.catch(() => {});
+    }
+
+    if (videoElement.readyState >= 2) {
+      setIsVideoReady(true);
     }
 
     stopTimerId = window.setTimeout(stopVideo, VIDEO_PLAY_DURATION_MS);
@@ -509,6 +538,7 @@ export default function Hero() {
             muted
             playsInline
             preload="auto"
+            onLoadedData={() => setIsVideoReady(true)}
             style={{
               /* ✅ Video ab center mein hai, marginLeft hata diya */
               position: 'absolute',
@@ -552,6 +582,9 @@ export default function Hero() {
               display: 'flex', flexDirection: 'column',
               alignItems: 'flex-end', textAlign: 'right',
               marginLeft: 'auto', width: '48%',
+              opacity: startTyping ? 1 : 0,
+              transform: startTyping ? 'translateY(0)' : 'translateY(20px)',
+              transition: 'opacity 0.6s ease, transform 0.6s ease',
             }}>
 
               {/* LINE 1 — script greeting */}
