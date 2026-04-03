@@ -21,22 +21,23 @@ const education = [
   },
   {
     degree: 'Postgraduate',
-    field: 'Project Management',
+    field: 'Applied AI Solutions',
     institution: 'George Brown College',
     location: 'Toronto, Canada',
-    year: '2023 - 2024',
+    year: '2022 - 2023',
     // short: 'GBC',
     index: '02',
   },
   {
     degree: 'Postgraduate',
-    field: 'Artificial Intelligence',
+    field: 'Project Management',
     institution: 'George Brown College',
     location: 'Toronto, Canada',
-    year: '2022 - 2023',
+    year: '2023 - 2024',
     // short: 'GBC',
     index: '03',
   },
+ 
 ];
 
 export default function Education() {
