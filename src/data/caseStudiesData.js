@@ -1,0 +1,58 @@
+export const caseStudies = [
+  {
+    id: 1,
+    number: '01',
+    category: 'UX Research',
+    title: 'TeenyBot AI',
+    subtitle: 'Chatbot Platform',
+    description:
+      'End-to-end product case study covering user research, information architecture, and interaction design for an intelligent chatbot platform built for SMBs.',
+    tags: ['UX Design', 'Research', 'Prototyping'],
+    year: '2024',
+    pages: 24,
+    pdfUrl: '/case-studies/Profile.pdf',
+    gradient: 'linear-gradient(135deg, rgba(201,168,76,0.07) 0%, transparent 60%)',
+  },
+  {
+    id: 2,
+    number: '02',
+    category: 'Product Strategy',
+    title: 'E-Commerce',
+    subtitle: 'Full Redesign',
+    description:
+      'Analyzing conversion funnel drop-off, usability testing insights, and the iterative design decisions that led to a 38% uplift in purchases.',
+    tags: ['Strategy', 'UI Design', 'A/B Testing'],
+    year: '2024',
+    pages: 31,
+    // pdfUrl: '/case-studies/ecommerce-redesign.pdf',
+    gradient: 'linear-gradient(135deg, rgba(100,150,255,0.06) 0%, transparent 60%)',
+  },
+  {
+    id: 3,
+    number: '03',
+    category: 'Design Systems',
+    title: 'SaaS Dashboard',
+    subtitle: 'Design System',
+    description:
+      'Building a scalable design system from scratch — token architecture, component library, and handoff strategy for a cross-functional engineering team.',
+    tags: ['Design Systems', 'Figma', 'Tokens'],
+    year: '2023',
+    pages: 18,
+    pdfUrl: null,
+    gradient: 'linear-gradient(135deg, rgba(150,100,255,0.05) 0%, transparent 60%)',
+  },
+//   Add more case studies here — only first 3 show in main section
+  {
+    id: 4,
+    number: '04',
+    category: 'Branding',
+    title: 'Brand Identity',
+    subtitle: 'Visual System',
+    description: '...',
+    tags: ['Branding', 'Logo', 'Identity'],
+    year: '2023',
+    pages: 12,
+    // pdfUrl: '/case-studies/brand.pdf',
+    gradient: 'linear-gradient(135deg, rgba(201,168,76,0.07) 0%, transparent 60%)',
+  },
+];

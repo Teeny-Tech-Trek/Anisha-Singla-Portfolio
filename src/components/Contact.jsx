@@ -14,7 +14,7 @@ export default function Contact() {
     background:'#0d0d0d', border:'none',
     borderBottom:'1px solid rgba(201,168,76,0.3)',
     color:'#fff', fontFamily:"'DM Sans',sans-serif",
-    fontSize:'.95rem', padding:'.9rem 0', width:'100%', outline:'none',
+    fontSize:'.95rem', width:'100%', outline:'none',
     transition:'border-color .3s ease',
     padding:'14px', // to offset the 1px border on focus
     // borderRadius:'10',
@@ -29,7 +29,7 @@ export default function Contact() {
       }}/>
 
       <div className="max-w-7xl mx-auto">
-        <p className="section-label">07 / Get In Touch</p>
+        <p className="section-label">08 / Get In Touch</p>
         <h2 className="section-title text-white mb-14">Let's Build Something Great</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16">

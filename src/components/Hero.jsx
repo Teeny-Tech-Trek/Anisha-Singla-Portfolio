@@ -323,47 +323,33 @@ import { useEffect, useRef, useState } from 'react';
 
 // ── Typewriter hook ──────────────────────────────────────────────
 function useTypewriter(text, { enabled = true, startDelay = 1000, duration = 1000 } = {}) {
-  const [displayed, setDisplayed] = useState('');
-  const [done, setDone] = useState(false);
+  const [elapsed, setElapsed] = useState(0);
+  const safeDuration = Math.max(duration, 1);
+  const safeText = enabled ? (text ?? '') : '';
 
   useEffect(() => {
-    if (!enabled) {
-      setDisplayed('');
-      setDone(false);
+    if (!enabled || !text) {
       return undefined;
     }
 
-    if (!text) {
-      setDisplayed('');
-      setDone(true);
-      return undefined;
-    }
-
-    setDisplayed('');
-    setDone(false);
     let timeoutId;
     let frameId;
     let animationStart = 0;
 
     timeoutId = window.setTimeout(() => {
+      setElapsed(0);
+
       const step = (timestamp) => {
         if (!animationStart) {
           animationStart = timestamp;
         }
 
-        const elapsed = timestamp - animationStart;
-        const progress = Math.min(elapsed / duration, 1);
-        const nextCount = progress <= 0 ? 0 : Math.ceil(progress * text.length);
+        const nextElapsed = Math.min(timestamp - animationStart, safeDuration);
+        setElapsed(nextElapsed);
 
-        setDisplayed(text.slice(0, nextCount));
-
-        if (progress < 1) {
+        if (nextElapsed < safeDuration) {
           frameId = window.requestAnimationFrame(step);
-          return;
         }
-
-        setDisplayed(text);
-        setDone(true);
       };
 
       frameId = window.requestAnimationFrame(step);
@@ -375,9 +361,23 @@ function useTypewriter(text, { enabled = true, startDelay = 1000, duration = 100
         window.cancelAnimationFrame(frameId);
       }
     };
-  }, [text, enabled, startDelay, duration]);
+  }, [enabled, safeDuration, startDelay, text]);
 
-  return { displayed, done };
+  if (!enabled) {
+    return { displayed: '', done: false };
+  }
+
+  if (!safeText) {
+    return { displayed: '', done: true };
+  }
+
+  const progress = Math.min(elapsed / safeDuration, 1);
+  const nextCount = progress <= 0 ? 0 : Math.ceil(progress * safeText.length);
+
+  return {
+    displayed: safeText.slice(0, nextCount),
+    done: progress >= 1,
+  };
 }
 
 // ── Blinking cursor ──────────────────────────────────────────────
@@ -414,8 +414,6 @@ export default function Hero() {
   const DELAY2 = DELAY1 + LINE1_DURATION;
   const DELAY3 = DELAY2 + LINE2_DURATION;
   const DELAY4 = DELAY3 + LINE3_DURATION;
-  const DELAY_BTNS = TYPE_SEQUENCE_START_DELAY_MS + TEXT_TOTAL_DURATION_MS;
-
   const [isVideoReady, setIsVideoReady] = useState(false);
   const [startTyping, setStartTyping] = useState(false);
 
@@ -424,26 +422,16 @@ export default function Hero() {
   const tw3 = useTypewriter(LINE3, { enabled: startTyping, startDelay: DELAY3, duration: LINE3_DURATION });
   const tw4 = useTypewriter(LINE4, { enabled: startTyping, startDelay: DELAY4, duration: LINE4_DURATION });
 
-  const [showBtns, setShowBtns] = useState(false);
   useEffect(() => {
-    if (!startTyping) {
-      setShowBtns(false);
-      return undefined;
-    }
-
-    const timeoutId = window.setTimeout(() => setShowBtns(true), DELAY_BTNS);
-    return () => window.clearTimeout(timeoutId);
-  }, [startTyping, DELAY_BTNS]);
-
-  useEffect(() => {
-    if (!isVideoReady) {
-      setStartTyping(false);
+    if (!isVideoReady || startTyping) {
       return undefined;
     }
 
     const timeoutId = window.setTimeout(() => setStartTyping(true), VIDEO_READY_TEXT_DELAY_MS);
     return () => window.clearTimeout(timeoutId);
-  }, [isVideoReady, VIDEO_READY_TEXT_DELAY_MS]);
+  }, [isVideoReady, startTyping, VIDEO_READY_TEXT_DELAY_MS]);
+
+  const showBtns = startTyping && tw4.done;
 
   const nameParts = tw2.displayed.split('\n');
   const nameL1 = nameParts[0] || '';
@@ -460,6 +448,7 @@ export default function Hero() {
     }
 
     let stopTimerId;
+    let readyTimerId;
 
     const stopVideo = () => {
       videoElement.pause();
@@ -473,20 +462,29 @@ export default function Hero() {
       videoElement.currentTime = stopAtSecond;
     };
 
+    const handleLoadedData = () => {
+      setIsVideoReady(true);
+    };
+
     videoElement.currentTime = 0;
+    videoElement.addEventListener('loadeddata', handleLoadedData);
     const playPromise = videoElement.play();
     if (playPromise?.catch) {
       playPromise.catch(() => {});
     }
 
     if (videoElement.readyState >= 2) {
-      setIsVideoReady(true);
+      readyTimerId = window.setTimeout(handleLoadedData, 0);
     }
 
     stopTimerId = window.setTimeout(stopVideo, VIDEO_PLAY_DURATION_MS);
 
     return () => {
+      if (readyTimerId) {
+        window.clearTimeout(readyTimerId);
+      }
       window.clearTimeout(stopTimerId);
+      videoElement.removeEventListener('loadeddata', handleLoadedData);
       videoElement.pause();
       videoElement.currentTime = 0;
     };
@@ -658,7 +656,6 @@ export default function Hero() {
           flex-wrap: wrap;
         }
         .hero-link-line {
-          width: 36px;
           height: 1px;
           background: rgba(201,168,76,0.6);
           flex: 0 0 36px;
@@ -853,7 +850,6 @@ export default function Hero() {
             muted
             playsInline
             preload="auto"
-            onLoadedData={() => setIsVideoReady(true)}
             style={{
               /* ✅ Video ab center mein hai, marginLeft hata diya */
               position: undefined,
@@ -938,7 +934,7 @@ export default function Hero() {
                 }}
               >
                 <button
-                  className="hero-button btn-shimmer"
+                  className="hero-button btn-shimmer  rounded-lg"
                   style={{
                     fontWeight: 700,
                     color: '#000',
@@ -949,7 +945,7 @@ export default function Hero() {
                   Explore My Work
                 </button>
                 <button
-                  className="hero-button"
+                  className="hero-button rounded-lg"
                   style={{
                     fontWeight: 600,
                     color: '#C9A84C',
@@ -974,7 +970,7 @@ export default function Hero() {
               >
                 <div className="hero-link-line" />
                 <a
-                  className="hero-link"
+                  className="hero-link text-white "
                   href="https://www.linkedin.com/in/singlaanisha"
                   target="_blank" rel="noreferrer"
                   onMouseEnter={(e) => (e.currentTarget.style.color = '#C9A84C')}

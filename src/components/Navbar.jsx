@@ -1,8 +1,19 @@
 import { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { Menu, X } from 'lucide-react';
+import { navigateTo, navigateToSection, ROUTES } from '../routes';
 
-const links = ['Home','About','Services','Projects','Experience','Education','Skills','Contact'];
+const links = [
+  { label: 'Home', type: 'section', target: 'home' },
+  { label: 'About', type: 'section', target: 'about' },
+  { label: 'Services', type: 'section', target: 'services' },
+  { label: 'Experience', type: 'section', target: 'experience' },
+  { label: 'Projects', type: 'section', target: 'projects' },
+  { label: 'Education', type: 'section', target: 'education' },
+  { label: 'Skills', type: 'section', target: 'skills' },
+  { label: 'Case Studies', type: 'route', target: ROUTES.CASE_STUDIES },
+  { label: 'Contact', type: 'section', target: 'contact' },
+];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -23,9 +34,15 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', fn);
   }, []);
 
-  const go = (id) => {
+  const go = (link) => {
     setOpen(false);
-    document.getElementById(id.toLowerCase())?.scrollIntoView({ behavior: 'smooth' });
+
+    if (link.type === 'route') {
+      navigateTo(link.target);
+      return;
+    }
+
+    navigateToSection(link.target);
   };
 
   return (
@@ -36,25 +53,25 @@ export default function Navbar() {
         backdropFilter:scrolled ? 'blur(18px)'        : 'none',
         borderBottom:  scrolled ? '1px solid rgba(201,168,76,0.15)' : '1px solid transparent',
       }}
-    >
+      >
       <div className="mx-auto flex w-full max-w-7xl min-w-0 items-center justify-between px-4 py-5 sm:px-6 md:px-14">
         <span className="max-w-[70vw] shrink min-w-0 cursor-pointer whitespace-nowrap font-title text-lg tracking-[.18em] text-gold sm:text-2xl sm:tracking-[.3em]"
-          onClick={() => go('home')}>ANISHA.</span>
+          onClick={() => navigateToSection('home')}>ANISHA.</span>
 
         {/* desktop */}
         <ul className="hidden md:flex items-center gap-8">
-          {links.map(l => l === 'Contact' ? (
-            <li key={l}>
-              <button onClick={() => go(l)}
-                className="font-body text-xs tracking-widest uppercase border border-gold text-gold px-5 py-2 transition-all duration-300 hover:bg-gold hover:text-black">
+          {links.map(link => link.label === 'Contact' ? (
+            <li key={link.label}>
+              <button onClick={() => go(link)}
+                className="font-body text-xs rounded-lg tracking-widest uppercase border border-gold text-gold px-5 py-2 transition-all duration-300 hover:bg-gold hover:text-black">
                 Contact
               </button>
             </li>
           ) : (
-            <li key={l}>
-              <button onClick={() => go(l)}
+            <li key={link.label}>
+              <button onClick={() => go(link)}
                 className="font-body text-xs tracking-widest uppercase text-gray-400 hover:text-gold transition-colors relative group">
-                {l}
+                {link.label}
                 <span className="absolute -bottom-1 left-0 w-0 h-px bg-gold transition-all duration-300 group-hover:w-full" />
               </button>
             </li>
@@ -69,10 +86,10 @@ export default function Navbar() {
 
       {open && (
         <div className="flex w-full max-w-full flex-col gap-5 overflow-x-hidden border-t border-gold/10 bg-black/95 px-5 py-6 sm:px-6 md:hidden">
-          {links.map(l => (
-            <button key={l} onClick={() => go(l)}
+          {links.map(link => (
+            <button key={link.label} onClick={() => go(link)}
               className="font-body text-sm tracking-widest uppercase text-gray-300 hover:text-gold text-left transition-colors">
-              {l}
+              {link.label}
             </button>
           ))}
         </div>

@@ -1,4 +1,4 @@
-const links = ['Home','About','Services','Experience','Education','Skills','Contact'];
+const links = ['Home','About','Services','Experience','Projects','Education','Skills','Case Studies','Contact'];
 
 export default function Footer() {
   const go = id => document.getElementById(id.toLowerCase())?.scrollIntoView({behavior:'smooth'});
@@ -12,14 +12,14 @@ export default function Footer() {
           {links.map(l => (
             <button key={l} onClick={() => go(l)}
               className="font-body text-xs tracking-widest uppercase hover:text-gold transition-colors"
-              style={{color:'rgba(255,255,255,0.3)'}}>
+              style={{color:'rgba(255,255,255,0.6)'}}>
               {l}
             </button>
           ))}
         </div>
 
         <a href="https://www.linkedin.com/in/singlaanisha" target="_blank" rel="noreferrer"
-          className="text-gray-500 hover:text-gold transition-colors">
+          className="text-gray-200 hover:text-gold transition-colors">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
             <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/>
             <circle cx="4" cy="4" r="2"/>
@@ -27,7 +27,7 @@ export default function Footer() {
         </a>
       </div>
       <div className="max-w-7xl mx-auto mt-6 pt-6" style={{borderTop:'1px solid rgba(255,255,255,0.05)'}}>
-        <p className="font-body text-xs text-center" style={{color:'rgba(255,255,255,0.2)',letterSpacing:'.1em'}}>
+        <p className="font-body text-xs text-center" style={{color:'rgba(255,255,255,0.6)',letterSpacing:'.1em'}}>
           © 2026 Anisha Singla. All rights reserved. · Teeny Tech Trek
         </p>
       </div>

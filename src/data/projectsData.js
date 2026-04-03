@@ -1,7 +1,7 @@
 export const projects = [
   {
     id: 1,
-    title: 'TeenyBot AI',
+    title: 'Teeny Tech Trek',
     category: 'Artificial Intelligence',
     description:
       'An intelligent chatbot platform built for SMBs to automate customer support, lead generation, and internal workflows using custom-trained LLMs.',

@@ -1,9 +1,9 @@
 import { useTimeline } from '../hooks/useGsap';
 
 const experiences = [
+  { role:'Founder & CEO',                           company:'Teeny Tech Trek',             period:'Sep 2024 – Present',   location:'Mohali, India',   highlight:true, badge:'FOUNDER' },
   { role:'Community Coordinator',             company:'Connect Circles: Chandigarh', period:'Mar 2026 – Present',   location:'Mohali, India',   highlight:false },
   { role:'Associate Member',                  company:'TiE Chandigarh',              period:'Dec 2025 – Present',   location:'Mohali, India',   highlight:false },
-  { role:'Founder',                           company:'Teeny Tech Trek',             period:'Sep 2024 – Present',   location:'Mohali, India',   highlight:true, badge:'FOUNDER' },
   { role:'Project Manager — Business Dev',    company:'Appu International',          period:'Jun 2024 – Present',   location:'Ludhiana, India', highlight:false },
   { role:'President, AI Club',                company:'George Brown College',        period:'Oct 2023 – Apr 2024',  location:'Toronto, Canada', highlight:false },
   { role:'VP, AI Club',                       company:'George Brown College',        period:'Nov 2022 – Oct 2023',  location:'Toronto, Canada', highlight:false },

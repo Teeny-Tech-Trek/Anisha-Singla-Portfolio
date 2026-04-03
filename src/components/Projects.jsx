@@ -122,7 +122,7 @@ export default function Projects({ onViewAll }) {
   const headingRef = useRef(null);
   const gridRef    = useRef(null);
 
-  const visible  = projects.slice(0, 7);
+  const visible  = projects.slice(0, 4);
   const featured = visible[0];
   const rest     = visible.slice(1);
 
@@ -164,7 +164,7 @@ export default function Projects({ onViewAll }) {
         {/* Heading */}
         <div ref={headingRef} className="mb-14">
           <p className="reveal font-body text-xs tracking-[.35em] uppercase mb-2" style={{ color: '#C9A84C' }}>
-            08 / Selected Work
+            04 / Selected Work
           </p>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <h2 className="reveal font-title" style={{ fontFamily:"'Bebas Neue',sans-serif",
