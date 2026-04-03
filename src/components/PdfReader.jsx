@@ -1,1194 +1,611 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as pdfjsLib from 'pdfjs-dist';
 import workerSrc from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
 
-const DEFAULT_VIEWPORT_WIDTH = 1440;
-const DESKTOP_BREAKPOINT = 1024;
-const MOBILE_BREAKPOINT = 768;
-const SMALL_MOBILE_BREAKPOINT = 480;
+const AUTO_MS   = 4000;   // 4-second auto-advance
+const ANIM_MS   = 380;    // slide animation duration
+const SIDE_FRAC = 0.25;   // 25% of carousel area shows each side page
+const PAD       = 28;     // padding inside each slot
 
-function getViewportWidth() {
-  return typeof window !== 'undefined' ? window.innerWidth : DEFAULT_VIEWPORT_WIDTH;
-}
-
-function getCanvasPadding(viewportWidth) {
-  if (viewportWidth < SMALL_MOBILE_BREAKPOINT) return 12;
-  if (viewportWidth < MOBILE_BREAKPOINT) return 16;
-  if (viewportWidth < DESKTOP_BREAKPOINT) return 20;
-  return 32;
-}
-
-function PageThumb({ pdfDoc, pageIndex, isActive, onClick }) {
-  const thumbRef = useRef(null);
+/* ─────────────────────────────────────────────
+   PageCanvas — renders one PDF page to canvas,
+   scaled to fit within maxW × maxH (fit mode).
+───────────────────────────────────────────── */
+function PageCanvas({ pdfDoc, pageNum, maxW, maxH, zoom }) {
+  const ref = useRef(null);
 
   useEffect(() => {
-    if (!pdfDoc || !thumbRef.current) {
-      return undefined;
-    }
-
+    if (!pdfDoc || !ref.current || !pageNum || pageNum < 1 || pageNum > pdfDoc.numPages) return;
     let cancelled = false;
     let task = null;
 
-    pdfDoc.getPage(pageIndex + 1).then((page) => {
-      if (cancelled) return;
+    (async () => {
+      try {
+        const page = await pdfDoc.getPage(pageNum);
+        if (cancelled || !ref.current) return;
+        const base  = page.getViewport({ scale: 1 });
+        const scale = Math.min(maxW / base.width, maxH / base.height) * (zoom || 1);
+        const vp    = page.getViewport({ scale });
+        const c     = ref.current;
+        c.width  = vp.width;
+        c.height = vp.height;
+        task = page.render({ canvasContext: c.getContext('2d'), viewport: vp });
+        await task.promise;
+      } catch (e) {
+        if (e?.name !== 'RenderingCancelledException') console.error(e);
+      }
+    })();
 
-      const viewport = page.getViewport({ scale: 0.2 });
-      const canvas = thumbRef.current;
-      if (!canvas) return;
+    return () => { cancelled = true; task?.cancel(); };
+  }, [pdfDoc, pageNum, maxW, maxH, zoom]);
 
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
+  return (
+    <canvas
+      ref={ref}
+      style={{ display: 'block', background: '#fff', borderRadius: 8 }}
+    />
+  );
+}
 
-      task = page.render({ canvasContext: canvas.getContext('2d'), viewport });
-    });
+/* ─────────────────────────────────────────────
+   Tiny icon helpers
+───────────────────────────────────────────── */
+const IcoPrev  = () => <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M7.5 1.5l-4 4 4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>;
+const IcoNext  = () => <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M3.5 1.5l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>;
+const IcoPlay  = () => <svg width="9" height="10" viewBox="0 0 9 10" fill="currentColor"><path d="M0 0l9 5L0 10z"/></svg>;
+const IcoPause = () => <svg width="9" height="10" viewBox="0 0 9 10" fill="currentColor"><rect x="0" y="0" width="3" height="10" rx="1"/><rect x="6" y="0" width="3" height="10" rx="1"/></svg>;
+const IcoMinus = () => <svg width="10" height="2" viewBox="0 0 10 2"><line x1="0" y1="1" x2="10" y2="1" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>;
+const IcoPlus  = () => <svg width="10" height="10" viewBox="0 0 10 10"><line x1="5" y1="0" x2="5" y2="10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/><line x1="0" y1="5" x2="10" y2="5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>;
+const IcoClose = () => <svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>;
+const IcoDl    = () => <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v7M3 6l3 3 3-3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/><path d="M1 10h10" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>;
 
-    return () => {
-      cancelled = true;
-      task?.cancel();
-    };
-  }, [pdfDoc, pageIndex]);
-
+/* ─────────────────────────────────────────────
+   CtrlBtn — small square icon button
+───────────────────────────────────────────── */
+function CtrlBtn({ onClick, disabled, title, children }) {
   return (
     <button
       type="button"
       onClick={onClick}
+      disabled={disabled}
+      title={title}
       style={{
-        cursor: 'pointer',
-        padding: '6px',
-        border: `1px solid ${isActive ? 'rgba(201,168,76,0.7)' : 'rgba(255,255,255,0.08)'}`,
-        background: isActive ? 'rgba(201,168,76,0.07)' : 'rgba(255,255,255,0.02)',
-        transition: 'all .2s',
+        width: 30, height: 30,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        border: '1px solid rgba(255,255,255,0.1)',
+        background: 'transparent',
+        color: disabled ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.6)',
+        cursor: disabled ? 'not-allowed' : 'pointer',
         borderRadius: 6,
-        width: '100%',
-      }}
-      onMouseEnter={(e) => {
-        if (!isActive) {
-          e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
-          e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
-        }
-      }}
-      onMouseLeave={(e) => {
-        if (!isActive) {
-          e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)';
-          e.currentTarget.style.background = 'rgba(255,255,255,0.02)';
-        }
+        transition: 'color .15s, border-color .15s',
+        flexShrink: 0,
       }}
     >
-      <canvas
-        ref={thumbRef}
-        style={{
-          width: '100%',
-          display: 'block',
-          border: '1px solid rgba(255,255,255,0.05)',
-          borderRadius: 4,
-        }}
-      />
-      <p
-        style={{
-          fontFamily: 'sans-serif',
-          fontSize: 9,
-          color: isActive ? '#C9A84C' : 'rgba(255,255,255,0.35)',
-          textAlign: 'center',
-          marginTop: 5,
-          letterSpacing: '.1em',
-          textTransform: 'uppercase',
-          transition: 'color .2s',
-        }}
-      >
-        {pageIndex + 1}
-      </p>
+      {children}
     </button>
   );
 }
 
-export default function PdfReader({ study, onClose }) {
-  const [pdfDoc, setPdfDoc] = useState(null);
-  const [numPages, setNumPages] = useState(0);
-  const [pageNum, setPageNum] = useState(1);
-  const [zoom, setZoom] = useState(1);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(() => getViewportWidth() >= DESKTOP_BREAKPOINT);
-  const [rendering, setRendering] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [slideshowInterval, setSlideshowInterval] = useState(2000);
-  const [pageFlash, setPageFlash] = useState(false);
-  const [viewportWidth, setViewportWidth] = useState(getViewportWidth);
-  const [viewerWidth, setViewerWidth] = useState(0);
-
-  const slideshowRef = useRef(null);
-  const canvasRef = useRef(null);
-  const renderTaskRef = useRef(null);
-  const canvasAreaRef = useRef(null);
-  const flashTimeoutRef = useRef(null);
-
-  const isTablet = viewportWidth < DESKTOP_BREAKPOINT;
-  const isMobile = viewportWidth < MOBILE_BREAKPOINT;
-  const isSmallMobile = viewportWidth < SMALL_MOBILE_BREAKPOINT;
-  const viewerPadding = getCanvasPadding(viewportWidth);
-  const sidebarWidth = isMobile ? Math.min(Math.max(viewportWidth - 32, 220), 280) : isTablet ? 220 : 190;
-  const controlSize = isSmallMobile ? 30 : 32;
-  const progressRingSize = isSmallMobile ? 38 : isMobile ? 40 : 44;
-  const progressRingRadius = isSmallMobile ? 15 : 18;
-
-  useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') {
-      return undefined;
-    }
-
-    const handleResize = () => setViewportWidth(window.innerWidth);
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  useEffect(() => {
-    if (isTablet) {
-      setSidebarOpen(false);
-    }
-  }, [isTablet]);
-
-  useEffect(() => {
-    const node = canvasAreaRef.current;
-    if (!node) {
-      return undefined;
-    }
-
-    const updateViewerWidth = () => setViewerWidth(node.clientWidth);
-
-    updateViewerWidth();
-
-    if (typeof ResizeObserver !== 'undefined') {
-      const observer = new ResizeObserver(() => updateViewerWidth());
-      observer.observe(node);
-      return () => observer.disconnect();
-    }
-
-    window.addEventListener('resize', updateViewerWidth);
-    return () => window.removeEventListener('resize', updateViewerWidth);
-  }, [sidebarOpen, isTablet]);
-
-  useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-        setPageNum((p) => Math.min(p + 1, numPages || 1));
-      }
-
-      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-        setPageNum((p) => Math.max(p - 1, 1));
-      }
-
-      if (e.key === 'Escape') {
-        onClose();
-      }
-
-      if (e.key === '+' || e.key === '=') {
-        setZoom((z) => Math.min(z + 0.2, 2.4));
-      }
-
-      if (e.key === '-') {
-        setZoom((z) => Math.max(z - 0.2, 0.6));
-      }
-
-      if (e.key === ' ') {
-        e.preventDefault();
-        setIsPlaying((p) => !p);
-      }
-    };
-
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [numPages, onClose]);
-
-  useEffect(() => {
-    if (!study.pdfUrl) {
-      setPdfDoc(null);
-      setNumPages(0);
-      setPageNum(1);
-      setLoading(false);
-      return undefined;
-    }
-
-    let cancelled = false;
-    const loadingTask = pdfjsLib.getDocument(study.pdfUrl);
-
-    setLoading(true);
-    setError(false);
-    setPdfDoc(null);
-    setNumPages(0);
-    setPageNum(1);
-
-    loadingTask.promise
-      .then((doc) => {
-        if (cancelled) {
-          doc.destroy();
-          return;
-        }
-
-        setPdfDoc(doc);
-        setNumPages(doc.numPages);
-        setLoading(false);
-        setIsPlaying(true);
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setError(true);
-          setLoading(false);
-        }
-      });
-
-    return () => {
-      cancelled = true;
-      loadingTask.destroy();
-    };
-  }, [study.pdfUrl]);
-
-  useEffect(() => {
-    if (slideshowRef.current) {
-      clearInterval(slideshowRef.current);
-      slideshowRef.current = null;
-    }
-
-    if (isPlaying && numPages > 0) {
-      slideshowRef.current = setInterval(() => {
-        setPageNum((p) => {
-          if (p >= numPages) {
-            setIsPlaying(false);
-            return p;
-          }
-
-          if (flashTimeoutRef.current) {
-            clearTimeout(flashTimeoutRef.current);
-          }
-
-          setPageFlash(true);
-          flashTimeoutRef.current = setTimeout(() => setPageFlash(false), 300);
-          return p + 1;
-        });
-      }, slideshowInterval);
-    }
-
-    return () => {
-      if (slideshowRef.current) {
-        clearInterval(slideshowRef.current);
-      }
-    };
-  }, [isPlaying, numPages, slideshowInterval]);
-
-  useEffect(() => () => {
-    if (flashTimeoutRef.current) {
-      clearTimeout(flashTimeoutRef.current);
-    }
-  }, []);
-
-  const renderPage = useCallback(async () => {
-    if (!pdfDoc || !canvasRef.current) return;
-
-    if (renderTaskRef.current) {
-      renderTaskRef.current.cancel();
-      renderTaskRef.current = null;
-    }
-
-    setRendering(true);
-
-    try {
-      const page = await pdfDoc.getPage(pageNum);
-      const baseViewport = page.getViewport({ scale: 1 });
-      const availableWidth = Math.max((viewerWidth || viewportWidth) - (viewerPadding * 2), 180);
-      const fittedScale = availableWidth / baseViewport.width;
-      const minBaseScale = isSmallMobile ? 0.42 : 0.55;
-      const maxBaseScale = isMobile ? 0.92 : isTablet ? 1.1 : 1.35;
-      const baseScale = Math.min(Math.max(fittedScale, minBaseScale), maxBaseScale);
-      const viewport = page.getViewport({ scale: baseScale * zoom });
-      const canvas = canvasRef.current;
-
-      if (!canvas) return;
-
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-
-      const task = page.render({ canvasContext: canvas.getContext('2d'), viewport });
-      renderTaskRef.current = task;
-      await task.promise;
-    } catch (err) {
-      if (err?.name !== 'RenderingCancelledException') {
-        console.error(err);
-      }
-    } finally {
-      renderTaskRef.current = null;
-      setRendering(false);
-    }
-  }, [
-    isMobile,
-    isSmallMobile,
-    isTablet,
-    pageNum,
-    pdfDoc,
-    viewerPadding,
-    viewerWidth,
-    viewportWidth,
-    zoom,
-  ]);
-
-  useEffect(() => {
-    renderPage();
-  }, [renderPage]);
-
-  useEffect(() => {
-    if (canvasAreaRef.current) {
-      canvasAreaRef.current.scrollTop = 0;
-    }
-  }, [pageNum]);
-
-  useEffect(() => () => renderTaskRef.current?.cancel(), []);
-
-  const progress = numPages ? (pageNum / numPages) * 100 : 0;
-
-  const changePage = (nextPage) => {
-    if (!numPages) return;
-
-    setIsPlaying(false);
-    setPageNum(Math.min(numPages, Math.max(1, nextPage)));
-
-    if (isTablet) {
-      setSidebarOpen(false);
-    }
-  };
-
-  const handlePrevious = () => changePage(pageNum - 1);
-  const handleNext = () => changePage(pageNum + 1);
-  const zoomOut = () => setZoom((z) => Math.max(0.6, +(z - 0.2).toFixed(1)));
-  const zoomIn = () => setZoom((z) => Math.min(2.4, +(z + 0.2).toFixed(1)));
-  const resetZoom = () => setZoom(1);
-
-  if (!study.pdfUrl) {
-    return (
-      <div
-        className="fixed inset-0 z-50 flex flex-col"
-        style={{ background: 'rgba(0,0,0,0.97)', backdropFilter: 'blur(8px)' }}
-      >
-        <ReaderTopBar
-          study={study}
-          onClose={onClose}
-          isMobile={isMobile}
-          isSmallMobile={isSmallMobile}
-        />
-        <div
-          style={{
-            flex: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 20,
-            textAlign: 'center',
-            padding: isSmallMobile ? '24px 16px' : '32px 20px',
-          }}
-        >
-          <div
-            style={{
-              width: 64,
-              height: 64,
-              border: '1px solid rgba(201,168,76,0.3)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'rgba(201,168,76,0.6)',
-              borderRadius: 8,
-            }}
-          >
-            <svg width="26" height="26" viewBox="0 0 22 22" fill="none">
-              <rect x="2" y="1" width="13" height="18" rx="2" stroke="currentColor" strokeWidth="1.2" />
-              <path d="M13 1v6h7" stroke="currentColor" strokeWidth="1.2" />
-              <path d="M5 10h8M5 13h5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-            </svg>
-          </div>
-          <div>
-            <p
-              style={{
-                fontFamily: "'Bebas Neue', sans-serif",
-                fontSize: isSmallMobile ? '1.8rem' : '2.2rem',
-                letterSpacing: '.1em',
-                color: 'rgba(255,255,255,0.5)',
-                marginBottom: 8,
-              }}
-            >
-              Coming Soon
-            </p>
-            <p style={{ fontFamily: 'sans-serif', fontSize: 14, color: 'rgba(255,255,255,0.4)' }}>
-              This case study PDF has not been attached yet.
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+/* ─────────────────────────────────────────────
+   TopBar — single compact control strip
+───────────────────────────────────────────── */
+function TopBar({
+  study, pageNum, numPages, zoom,
+  isPlaying, pdfDoc,
+  onClose, onPrev, onNext,
+  onZoomIn, onZoomOut, onZoomReset,
+  onPlayToggle,
+}) {
+  const canPlay = !!pdfDoc && numPages > 1;
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col" style={{ background: '#000', backdropFilter: 'blur(8px)' }}>
-      <ReaderTopBar
-        study={study}
-        onClose={onClose}
-        isMobile={isMobile}
-        isSmallMobile={isSmallMobile}
-      />
-
-      <div className="pdf-reader-toolbar">
-        <div className="pdf-reader-toolbar__section pdf-reader-toolbar__section--nav">
-          <ToolBtn
-            onClick={() => setSidebarOpen((open) => !open)}
-            title="Toggle page sidebar"
-            size={controlSize}
-          >
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-              <rect x="1" y="2" width="14" height="12" rx="2" stroke="currentColor" strokeWidth="1.2" />
-              <path d="M5 2v12" stroke="currentColor" strokeWidth="1.2" />
-            </svg>
-          </ToolBtn>
-
-          <div className="pdf-reader-toolbar__divider" />
-
-          <ToolBtn onClick={handlePrevious} disabled={pageNum <= 1} title="Previous page" size={controlSize}>
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-              <path d="M8 2L4 6l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </ToolBtn>
-
-          <div className="pdf-reader-toolbar__page-info">
-            <span className="pdf-reader-optional-label" style={{ fontFamily: 'sans-serif', fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>
-              Page
-            </span>
-            <span
-              style={{
-                fontFamily: 'sans-serif',
-                fontSize: 12,
-                fontWeight: 600,
-                color: '#C9A84C',
-                minWidth: 18,
-                textAlign: 'center',
-              }}
-            >
-              {pageNum}
-            </span>
-            <span style={{ fontFamily: 'sans-serif', fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>
-              / {numPages || '-'}
-            </span>
-          </div>
-
-          <ToolBtn onClick={handleNext} disabled={pageNum >= numPages} title="Next page" size={controlSize}>
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-              <path d="M4 2l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </ToolBtn>
-        </div>
-
-        <div className="pdf-reader-toolbar__section pdf-reader-toolbar__section--center">
-          <div className="pdf-reader-toolbar__speed">
-            <span
-              className="pdf-reader-speed-label"
-              style={{
-                fontFamily: 'sans-serif',
-                fontSize: 9,
-                letterSpacing: '.15em',
-                textTransform: 'uppercase',
-                color: 'rgba(255,255,255,0.3)',
-              }}
-            >
-              Speed
-            </span>
-            {[1000, 2000, 3000].map((ms) => (
-              <button
-                key={ms}
-                type="button"
-                onClick={() => setSlideshowInterval(ms)}
-                style={{
-                  fontFamily: 'sans-serif',
-                  fontSize: 9,
-                  fontWeight: 600,
-                  letterSpacing: '.1em',
-                  padding: '5px 8px',
-                  border: `1px solid ${slideshowInterval === ms ? 'rgba(201,168,76,0.7)' : 'rgba(255,255,255,0.12)'}`,
-                  background: slideshowInterval === ms ? 'rgba(201,168,76,0.12)' : 'transparent',
-                  color: slideshowInterval === ms ? '#C9A84C' : 'rgba(255,255,255,0.4)',
-                  cursor: 'pointer',
-                  transition: 'all .2s',
-                  borderRadius: 6,
-                }}
-              >
-                {ms / 1000}s
-              </button>
-            ))}
-          </div>
-
-          <div className="pdf-reader-toolbar__divider" />
-
-          <button
-            type="button"
-            onClick={() => setIsPlaying((playing) => !playing)}
-            disabled={!pdfDoc || numPages === 0}
-            title={isPlaying ? 'Pause slideshow (Space)' : 'Play slideshow (Space)'}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 7,
-              padding: isSmallMobile ? '7px 12px' : '8px 16px',
-              border: `1px solid ${isPlaying ? '#C9A84C' : 'rgba(201,168,76,0.4)'}`,
-              background: isPlaying ? '#C9A84C' : 'transparent',
-              color: isPlaying ? '#000' : '#C9A84C',
-              cursor: (!pdfDoc || numPages === 0) ? 'not-allowed' : 'pointer',
-              fontFamily: 'sans-serif',
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: '.18em',
-              textTransform: 'uppercase',
-              transition: 'all .2s',
-              borderRadius: 6,
-              opacity: (!pdfDoc || numPages === 0) ? 0.4 : 1,
-              minHeight: controlSize,
-            }}
-          >
-            {isPlaying ? (
-              <>
-                <svg width="10" height="12" viewBox="0 0 10 12" fill="currentColor">
-                  <rect x="0" y="0" width="3.5" height="12" rx="1" />
-                  <rect x="6.5" y="0" width="3.5" height="12" rx="1" />
-                </svg>
-                Pause
-              </>
-            ) : (
-              <>
-                <svg width="10" height="12" viewBox="0 0 10 12" fill="currentColor">
-                  <path d="M0 0l10 6-10 6V0z" />
-                </svg>
-                Play
-              </>
-            )}
-          </button>
-
-          <ToolBtn
-            onClick={() => {
-              setIsPlaying(false);
-              setPageNum(1);
-            }}
-            title="Stop and go to first page"
-            disabled={!pdfDoc || numPages === 0}
-            size={controlSize}
-          >
-            <svg width="11" height="11" viewBox="0 0 11 11" fill="currentColor">
-              <rect x="0.5" y="0.5" width="10" height="10" rx="1.5" />
-            </svg>
-          </ToolBtn>
-
-          {(rendering || isPlaying) && (
-            <span
-              className="pdf-reader-status-badge"
-              style={{
-                fontFamily: 'sans-serif',
-                fontSize: 9,
-                letterSpacing: '.15em',
-                textTransform: 'uppercase',
-                color: 'rgba(201,168,76,0.6)',
-              }}
-            >
-              {isPlaying ? 'Slideshow' : 'Rendering...'}
-            </span>
-          )}
-        </div>
-
-        <div className="pdf-reader-toolbar__section pdf-reader-toolbar__section--actions">
-          <ToolBtn onClick={zoomOut} title="Zoom out" size={controlSize}>
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-              <circle cx="5" cy="5" r="4" stroke="currentColor" strokeWidth="1.2" />
-              <path d="M3 5h4M8.5 8.5l2 2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-            </svg>
-          </ToolBtn>
-
-          <span
-            style={{
-              fontFamily: 'sans-serif',
-              fontSize: 11,
-              color: 'rgba(255,255,255,0.45)',
-              minWidth: 40,
-              textAlign: 'center',
-            }}
-          >
-            {Math.round(zoom * 100)}%
-          </span>
-
-          <ToolBtn onClick={zoomIn} title="Zoom in" size={controlSize}>
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-              <circle cx="5" cy="5" r="4" stroke="currentColor" strokeWidth="1.2" />
-              <path d="M5 3v4M3 5h4M8.5 8.5l2 2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-            </svg>
-          </ToolBtn>
-
-          <ToolBtn onClick={resetZoom} title="Reset zoom" size={controlSize}>
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-              <path d="M2 6a4 4 0 1 1 4 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-              <path d="M2 4v2h2" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </ToolBtn>
-
-          <div className="pdf-reader-toolbar__divider" />
-
-          <a
-            href={study.pdfUrl}
-            download
-            className="pdf-reader-download"
-            style={{
-              fontFamily: 'sans-serif',
-              fontSize: 10,
-              fontWeight: 600,
-              letterSpacing: '.15em',
-              textTransform: 'uppercase',
-              padding: isSmallMobile ? '8px 12px' : '9px 14px',
-              color: '#C9A84C',
-              border: '1px solid rgba(201,168,76,0.4)',
-              background: 'transparent',
-              textDecoration: 'none',
-              transition: 'all .2s',
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: 6,
-              minHeight: controlSize,
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = '#C9A84C';
-              e.currentTarget.style.color = '#000';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'transparent';
-              e.currentTarget.style.color = '#C9A84C';
-            }}
-          >
-            Download
-          </a>
-        </div>
-      </div>
-
-      <div style={{ flex: 1, display: 'flex', overflow: 'hidden', position: 'relative', minHeight: 0 }}>
-        {isTablet && sidebarOpen && (
-          <button
-            type="button"
-            aria-label="Close page sidebar"
-            onClick={() => setSidebarOpen(false)}
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background: 'rgba(0,0,0,0.45)',
-              border: 'none',
-              padding: 0,
-              zIndex: 20,
-              cursor: 'pointer',
-            }}
-          />
-        )}
-
-        {sidebarOpen && (
-          <div
-            className="pdf-reader-sidebar-panel"
-            style={{
-              width: sidebarWidth,
-              flexShrink: 0,
-              background: '#080808',
-              borderRight: '1px solid rgba(255,255,255,0.07)',
-              display: 'flex',
-              flexDirection: 'column',
-              overflow: 'hidden',
-              position: isTablet ? 'absolute' : 'relative',
-              inset: isTablet ? '0 auto 0 0' : 'auto',
-              height: isTablet ? '100%' : 'auto',
-              zIndex: 30,
-              boxShadow: isTablet ? '16px 0 40px rgba(0,0,0,0.45)' : 'none',
-              maxWidth: isTablet ? '84vw' : 'none',
-            }}
-          >
-            <div style={{ padding: '12px 14px', borderBottom: '1px solid rgba(255,255,255,0.06)', flexShrink: 0 }}>
-              <span
-                style={{
-                  fontFamily: 'sans-serif',
-                  fontSize: 9,
-                  letterSpacing: '.2em',
-                  textTransform: 'uppercase',
-                  color: 'rgba(255,255,255,0.35)',
-                }}
-              >
-                Pages ({numPages})
-              </span>
-            </div>
-            <div className="pdf-reader-sidebar-list">
-              {pdfDoc && Array.from({ length: numPages }, (_, i) => (
-                <PageThumb
-                  key={i}
-                  pdfDoc={pdfDoc}
-                  pageIndex={i}
-                  isActive={i + 1 === pageNum}
-                  onClick={() => changePage(i + 1)}
-                />
-              ))}
-            </div>
-          </div>
-        )}
-
-        <div
-          ref={canvasAreaRef}
-          style={{
-            flex: 1,
-            overflow: 'auto',
-            display: 'flex',
-            alignItems: 'flex-start',
-            justifyContent: 'center',
-            padding: viewerPadding,
-            background: '#141414',
-            position: 'relative',
-            minWidth: 0,
-          }}
-        >
-          {loading && (
-            <div
-              style={{
-                position: 'absolute',
-                inset: 0,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                background: '#141414',
-                zIndex: 10,
-                padding: 20,
-              }}
-            >
-              <div style={{ textAlign: 'center' }}>
-                <div
-                  style={{
-                    width: 32,
-                    height: 32,
-                    border: '2px solid rgba(201,168,76,0.2)',
-                    borderTop: '2px solid #C9A84C',
-                    borderRadius: '50%',
-                    animation: 'spin 0.8s linear infinite',
-                    margin: '0 auto 12px',
-                  }}
-                />
-                <p
-                  style={{
-                    fontFamily: 'sans-serif',
-                    fontSize: 11,
-                    letterSpacing: '.2em',
-                    color: 'rgba(255,255,255,0.4)',
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  Loading PDF...
-                </p>
-              </div>
-            </div>
-          )}
-
-          {error && (
-            <div style={{ textAlign: 'center', paddingTop: isSmallMobile ? 32 : 80, paddingInline: 20 }}>
-              <p
-                style={{
-                  fontFamily: "'Bebas Neue', sans-serif",
-                  fontSize: isSmallMobile ? '1.6rem' : '2rem',
-                  letterSpacing: '.1em',
-                  color: 'rgba(255,255,255,0.4)',
-                  marginBottom: 8,
-                }}
-              >
-                Failed to Load
-              </p>
-              <p style={{ fontFamily: 'sans-serif', fontSize: 13, color: 'rgba(255,255,255,0.35)' }}>
-                The PDF could not be loaded. Try downloading it directly.
-              </p>
-            </div>
-          )}
-
-          {!loading && !error && (
-            <div
-              style={{
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-                transition: 'opacity 0.25s ease, transform 0.25s ease',
-                opacity: pageFlash ? 0.3 : 1,
-                transform: pageFlash ? 'scale(0.98)' : 'scale(1)',
-              }}
-            >
-              <canvas
-                ref={canvasRef}
-                style={{
-                  display: 'block',
-                  boxShadow: '0 12px 60px rgba(0,0,0,0.9)',
-                  border: '1px solid rgba(201,168,76,0.1)',
-                  borderRadius: isSmallMobile ? 6 : 8,
-                  background: '#fff',
-                }}
-              />
-            </div>
-          )}
-
-          {isPlaying && (
-            <div
-              style={{
-                position: 'absolute',
-                bottom: isSmallMobile ? 12 : 20,
-                right: isSmallMobile ? 12 : 20,
-                width: progressRingSize,
-                height: progressRingSize,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <svg width={progressRingSize} height={progressRingSize} viewBox={`0 0 ${progressRingSize} ${progressRingSize}`}>
-                <circle
-                  cx={progressRingSize / 2}
-                  cy={progressRingSize / 2}
-                  r={progressRingRadius}
-                  fill="none"
-                  stroke="rgba(255,255,255,0.08)"
-                  strokeWidth="3"
-                />
-                <circle
-                  cx={progressRingSize / 2}
-                  cy={progressRingSize / 2}
-                  r={progressRingRadius}
-                  fill="none"
-                  stroke="#C9A84C"
-                  strokeWidth="3"
-                  strokeDasharray={`${2 * Math.PI * progressRingRadius}`}
-                  strokeDashoffset="0"
-                  strokeLinecap="round"
-                  style={{
-                    transformOrigin: `${progressRingSize / 2}px ${progressRingSize / 2}px`,
-                    transform: 'rotate(-90deg)',
-                    animation: `slideshowRing ${slideshowInterval}ms linear infinite`,
-                  }}
-                />
-              </svg>
-              <span
-                style={{
-                  position: 'absolute',
-                  fontFamily: 'sans-serif',
-                  fontSize: isSmallMobile ? 8 : 9,
-                  fontWeight: 700,
-                  color: '#C9A84C',
-                  letterSpacing: '.05em',
-                }}
-              >
-                {pageNum}/{numPages}
-              </span>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div style={{ height: 2, background: 'rgba(255,255,255,0.06)', flexShrink: 0 }}>
-        <div
-          style={{
-            height: '100%',
-            width: `${progress}%`,
-            background: 'linear-gradient(to right, #C9A84C, rgba(201,168,76,0.5))',
-            transition: 'width .3s ease',
-          }}
-        />
-      </div>
-
-      <style>{`
-        @keyframes spin {
-          to {
-            transform: rotate(360deg);
-          }
-        }
-
-        @keyframes slideshowRing {
-          from {
-            stroke-dashoffset: ${2 * Math.PI * progressRingRadius};
-          }
-
-          to {
-            stroke-dashoffset: 0;
-          }
-        }
-
-        .pdf-reader-topbar {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 16px;
-          padding: 12px 24px;
-          background: #0a0a0a;
-          border-bottom: 1px solid rgba(255,255,255,0.1);
-          flex-shrink: 0;
-        }
-
-        .pdf-reader-topbar__meta {
-          display: flex;
-          align-items: center;
-          gap: 14px;
-          min-width: 0;
-          flex-wrap: wrap;
-          flex: 1;
-        }
-
-        .pdf-reader-toolbar {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 12px 16px;
-          padding: 8px 20px;
-          background: #0a0a0a;
-          border-bottom: 1px solid rgba(255,255,255,0.07);
-          flex-shrink: 0;
-          min-width: 0;
-        }
-
-        .pdf-reader-toolbar__section {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          min-width: 0;
-          flex-wrap: wrap;
-        }
-
-        .pdf-reader-toolbar__section--nav,
-        .pdf-reader-toolbar__section--actions {
-          flex: 1 1 240px;
-        }
-
-        .pdf-reader-toolbar__section--center {
-          flex: 1 1 320px;
-          justify-content: center;
-        }
-
-        .pdf-reader-toolbar__section--actions {
-          justify-content: flex-end;
-        }
-
-        .pdf-reader-toolbar__page-info,
-        .pdf-reader-toolbar__speed {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          flex-wrap: wrap;
-        }
-
-        .pdf-reader-toolbar__divider {
-          width: 1px;
-          height: 18px;
-          background: rgba(255,255,255,0.1);
-          flex-shrink: 0;
-        }
-
-        .pdf-reader-sidebar-list {
-          flex: 1;
-          overflow-y: auto;
-          padding: 10px 8px;
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-        }
-
-        .pdf-reader-download {
-          white-space: nowrap;
-        }
-
-        @media (max-width: 1023px) {
-          .pdf-reader-topbar {
-            padding: 14px 16px;
-          }
-
-          .pdf-reader-toolbar {
-            padding: 10px 14px;
-          }
-
-          .pdf-reader-toolbar__section--nav,
-          .pdf-reader-toolbar__section--center,
-          .pdf-reader-toolbar__section--actions {
-            flex-basis: calc(50% - 8px);
-          }
-
-          .pdf-reader-toolbar__section--center {
-            justify-content: flex-start;
-          }
-        }
-
-        @media (max-width: 767px) {
-          .pdf-reader-topbar {
-            align-items: flex-start;
-            gap: 12px;
-            padding: 12px 14px;
-          }
-
-          .pdf-reader-topbar__separator {
-            display: none;
-          }
-
-          .pdf-reader-toolbar {
-            align-items: stretch;
-          }
-
-          .pdf-reader-toolbar__section {
-            width: 100%;
-            flex: 1 1 100%;
-            justify-content: flex-start;
-            gap: 6px 8px;
-          }
-
-          .pdf-reader-toolbar__divider {
-            display: none;
-          }
-        }
-
-        @media (max-width: 479px) {
-          .pdf-reader-toolbar {
-            gap: 10px;
-            padding: 10px 12px;
-          }
-
-          .pdf-reader-toolbar__section {
-            gap: 6px;
-          }
-
-          .pdf-reader-optional-label {
-            display: none;
-          }
-
-          .pdf-reader-speed-label,
-          .pdf-reader-status-badge {
-            width: 100%;
-          }
-
-          .pdf-reader-download {
-            flex: 1 1 auto;
-          }
-        }
-      `}</style>
-    </div>
-  );
-}
-
-function ReaderTopBar({ study, onClose, isMobile, isSmallMobile }) {
-  const closeButtonSize = isSmallMobile ? 30 : 34;
-
-  return (
-    <div className="pdf-reader-topbar">
-      <div className="pdf-reader-topbar__meta">
-        <span
-          style={{
-            fontFamily: 'sans-serif',
-            fontSize: 10,
-            letterSpacing: '.25em',
-            textTransform: 'uppercase',
-            fontWeight: 600,
-            color: '#C9A84C',
-            whiteSpace: 'nowrap',
-          }}
-        >
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: 10,
+      padding: '0 18px', height: 52,
+      background: '#080808',
+      borderBottom: '1px solid rgba(255,255,255,0.07)',
+      flexShrink: 0,
+    }}>
+      {/* Meta */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, minWidth: 0, overflow: 'hidden' }}>
+        <span style={{
+          fontFamily: 'sans-serif', fontSize: 9,
+          letterSpacing: '.25em', textTransform: 'uppercase',
+          color: '#C9A84C', whiteSpace: 'nowrap', fontWeight: 700,
+        }}>
           {study.category}
         </span>
-        <span
-          className="pdf-reader-topbar__separator"
-          style={{ width: 1, height: 12, background: 'rgba(255,255,255,0.2)', display: 'inline-block' }}
-        />
-        <h3
+        <span style={{ width: 1, height: 10, background: 'rgba(255,255,255,0.15)', flexShrink: 0 }} />
+        <span style={{
+          fontFamily: "'Bebas Neue', sans-serif", fontSize: '1.08rem',
+          letterSpacing: '.07em', color: '#fff',
+          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+        }}>
+          {study.title}{study.subtitle ? ` — ${study.subtitle}` : ''}
+        </span>
+      </div>
+
+      {/* Page navigation */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexShrink: 0 }}>
+        <CtrlBtn onClick={onPrev} disabled={pageNum <= 1} title="Previous (←)"><IcoPrev /></CtrlBtn>
+        <span style={{
+          fontFamily: 'monospace', fontSize: 11,
+          color: '#C9A84C', fontWeight: 700,
+          minWidth: 46, textAlign: 'center',
+        }}>
+          {pageNum || '—'}
+          <span style={{ color: 'rgba(255,255,255,0.22)', fontWeight: 400 }}> / {numPages || '—'}</span>
+        </span>
+        <CtrlBtn onClick={onNext} disabled={pageNum >= numPages} title="Next (→)"><IcoNext /></CtrlBtn>
+      </div>
+
+      <span style={{ width: 1, height: 18, background: 'rgba(255,255,255,0.08)', flexShrink: 0 }} />
+
+      {/* Play / Pause */}
+      <button
+        type="button"
+        onClick={onPlayToggle}
+        disabled={!canPlay}
+        title={isPlaying ? 'Pause (Space)' : 'Auto-play 4s (Space)'}
+        style={{
+          display: 'flex', alignItems: 'center', gap: 6,
+          padding: '0 13px', height: 30,
+          border: `1px solid ${isPlaying ? '#C9A84C' : 'rgba(201,168,76,0.35)'}`,
+          background: isPlaying ? '#C9A84C' : 'transparent',
+          color: isPlaying ? '#000' : '#C9A84C',
+          cursor: !canPlay ? 'not-allowed' : 'pointer',
+          fontFamily: 'sans-serif', fontSize: 9, fontWeight: 700,
+          letterSpacing: '.2em', textTransform: 'uppercase',
+          borderRadius: 5, opacity: !canPlay ? 0.35 : 1,
+          transition: 'all .2s', flexShrink: 0,
+        }}
+      >
+        {isPlaying ? <><IcoPause /> Pause</> : <><IcoPlay /> Auto</>}
+      </button>
+
+      <span style={{ width: 1, height: 18, background: 'rgba(255,255,255,0.08)', flexShrink: 0 }} />
+
+      {/* Zoom */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 3, flexShrink: 0 }}>
+        <CtrlBtn onClick={onZoomOut} title="Zoom out"><IcoMinus /></CtrlBtn>
+        <button
+          type="button"
+          onClick={onZoomReset}
+          title="Reset zoom"
           style={{
-            fontFamily: "'Bebas Neue', sans-serif",
-            fontSize: isSmallMobile ? '0.96rem' : isMobile ? '1.05rem' : '1.2rem',
-            letterSpacing: '.08em',
-            textTransform: 'uppercase',
-            color: '#fff',
-            margin: 0,
-            minWidth: 0,
-            lineHeight: 1.1,
-            wordBreak: 'break-word',
+            fontFamily: 'monospace', fontSize: 10,
+            color: 'rgba(255,255,255,0.38)', background: 'transparent',
+            border: 'none', cursor: 'pointer',
+            minWidth: 38, textAlign: 'center', padding: 0,
           }}
         >
-          {study.title}
-          {study.subtitle ? ` - ${study.subtitle}` : ''}
-        </h3>
+          {Math.round((zoom || 1) * 100)}%
+        </button>
+        <CtrlBtn onClick={onZoomIn} title="Zoom in"><IcoPlus /></CtrlBtn>
       </div>
+
+      <span style={{ width: 1, height: 18, background: 'rgba(255,255,255,0.08)', flexShrink: 0 }} />
+
+      {/* Download */}
+      {study.pdfUrl && (
+        <a
+          href={study.pdfUrl}
+          download
+          title="Download PDF"
+          style={{
+            display: 'inline-flex', alignItems: 'center', gap: 5,
+            padding: '0 12px', height: 30,
+            fontFamily: 'sans-serif', fontSize: 9, fontWeight: 700,
+            letterSpacing: '.18em', textTransform: 'uppercase',
+            color: '#C9A84C', border: '1px solid rgba(201,168,76,0.35)',
+            background: 'transparent', textDecoration: 'none',
+            borderRadius: 5, whiteSpace: 'nowrap', flexShrink: 0,
+          }}
+        >
+          <IcoDl /> Download
+        </a>
+      )}
+
+      {/* Close */}
       <button
         type="button"
         onClick={onClose}
-        aria-label="Close PDF reader"
+        title="Close (Esc)"
         style={{
-          width: closeButtonSize,
-          height: closeButtonSize,
-          border: '1px solid rgba(255,255,255,0.2)',
-          background: 'transparent',
-          cursor: 'pointer',
-          color: 'rgba(255,255,255,0.6)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: 14,
-          transition: 'all .2s',
-          borderRadius: 6,
-          flexShrink: 0,
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.borderColor = '#C9A84C';
-          e.currentTarget.style.color = '#C9A84C';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
-          e.currentTarget.style.color = 'rgba(255,255,255,0.6)';
+          width: 30, height: 30, flexShrink: 0,
+          border: '1px solid rgba(255,255,255,0.12)',
+          background: 'transparent', cursor: 'pointer',
+          color: 'rgba(255,255,255,0.4)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          borderRadius: 6, transition: 'color .15s',
         }}
       >
-        x
+        <IcoClose />
       </button>
     </div>
   );
 }
 
-function ToolBtn({ onClick, children, title, disabled, size = 32 }) {
+/* ─────────────────────────────────────────────
+   NavArrow — large left/right click zones
+───────────────────────────────────────────── */
+function NavArrow({ side, onClick, disabled }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      title={title}
       disabled={disabled}
       style={{
-        width: size,
-        height: size,
-        border: '1px solid rgba(255,255,255,0.12)',
-        background: 'transparent',
+        position: 'absolute', top: '50%',
+        [side]: 10,
+        transform: 'translateY(-50%)',
+        zIndex: 12,
+        width: 38, height: 38,
+        border: '1px solid rgba(255,255,255,0.1)',
+        background: 'rgba(6,6,6,0.7)',
+        backdropFilter: 'blur(8px)',
         cursor: disabled ? 'not-allowed' : 'pointer',
-        color: disabled ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.55)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        transition: 'all .2s',
-        borderRadius: 6,
-        flexShrink: 0,
-      }}
-      onMouseEnter={(e) => {
-        if (!disabled) {
-          e.currentTarget.style.borderColor = 'rgba(201,168,76,0.5)';
-          e.currentTarget.style.color = '#C9A84C';
-        }
-      }}
-      onMouseLeave={(e) => {
-        if (!disabled) {
-          e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)';
-          e.currentTarget.style.color = 'rgba(255,255,255,0.55)';
-        }
+        color: disabled ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.7)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        borderRadius: 8,
+        opacity: disabled ? 0.25 : 1,
+        transition: 'opacity .2s, color .2s',
       }}
     >
-      {children}
+      {side === 'left' ? <IcoPrev /> : <IcoNext />}
     </button>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   PageDots — pill indicators at bottom center
+───────────────────────────────────────────── */
+function PageDots({ pageNum, numPages, onChange }) {
+  if (numPages <= 1 || numPages > 30) return null;
+  return (
+    <div style={{
+      position: 'absolute', bottom: 16, left: '50%',
+      transform: 'translateX(-50%)',
+      display: 'flex', gap: 5, alignItems: 'center',
+      zIndex: 10, pointerEvents: 'auto',
+    }}>
+      {Array.from({ length: numPages }, (_, i) => {
+        const active = i + 1 === pageNum;
+        return (
+          <button
+            key={i}
+            type="button"
+            onClick={() => onChange(i + 1)}
+            style={{
+              width: active ? 20 : 5, height: 5,
+              borderRadius: 3, border: 'none',
+              background: active ? '#C9A84C' : 'rgba(255,255,255,0.18)',
+              cursor: 'pointer', padding: 0,
+              transition: 'all .3s ease', flexShrink: 0,
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   NoPdfOverlay — shown when pdfUrl is null
+───────────────────────────────────────────── */
+function NoPdfOverlay({ study, onClose }) {
+  return (
+    <div style={{ position: 'fixed', inset: 0, zIndex: 50, background: '#060606', display: 'flex', flexDirection: 'column' }}>
+      <TopBar
+        study={study} pageNum={0} numPages={0} zoom={1}
+        isPlaying={false} pdfDoc={null}
+        onClose={onClose}
+        onPrev={() => {}} onNext={() => {}}
+        onZoomIn={() => {}} onZoomOut={() => {}} onZoomReset={() => {}}
+        onPlayToggle={() => {}}
+      />
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16 }}>
+        <div style={{
+          width: 64, height: 64,
+          border: '1px solid rgba(201,168,76,0.25)',
+          borderRadius: 12,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          color: 'rgba(201,168,76,0.45)',
+        }}>
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+            <rect x="2" y="1" width="13" height="18" rx="2" stroke="currentColor" strokeWidth="1.3"/>
+            <path d="M13 1v6h7" stroke="currentColor" strokeWidth="1.3"/>
+            <path d="M5 10h8M5 13h5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+          </svg>
+        </div>
+        <p style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '2rem', letterSpacing: '.1em', color: 'rgba(255,255,255,0.35)', margin: 0 }}>
+          Coming Soon
+        </p>
+        <p style={{ fontFamily: 'sans-serif', fontSize: 13, color: 'rgba(255,255,255,0.28)', margin: 0 }}>
+          This PDF has not been attached yet.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   PdfReader — Apple TV style carousel viewer
+   Center page = 50% width, sides peek 25% each
+───────────────────────────────────────────── */
+export default function PdfReader({ study, onClose }) {
+  const [pdfDoc,    setPdfDoc]    = useState(null);
+  const [numPages,  setNumPages]  = useState(0);
+  const [pageNum,   setPageNum]   = useState(1);
+  const [zoom,      setZoom]      = useState(1);
+  const [loading,   setLoading]   = useState(true);
+  const [error,     setError]     = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  // Carousel animation
+  const [shiftPx,   setShiftPx]  = useState(0);
+  const [animOn,    setAnimOn]    = useState(true);
+  const animatingRef = useRef(false);
+
+  const areaRef  = useRef(null);
+  const playRef  = useRef(null);
+  const navRef   = useRef(null);
+
+  const [aw, setAw] = useState(0);
+  const [ah, setAh] = useState(0);
+
+  /* Lock body scroll */
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
+  }, []);
+
+  /* Measure carousel area */
+  useEffect(() => {
+    const el = areaRef.current;
+    if (!el) return;
+    const upd = () => { setAw(el.clientWidth); setAh(el.clientHeight); };
+    upd();
+    const ro = new ResizeObserver(upd);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  /* Load PDF */
+  useEffect(() => {
+    if (!study?.pdfUrl) { setLoading(false); return; }
+    setLoading(true); setError(false);
+    setPdfDoc(null); setNumPages(0); setPageNum(1);
+
+    let cancelled = false;
+    const t = pdfjsLib.getDocument(study.pdfUrl);
+
+    t.promise
+      .then(doc => {
+        if (cancelled) { doc.destroy(); return; }
+        setPdfDoc(doc);
+        setNumPages(doc.numPages);
+        setLoading(false);
+        if (doc.numPages > 1) setIsPlaying(true);
+      })
+      .catch(() => { if (!cancelled) { setError(true); setLoading(false); } });
+
+    return () => { cancelled = true; t.destroy(); };
+  }, [study?.pdfUrl]);
+
+  /* ── Carousel dimensions ──
+     Center slide  = 50% of total width
+     Each side peek = 25% of total width
+     So: posL starts at -25%, posC at 25%, posR at 75%
+  */
+  const slideW  = aw * 0.50;          // center slot width (50%)
+  const sideVis = aw * SIDE_FRAC;     // 25% visible on each side
+
+  const posL = -slideW + sideVis;     // prev slot left edge  (-25%)
+  const posC = sideVis;               // curr slot left edge  (+25%)
+  const posR = sideVis + slideW;      // next slot left edge  (+75%)
+
+  const availW = Math.max(slideW - PAD * 2, 80);
+  const availH = Math.max(ah - PAD * 2, 80);
+
+  /* Navigate with slide animation */
+  const navigate = (dir) => {
+    if (animatingRef.current) return;
+    if (dir === 1 && pageNum >= numPages) return;
+    if (dir === -1 && pageNum <= 1) return;
+
+    animatingRef.current = true;
+    setAnimOn(true);
+    setShiftPx(-dir * slideW);
+
+    setTimeout(() => {
+      setAnimOn(false);
+      setShiftPx(0);
+      setPageNum(p => p + dir);
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => {
+          setAnimOn(true);
+          animatingRef.current = false;
+        })
+      );
+    }, ANIM_MS);
+  };
+
+  navRef.current = navigate;
+
+  /* Keyboard */
+  useEffect(() => {
+    const handle = (e) => {
+      if (e.key === 'Escape')      onClose();
+      if (e.key === 'ArrowRight')  navRef.current(1);
+      if (e.key === 'ArrowLeft')   navRef.current(-1);
+      if (e.key === ' ')           { e.preventDefault(); setIsPlaying(p => !p); }
+    };
+    window.addEventListener('keydown', handle);
+    return () => window.removeEventListener('keydown', handle);
+  }, [onClose]);
+
+  /* Auto-play */
+  useEffect(() => {
+    if (playRef.current) clearInterval(playRef.current);
+    if (isPlaying && numPages > 1) {
+      playRef.current = setInterval(() => navRef.current(1), AUTO_MS);
+    }
+    return () => clearInterval(playRef.current);
+  }, [isPlaying, numPages]);
+
+  /* Stop auto-play at last page */
+  useEffect(() => {
+    if (pageNum >= numPages && isPlaying) setIsPlaying(false);
+  }, [pageNum, numPages, isPlaying]);
+
+  const prevPage = pageNum > 1 ? pageNum - 1 : null;
+  const nextPage = pageNum < numPages ? pageNum + 1 : null;
+
+  /* Slot style — side pages: 45% opacity, light blur */
+  const slot = (baseLeft, isSide) => ({
+    position: 'absolute', top: 0, left: 0,
+    width: slideW, height: ah,
+    transform: `translateX(${baseLeft + shiftPx}px)`,
+    transition: animOn ? `transform ${ANIM_MS}ms cubic-bezier(0.4,0,0.2,1)` : 'none',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    padding: PAD, boxSizing: 'border-box',
+    opacity: isSide ? 0.45 : 1,
+    filter: isSide ? 'blur(1px) brightness(0.7)' : 'none',
+    pointerEvents: isSide ? 'none' : 'auto',
+    overflow: 'hidden',
+  });
+
+  if (!study?.pdfUrl) return <NoPdfOverlay study={study} onClose={onClose} />;
+
+  return (
+    <div style={{
+      position: 'fixed', inset: 0, zIndex: 50,
+      background: '#060606',
+      display: 'flex', flexDirection: 'column',
+    }}>
+      {/* ── Top Bar ── */}
+      <TopBar
+        study={study}
+        pageNum={pageNum} numPages={numPages}
+        zoom={zoom} isPlaying={isPlaying} pdfDoc={pdfDoc}
+        onClose={onClose}
+        onPrev={() => { setIsPlaying(false); navigate(-1); }}
+        onNext={() => { setIsPlaying(false); navigate(1); }}
+        onZoomIn={() => setZoom(z => Math.min(3, +(z + 0.25).toFixed(2)))}
+        onZoomOut={() => setZoom(z => Math.max(0.5, +(z - 0.25).toFixed(2)))}
+        onZoomReset={() => setZoom(1)}
+        onPlayToggle={() => setIsPlaying(p => !p)}
+      />
+
+      {/* ── Carousel Area ── */}
+      <div
+        ref={areaRef}
+        style={{
+          flex: 1, position: 'relative', overflow: 'hidden',
+          background: 'radial-gradient(ellipse at center, #0f0f0f 0%, #060606 100%)',
+        }}
+      >
+        {/* Loading */}
+        {loading && (
+          <div style={{
+            position: 'absolute', inset: 0,
+            display: 'flex', flexDirection: 'column',
+            alignItems: 'center', justifyContent: 'center', gap: 14,
+          }}>
+            <div style={{
+              width: 32, height: 32,
+              border: '2px solid rgba(201,168,76,0.15)',
+              borderTop: '2px solid #C9A84C',
+              borderRadius: '50%',
+              animation: 'spin 0.75s linear infinite',
+            }} />
+            <span style={{
+              fontFamily: 'sans-serif', fontSize: 10,
+              letterSpacing: '.22em', textTransform: 'uppercase',
+              color: 'rgba(255,255,255,0.28)',
+            }}>
+              Loading PDF…
+            </span>
+          </div>
+        )}
+
+        {/* Error */}
+        {error && (
+          <div style={{
+            position: 'absolute', inset: 0,
+            display: 'flex', flexDirection: 'column',
+            alignItems: 'center', justifyContent: 'center', gap: 10,
+          }}>
+            <p style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '2rem', letterSpacing: '.1em', color: 'rgba(255,255,255,0.3)', margin: 0 }}>
+              Failed to Load
+            </p>
+            <p style={{ fontFamily: 'sans-serif', fontSize: 13, color: 'rgba(255,255,255,0.28)', margin: 0 }}>
+              Could not load the PDF.
+            </p>
+          </div>
+        )}
+
+        {/* ── Carousel Slides ── */}
+        {!loading && !error && aw > 0 && pdfDoc && (
+          <>
+            {/* PREV page — left 25% peek */}
+            {prevPage && (
+              <div style={slot(posL, true)}>
+                <PageCanvas pdfDoc={pdfDoc} pageNum={prevPage} maxW={availW} maxH={availH} zoom={1} />
+              </div>
+            )}
+
+            {/* CURRENT page — center 50% */}
+            <div style={{
+              ...slot(posC, false),
+              overflow: zoom > 1 ? 'auto' : 'hidden',
+            }}>
+              <div style={{ boxShadow: '0 28px 100px rgba(0,0,0,0.96)', borderRadius: 8, lineHeight: 0 }}>
+                <PageCanvas pdfDoc={pdfDoc} pageNum={pageNum} maxW={availW} maxH={availH} zoom={zoom} />
+              </div>
+            </div>
+
+            {/* NEXT page — right 25% peek */}
+            {nextPage && (
+              <div style={slot(posR, true)}>
+                <PageCanvas pdfDoc={pdfDoc} pageNum={nextPage} maxW={availW} maxH={availH} zoom={1} />
+              </div>
+            )}
+
+            {/* Side nav arrows */}
+            <NavArrow side="left"  onClick={() => { setIsPlaying(false); navigate(-1); }} disabled={pageNum <= 1} />
+            <NavArrow side="right" onClick={() => { setIsPlaying(false); navigate(1); }}  disabled={pageNum >= numPages} />
+
+            {/* Page dot indicators */}
+            <PageDots
+              pageNum={pageNum}
+              numPages={numPages}
+              onChange={(p) => { setIsPlaying(false); setPageNum(p); }}
+            />
+
+            {/* Vignette edges — frames the side peeks */}
+            <div style={{
+              position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 5,
+              background: 'linear-gradient(to right, rgba(6,6,6,0.65) 0%, transparent 22%, transparent 78%, rgba(6,6,6,0.65) 100%)',
+            }} />
+          </>
+        )}
+      </div>
+
+      {/* ── Progress bar ── */}
+      <div style={{ height: 2, background: 'rgba(255,255,255,0.05)', flexShrink: 0 }}>
+        <div style={{
+          height: '100%',
+          width: `${numPages ? (pageNum / numPages) * 100 : 0}%`,
+          background: 'linear-gradient(to right, #C9A84C, rgba(201,168,76,0.5))',
+          transition: 'width 0.4s ease',
+        }} />
+      </div>
+
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+    </div>
   );
 }
