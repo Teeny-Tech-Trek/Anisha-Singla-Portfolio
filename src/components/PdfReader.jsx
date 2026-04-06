@@ -6,7 +6,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
 
 const AUTO_MS   = 4000;   // 4-second auto-advance
 const ANIM_MS   = 380;    // slide animation duration
-const SIDE_FRAC = 0.25;   // 25% of carousel area shows each side page
+const SIDE_FRAC = 0.25;  // 25% of carousel area shows each side page
 const PAD       = 28;     // padding inside each slot
 
 /* ─────────────────────────────────────────────
@@ -26,11 +26,14 @@ function PageCanvas({ pdfDoc, pageNum, maxW, maxH, zoom }) {
         const page = await pdfDoc.getPage(pageNum);
         if (cancelled || !ref.current) return;
         const base  = page.getViewport({ scale: 1 });
-        const scale = Math.min(maxW / base.width, maxH / base.height) * (zoom || 1);
+        const dpr   = window.devicePixelRatio || 1;
+        const scale = Math.min(maxW / base.width, maxH / base.height) * (zoom || 1) * dpr;
         const vp    = page.getViewport({ scale });
         const c     = ref.current;
         c.width  = vp.width;
         c.height = vp.height;
+        c.style.width  = `${vp.width  / dpr}px`;
+        c.style.height = `${vp.height / dpr}px`;
         task = page.render({ canvasContext: c.getContext('2d'), viewport: vp });
         await task.promise;
       } catch (e) {
@@ -400,12 +403,14 @@ export default function PdfReader({ study, onClose }) {
      Each side peek = 25% of total width
      So: posL starts at -25%, posC at 25%, posR at 75%
   */
-  const slideW  = aw * 0.50;          // center slot width (50%)
-  const sideVis = aw * SIDE_FRAC;     // 25% visible on each side
+ // NAYA - yeh lagao
+const isMobile = aw < 600;
+const slideW   = isMobile ? aw : aw * (1 - SIDE_FRAC * 2);
+const sideVis  = isMobile ? 0 : aw * SIDE_FRAC;
 
-  const posL = -slideW + sideVis;     // prev slot left edge  (-25%)
-  const posC = sideVis;               // curr slot left edge  (+25%)
-  const posR = sideVis + slideW;      // next slot left edge  (+75%)
+const posL = isMobile ? -aw : -slideW + sideVis;
+const posC = sideVis;
+const posR = isMobile ? aw : sideVis + slideW;
 
   const availW = Math.max(slideW - PAD * 2, 80);
   const availH = Math.max(ah - PAD * 2, 80);

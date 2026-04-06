@@ -346,7 +346,7 @@ export default function Services() {
       style={{ background:'#050505' }}>
 
       {/* heading */}
-      <div ref={headRef} className="max-w-7xl mx-auto pt-28 pb-10">
+      <div ref={headRef} className="max-w-7xl mx-auto pb-10">
         <p className="reveal section-label">02 / What I Do</p>
         <div className="reveal flex flex-col md:flex-row md:items-end md:justify-between gap-4">
           <h2 className="section-title text-white">My Services</h2>

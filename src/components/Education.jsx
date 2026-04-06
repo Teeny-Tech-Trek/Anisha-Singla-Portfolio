@@ -165,7 +165,7 @@ export default function Education() {
     <section
       id="education"
       ref={sectionRef}
-      className="py-28 px-6 md:px-14 relative overflow-hidden"
+      className=" px-6 md:px-14 relative overflow-hidden"
       style={{ background: '#000' }}
     >
       <div

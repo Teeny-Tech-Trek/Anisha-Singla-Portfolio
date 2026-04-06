@@ -21,7 +21,7 @@ export default function Certifications() {
 
   return (
     <>
-      <section id="certifications" className="py-28 px-6 md:px-14" style={{ background: '#050505' }}>
+      <section id="certifications" className="py-8 px-6 md:px-14" style={{ background: '#050505' }}>
         <div className="max-w-7xl mx-auto">
           <p className="section-label">07 / Recognition</p>
           <h2 className="section-title text-white mb-14">Certifications &amp; Awards</h2>

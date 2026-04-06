@@ -20,7 +20,7 @@ export default function Skills() {
   const tagsRef  = useStaggerLeft('.stagger');
 
   return (
-    <section id="skills" className="py-28 px-6 md:px-14" style={{background:'#000'}}>
+    <section id="skills" className="py-8 px-6 md:px-14" style={{background:'#000'}}>
       <div className="max-w-7xl mx-auto">
         <p className="section-label">06 / Expertise</p>
         <h2 className="section-title text-white mb-14">Skills</h2>

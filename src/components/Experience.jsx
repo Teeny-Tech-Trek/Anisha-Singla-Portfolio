@@ -196,7 +196,7 @@ export default function Experience() {
     <section
       id="experience"
       ref={sectionRef}
-      className="py-28 px-6 md:px-14"
+      className="py-2 px-6 md:px-14"
       style={{ background: '#000' }}
     >
       <div className="max-w-5xl mx-auto">
