@@ -1,7 +1,15 @@
+import {
+  scrollToSection as scrollToLenisSection,
+  scrollToTop,
+  SECTION_SCROLL_EVENT,
+} from '../utils/scroll';
+
 export const ROUTES = {
   HOME: '/',
   CASE_STUDIES: '/case-studies',
 };
+
+export { SECTION_SCROLL_EVENT };
 
 const PENDING_SECTION_KEY = 'pending-section';
 
@@ -37,22 +45,11 @@ export function navigateTo(pathname) {
     emitRouteChange();
   }
 
-  window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  scrollToTop();
 }
 
-export function scrollToSection(sectionId, behavior = 'smooth') {
-  if (typeof document === 'undefined') {
-    return false;
-  }
-
-  const target = document.getElementById(sectionId);
-
-  if (!target) {
-    return false;
-  }
-
-  target.scrollIntoView({ behavior, block: 'start' });
-  return true;
+export function scrollToSection(sectionId, options) {
+  return scrollToLenisSection(sectionId, options);
 }
 
 export function navigateToSection(sectionId) {

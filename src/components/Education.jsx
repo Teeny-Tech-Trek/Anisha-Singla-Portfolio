@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { SECTION_SCROLL_EVENT } from '../routes';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -53,109 +54,224 @@ export default function Education() {
       const dots = dotRefs.current.filter(Boolean);
       const bursts = burstRefs.current.filter(Boolean);
       const cards = cardRefs.current.filter(Boolean);
+      const reveals = headRef.current?.querySelectorAll('.reveal') ?? [];
 
-      gsap.fromTo(
-        headRef.current.querySelectorAll('.reveal'),
-        { opacity: 0, y: 40 },
-        {
+      let headingTween;
+      let timeline;
+      let replayDelayId;
+      let hasPlayedHeading = false;
+      let hasPlayedTimeline = false;
+      let isReplayPending = false;
+
+      const resetHeading = () => {
+        if (reveals.length > 0) {
+          gsap.set(reveals, { opacity: 0, y: 40 });
+        }
+      };
+
+      const resetTimeline = () => {
+        gsap.set(lineRef.current, { scaleX: 0, transformOrigin: 'left center' });
+        gsap.set(dots, {
+          scale: 0,
+          opacity: 0,
+          boxShadow: '0 0 0 rgba(201,168,76,0)',
+          transformOrigin: 'center center',
+        });
+        gsap.set(bursts, {
+          scale: 0.35,
+          opacity: 0,
+          transformOrigin: 'center center',
+        });
+        gsap.set(cards, { opacity: 0, y: 52 });
+      };
+
+      const playHeading = (force = false) => {
+        if (reveals.length === 0 || (!force && hasPlayedHeading)) {
+          return;
+        }
+
+        hasPlayedHeading = true;
+        headingTween?.kill();
+
+        if (force) {
+          resetHeading();
+        }
+
+        headingTween = gsap.to(reveals, {
           opacity: 1,
           y: 0,
           duration: 0.9,
           ease: 'power3.out',
           stagger: 0.12,
-          scrollTrigger: {
-            trigger: headRef.current,
-            start: 'top 86%',
-            toggleActions: 'play none none none',
-          },
+          overwrite: 'auto',
+        });
+      };
+
+      const playTimeline = (force = false) => {
+        if (!lineRef.current || (!force && hasPlayedTimeline)) {
+          return;
         }
-      );
 
-      gsap.set(lineRef.current, { scaleX: 0, transformOrigin: 'left center' });
-      gsap.set(dots, {
-        scale: 0,
-        opacity: 0,
-        boxShadow: '0 0 0 rgba(201,168,76,0)',
-        transformOrigin: 'center center',
-      });
-      gsap.set(bursts, {
-        scale: 0.35,
-        opacity: 0,
-        transformOrigin: 'center center',
-      });
-      gsap.set(cards, { opacity: 0, y: 52 });
+        hasPlayedTimeline = true;
+        timeline?.kill();
 
-      const timeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 72%',
-          toggleActions: 'play none none none',
-          once: true,
+        if (force) {
+          resetTimeline();
+        }
+
+        timeline = gsap.timeline();
+        timeline.to(lineRef.current, {
+          scaleX: 1,
+          duration: 0.9,
+          ease: 'power3.out',
+        });
+
+        education.forEach((_, index) => {
+          const label = `milestone-${index}`;
+          const startAt = 1 + index;
+
+          timeline.addLabel(label, startAt);
+          timeline.to(
+            dots[index],
+            {
+              scale: 1,
+              opacity: 1,
+              duration: 0.38,
+              ease: 'back.out(2.8)',
+              boxShadow: DOT_SHADOW_FLASH,
+            },
+            label
+          );
+          timeline.to(
+            bursts[index],
+            {
+              scale: 1.9,
+              opacity: 0.95,
+              duration: 0.2,
+              ease: 'power2.out',
+            },
+            `${label}+=0.04`
+          );
+          timeline.to(
+            bursts[index],
+            {
+              scale: 2.45,
+              opacity: 0,
+              duration: 0.42,
+              ease: 'power2.in',
+            },
+            `${label}+=0.24`
+          );
+          timeline.to(
+            dots[index],
+            {
+              boxShadow: DOT_SHADOW_REST,
+              duration: 0.48,
+              ease: 'power2.out',
+            },
+            `${label}+=0.18`
+          );
+          timeline.to(
+            cards[index],
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.75,
+              ease: 'power3.out',
+            },
+            `${label}+=0.16`
+          );
+        });
+      };
+
+      const isSectionReadyToReplay = () => {
+        const section = sectionRef.current;
+
+        if (!section) {
+          return false;
+        }
+
+        const rect = section.getBoundingClientRect();
+        return rect.top <= window.innerHeight * 0.72 && rect.bottom >= 0;
+      };
+
+      const tryReplayOnScroll = () => {
+        if (!isSectionReadyToReplay()) {
+          return;
+        }
+
+        isReplayPending = false;
+        window.removeEventListener('scroll', tryReplayOnScroll);
+        window.removeEventListener('resize', tryReplayOnScroll);
+
+        playHeading(true);
+        replayDelayId = window.setTimeout(() => {
+          playTimeline(true);
+        }, 120);
+      };
+
+      const handleSectionScroll = (event) => {
+        if (event.detail?.sectionId !== 'education') {
+          return;
+        }
+
+        hasPlayedHeading = false;
+        hasPlayedTimeline = false;
+        isReplayPending = true;
+        headingTween?.kill();
+        timeline?.kill();
+
+        if (replayDelayId) {
+          window.clearTimeout(replayDelayId);
+        }
+
+        resetHeading();
+        resetTimeline();
+        tryReplayOnScroll();
+
+        if (!isSectionReadyToReplay()) {
+          window.addEventListener('scroll', tryReplayOnScroll, { passive: true });
+          window.addEventListener('resize', tryReplayOnScroll);
+        }
+      };
+
+      resetHeading();
+      resetTimeline();
+
+      const headingTrigger = ScrollTrigger.create({
+        trigger: headRef.current,
+        start: 'top 86%',
+        onEnter: () => {
+          if (!isReplayPending) {
+            playHeading();
+          }
         },
       });
 
-      timeline.to(lineRef.current, {
-        scaleX: 1,
-        duration: 0.9,
-        ease: 'power3.out',
+      const sectionTrigger = ScrollTrigger.create({
+        trigger: sectionRef.current,
+        start: 'top 72%',
+        onEnter: () => {
+          if (!isReplayPending) {
+            playTimeline();
+          }
+        },
       });
 
-      education.forEach((_, index) => {
-        const label = `milestone-${index}`;
-        const startAt = 1 + index;
+      window.addEventListener(SECTION_SCROLL_EVENT, handleSectionScroll);
 
-        timeline.addLabel(label, startAt);
-        timeline.to(
-          dots[index],
-          {
-            scale: 1,
-            opacity: 1,
-            duration: 0.38,
-            ease: 'back.out(2.8)',
-            boxShadow: DOT_SHADOW_FLASH,
-          },
-          label
-        );
-        timeline.to(
-          bursts[index],
-          {
-            scale: 1.9,
-            opacity: 0.95,
-            duration: 0.2,
-            ease: 'power2.out',
-          },
-          `${label}+=0.04`
-        );
-        timeline.to(
-          bursts[index],
-          {
-            scale: 2.45,
-            opacity: 0,
-            duration: 0.42,
-            ease: 'power2.in',
-          },
-          `${label}+=0.24`
-        );
-        timeline.to(
-          dots[index],
-          {
-            boxShadow: DOT_SHADOW_REST,
-            duration: 0.48,
-            ease: 'power2.out',
-          },
-          `${label}+=0.18`
-        );
-        timeline.to(
-          cards[index],
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.75,
-            ease: 'power3.out',
-          },
-          `${label}+=0.16`
-        );
-      });
+      return () => {
+        if (replayDelayId) {
+          window.clearTimeout(replayDelayId);
+        }
+        window.removeEventListener(SECTION_SCROLL_EVENT, handleSectionScroll);
+        window.removeEventListener('scroll', tryReplayOnScroll);
+        window.removeEventListener('resize', tryReplayOnScroll);
+        headingTrigger.kill();
+        sectionTrigger.kill();
+        headingTween?.kill();
+        timeline?.kill();
+      };
     }, sectionRef);
 
     return () => ctx.revert();

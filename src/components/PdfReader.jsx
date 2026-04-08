@@ -4,16 +4,15 @@ import workerSrc from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
 
-const AUTO_MS   = 4000;   // 4-second auto-advance
-const ANIM_MS   = 380;    // slide animation duration
-const SIDE_FRAC = 0.25;  // 25% of carousel area shows each side page
-const PAD       = 28;     // padding inside each slot
+const AUTO_MS   = 4000;
+const ANIM_MS   = 380;
+const SIDE_FRAC = 0.25;
+const PAD       = 28;
 
 /* ─────────────────────────────────────────────
-   PageCanvas — renders one PDF page to canvas,
-   scaled to fit within maxW × maxH (fit mode).
+   PageCanvas
 ───────────────────────────────────────────── */
-function PageCanvas({ pdfDoc, pageNum, maxW, maxH, zoom }) {
+function PageCanvas({ pdfDoc, pageNum, maxW, maxH, zoom, rotation = 0 }) {
   const ref = useRef(null);
 
   useEffect(() => {
@@ -25,10 +24,10 @@ function PageCanvas({ pdfDoc, pageNum, maxW, maxH, zoom }) {
       try {
         const page = await pdfDoc.getPage(pageNum);
         if (cancelled || !ref.current) return;
-        const base  = page.getViewport({ scale: 1 });
+        const base  = page.getViewport({ scale: 1, rotation });
         const dpr   = window.devicePixelRatio || 1;
         const scale = Math.min(maxW / base.width, maxH / base.height) * (zoom || 1) * dpr;
-        const vp    = page.getViewport({ scale });
+        const vp    = page.getViewport({ scale, rotation });
         const c     = ref.current;
         c.width  = vp.width;
         c.height = vp.height;
@@ -42,7 +41,7 @@ function PageCanvas({ pdfDoc, pageNum, maxW, maxH, zoom }) {
     })();
 
     return () => { cancelled = true; task?.cancel(); };
-  }, [pdfDoc, pageNum, maxW, maxH, zoom]);
+  }, [pdfDoc, pageNum, maxW, maxH, zoom, rotation]);
 
   return (
     <canvas
@@ -53,7 +52,7 @@ function PageCanvas({ pdfDoc, pageNum, maxW, maxH, zoom }) {
 }
 
 /* ─────────────────────────────────────────────
-   Tiny icon helpers
+   Icons
 ───────────────────────────────────────────── */
 const IcoPrev  = () => <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M7.5 1.5l-4 4 4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>;
 const IcoNext  = () => <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M3.5 1.5l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>;
@@ -61,11 +60,17 @@ const IcoPlay  = () => <svg width="9" height="10" viewBox="0 0 9 10" fill="curre
 const IcoPause = () => <svg width="9" height="10" viewBox="0 0 9 10" fill="currentColor"><rect x="0" y="0" width="3" height="10" rx="1"/><rect x="6" y="0" width="3" height="10" rx="1"/></svg>;
 const IcoMinus = () => <svg width="10" height="2" viewBox="0 0 10 2"><line x1="0" y1="1" x2="10" y2="1" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>;
 const IcoPlus  = () => <svg width="10" height="10" viewBox="0 0 10 10"><line x1="5" y1="0" x2="5" y2="10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/><line x1="0" y1="5" x2="10" y2="5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>;
+const IcoRotate = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+    <path d="M20 11a8 8 0 1 1-2.34-5.66" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M20 4v7h-7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
 const IcoClose = () => <svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 1l10 10M11 1L1 11" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>;
 const IcoDl    = () => <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v7M3 6l3 3 3-3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/><path d="M1 10h10" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>;
 
 /* ─────────────────────────────────────────────
-   CtrlBtn — small square icon button
+   CtrlBtn
 ───────────────────────────────────────────── */
 function CtrlBtn({ onClick, disabled, title, children }) {
   return (
@@ -92,7 +97,7 @@ function CtrlBtn({ onClick, disabled, title, children }) {
 }
 
 /* ─────────────────────────────────────────────
-   TopBar — single compact control strip
+   TopBar
 ───────────────────────────────────────────── */
 function TopBar({
   study, pageNum, numPages, zoom,
@@ -111,7 +116,6 @@ function TopBar({
       borderBottom: '1px solid rgba(255,255,255,0.07)',
       flexShrink: 0,
     }}>
-      {/* Meta */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, minWidth: 0, overflow: 'hidden' }}>
         <span style={{
           fontFamily: 'sans-serif', fontSize: 9,
@@ -130,7 +134,7 @@ function TopBar({
         </span>
       </div>
 
-      {/* Page navigation */}
+      {/* Page nav */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexShrink: 0 }}>
         <CtrlBtn onClick={onPrev} disabled={pageNum <= 1} title="Previous (←)"><IcoPrev /></CtrlBtn>
         <span style={{
@@ -146,7 +150,7 @@ function TopBar({
 
       <span style={{ width: 1, height: 18, background: 'rgba(255,255,255,0.08)', flexShrink: 0 }} />
 
-      {/* Play / Pause */}
+      {/* Auto-play */}
       <button
         type="button"
         onClick={onPlayToggle}
@@ -191,7 +195,6 @@ function TopBar({
 
       <span style={{ width: 1, height: 18, background: 'rgba(255,255,255,0.08)', flexShrink: 0 }} />
 
-      {/* Download */}
       {study.pdfUrl && (
         <a
           href={study.pdfUrl}
@@ -211,7 +214,6 @@ function TopBar({
         </a>
       )}
 
-      {/* Close */}
       <button
         type="button"
         onClick={onClose}
@@ -232,7 +234,7 @@ function TopBar({
 }
 
 /* ─────────────────────────────────────────────
-   NavArrow — large left/right click zones
+   NavArrow
 ───────────────────────────────────────────── */
 function NavArrow({ side, onClick, disabled }) {
   return (
@@ -263,7 +265,7 @@ function NavArrow({ side, onClick, disabled }) {
 }
 
 /* ─────────────────────────────────────────────
-   PageDots — pill indicators at bottom center
+   PageDots
 ───────────────────────────────────────────── */
 function PageDots({ pageNum, numPages, onChange }) {
   if (numPages <= 1 || numPages > 30) return null;
@@ -296,11 +298,16 @@ function PageDots({ pageNum, numPages, onChange }) {
 }
 
 /* ─────────────────────────────────────────────
-   NoPdfOverlay — shown when pdfUrl is null
+   NoPdfOverlay
 ───────────────────────────────────────────── */
 function NoPdfOverlay({ study, onClose }) {
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 50, background: '#060606', display: 'flex', flexDirection: 'column' }}>
+    <div style={{
+      position: 'fixed', inset: 0,
+      zIndex: 9999,          /* ← always on top */
+      background: '#060606',
+      display: 'flex', flexDirection: 'column',
+    }}>
       <TopBar
         study={study} pageNum={0} numPages={0} zoom={1}
         isPlaying={false} pdfDoc={null}
@@ -309,11 +316,13 @@ function NoPdfOverlay({ study, onClose }) {
         onZoomIn={() => {}} onZoomOut={() => {}} onZoomReset={() => {}}
         onPlayToggle={() => {}}
       />
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16 }}>
+      <div style={{
+        flex: 1, display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'center', gap: 16,
+      }}>
         <div style={{
           width: 64, height: 64,
-          border: '1px solid rgba(201,168,76,0.25)',
-          borderRadius: 12,
+          border: '1px solid rgba(201,168,76,0.25)', borderRadius: 12,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           color: 'rgba(201,168,76,0.45)',
         }}>
@@ -323,7 +332,10 @@ function NoPdfOverlay({ study, onClose }) {
             <path d="M5 10h8M5 13h5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
           </svg>
         </div>
-        <p style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '2rem', letterSpacing: '.1em', color: 'rgba(255,255,255,0.35)', margin: 0 }}>
+        <p style={{
+          fontFamily: "'Bebas Neue', sans-serif", fontSize: '2rem',
+          letterSpacing: '.1em', color: 'rgba(255,255,255,0.35)', margin: 0,
+        }}>
           Coming Soon
         </p>
         <p style={{ fontFamily: 'sans-serif', fontSize: 13, color: 'rgba(255,255,255,0.28)', margin: 0 }}>
@@ -335,19 +347,18 @@ function NoPdfOverlay({ study, onClose }) {
 }
 
 /* ─────────────────────────────────────────────
-   PdfReader — Apple TV style carousel viewer
-   Center page = 50% width, sides peek 25% each
+   PdfReader — main export
 ───────────────────────────────────────────── */
 export default function PdfReader({ study, onClose }) {
   const [pdfDoc,    setPdfDoc]    = useState(null);
   const [numPages,  setNumPages]  = useState(0);
   const [pageNum,   setPageNum]   = useState(1);
   const [zoom,      setZoom]      = useState(1);
+  const [rotation,  setRotation]  = useState(0);
   const [loading,   setLoading]   = useState(true);
   const [error,     setError]     = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  // Carousel animation
   const [shiftPx,   setShiftPx]  = useState(0);
   const [animOn,    setAnimOn]    = useState(true);
   const animatingRef = useRef(false);
@@ -380,7 +391,7 @@ export default function PdfReader({ study, onClose }) {
   useEffect(() => {
     if (!study?.pdfUrl) { setLoading(false); return; }
     setLoading(true); setError(false);
-    setPdfDoc(null); setNumPages(0); setPageNum(1);
+    setPdfDoc(null); setNumPages(0); setPageNum(1); setRotation(0);
 
     let cancelled = false;
     const t = pdfjsLib.getDocument(study.pdfUrl);
@@ -398,28 +409,24 @@ export default function PdfReader({ study, onClose }) {
     return () => { cancelled = true; t.destroy(); };
   }, [study?.pdfUrl]);
 
-  /* ── Carousel dimensions ──
-     Center slide  = 50% of total width
-     Each side peek = 25% of total width
-     So: posL starts at -25%, posC at 25%, posR at 75%
-  */
- // NAYA - yeh lagao
-const isMobile = aw < 600;
-const slideW   = isMobile ? aw : aw * (1 - SIDE_FRAC * 2);
-const sideVis  = isMobile ? 0 : aw * SIDE_FRAC;
+  /* Carousel dimensions */
+  const isMobile = aw < 600;
+  const slideW   = isMobile ? aw : aw * (1 - SIDE_FRAC * 2);
+  const sideVis  = isMobile ? 0 : aw * SIDE_FRAC;
 
-const posL = isMobile ? -aw : -slideW + sideVis;
-const posC = sideVis;
-const posR = isMobile ? aw : sideVis + slideW;
+  const posL = isMobile ? -aw    : -slideW + sideVis;
+  const posC = sideVis;
+  const posR = isMobile ? aw     : sideVis + slideW;
 
   const availW = Math.max(slideW - PAD * 2, 80);
   const availH = Math.max(ah - PAD * 2, 80);
+  const rotateBtnLeft = Math.max(posC + PAD, 12);
 
-  /* Navigate with slide animation */
+  /* Navigate */
   const navigate = (dir) => {
     if (animatingRef.current) return;
-    if (dir === 1 && pageNum >= numPages) return;
-    if (dir === -1 && pageNum <= 1) return;
+    if (dir === 1  && pageNum >= numPages) return;
+    if (dir === -1 && pageNum <= 1)        return;
 
     animatingRef.current = true;
     setAnimOn(true);
@@ -443,10 +450,11 @@ const posR = isMobile ? aw : sideVis + slideW;
   /* Keyboard */
   useEffect(() => {
     const handle = (e) => {
-      if (e.key === 'Escape')      onClose();
-      if (e.key === 'ArrowRight')  navRef.current(1);
-      if (e.key === 'ArrowLeft')   navRef.current(-1);
-      if (e.key === ' ')           { e.preventDefault(); setIsPlaying(p => !p); }
+      if (e.key === 'Escape')     onClose();
+      if (e.key === 'ArrowRight') navRef.current(1);
+      if (e.key === 'ArrowLeft')  navRef.current(-1);
+      if (e.key === ' ')          { e.preventDefault(); setIsPlaying(p => !p); }
+      if (e.key.toLowerCase() === 'r') setRotation(r => (r + 90) % 360);
     };
     window.addEventListener('keydown', handle);
     return () => window.removeEventListener('keydown', handle);
@@ -461,15 +469,14 @@ const posR = isMobile ? aw : sideVis + slideW;
     return () => clearInterval(playRef.current);
   }, [isPlaying, numPages]);
 
-  /* Stop auto-play at last page */
+  /* Stop at last page */
   useEffect(() => {
     if (pageNum >= numPages && isPlaying) setIsPlaying(false);
   }, [pageNum, numPages, isPlaying]);
 
-  const prevPage = pageNum > 1 ? pageNum - 1 : null;
-  const nextPage = pageNum < numPages ? pageNum + 1 : null;
+  const prevPage = pageNum > 1          ? pageNum - 1 : null;
+  const nextPage = pageNum < numPages   ? pageNum + 1 : null;
 
-  /* Slot style — side pages: 45% opacity, light blur */
   const slot = (baseLeft, isSide) => ({
     position: 'absolute', top: 0, left: 0,
     width: slideW, height: ah,
@@ -487,11 +494,14 @@ const posR = isMobile ? aw : sideVis + slideW;
 
   return (
     <div style={{
-      position: 'fixed', inset: 0, zIndex: 50,
+      position: 'fixed',
+      inset: 0,
+      zIndex: 9999,          /* ← always on top of everything */
       background: '#060606',
-      display: 'flex', flexDirection: 'column',
+      display: 'flex',
+      flexDirection: 'column',
     }}>
-      {/* ── Top Bar ── */}
+      {/* TopBar */}
       <TopBar
         study={study}
         pageNum={pageNum} numPages={numPages}
@@ -505,7 +515,7 @@ const posR = isMobile ? aw : sideVis + slideW;
         onPlayToggle={() => setIsPlaying(p => !p)}
       />
 
-      {/* ── Carousel Area ── */}
+      {/* Carousel area */}
       <div
         ref={areaRef}
         style={{
@@ -513,7 +523,6 @@ const posR = isMobile ? aw : sideVis + slideW;
           background: 'radial-gradient(ellipse at center, #0f0f0f 0%, #060606 100%)',
         }}
       >
-        {/* Loading */}
         {loading && (
           <div style={{
             position: 'absolute', inset: 0,
@@ -525,7 +534,7 @@ const posR = isMobile ? aw : sideVis + slideW;
               border: '2px solid rgba(201,168,76,0.15)',
               borderTop: '2px solid #C9A84C',
               borderRadius: '50%',
-              animation: 'spin 0.75s linear infinite',
+              animation: 'pdfSpin 0.75s linear infinite',
             }} />
             <span style={{
               fontFamily: 'sans-serif', fontSize: 10,
@@ -537,14 +546,16 @@ const posR = isMobile ? aw : sideVis + slideW;
           </div>
         )}
 
-        {/* Error */}
         {error && (
           <div style={{
             position: 'absolute', inset: 0,
             display: 'flex', flexDirection: 'column',
             alignItems: 'center', justifyContent: 'center', gap: 10,
           }}>
-            <p style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '2rem', letterSpacing: '.1em', color: 'rgba(255,255,255,0.3)', margin: 0 }}>
+            <p style={{
+              fontFamily: "'Bebas Neue', sans-serif", fontSize: '2rem',
+              letterSpacing: '.1em', color: 'rgba(255,255,255,0.3)', margin: 0,
+            }}>
               Failed to Load
             </p>
             <p style={{ fontFamily: 'sans-serif', fontSize: 13, color: 'rgba(255,255,255,0.28)', margin: 0 }}>
@@ -553,45 +564,79 @@ const posR = isMobile ? aw : sideVis + slideW;
           </div>
         )}
 
-        {/* ── Carousel Slides ── */}
         {!loading && !error && aw > 0 && pdfDoc && (
           <>
-            {/* PREV page — left 25% peek */}
+            <button
+              type="button"
+              onClick={() => setRotation(r => (r + 90) % 360)}
+              title="Rotate 90° (R)"
+              style={{
+                position: 'absolute',
+                top: 10,
+                left: rotateBtnLeft,
+                zIndex: 14,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                height: 38,
+                padding: '0 14px',
+                borderRadius: 9,
+                border: '1px solid rgba(201,168,76,0.42)',
+                background: 'rgba(8,8,8,0.86)',
+                backdropFilter: 'blur(10px)',
+                color: '#C9A84C',
+                cursor: 'pointer',
+                boxShadow: '0 10px 26px rgba(0,0,0,0.45)',
+                fontFamily: 'sans-serif',
+                fontSize: 9,
+                fontWeight: 700,
+                letterSpacing: '.18em',
+                textTransform: 'uppercase',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              <IcoRotate />
+              <span>Rotate</span>
+              <span style={{
+                fontFamily: 'monospace',
+                fontSize: 10,
+                letterSpacing: '0.08em',
+                color: 'rgba(255,255,255,0.62)',
+              }}>
+                {rotation}°
+              </span>
+            </button>
+
             {prevPage && (
               <div style={slot(posL, true)}>
-                <PageCanvas pdfDoc={pdfDoc} pageNum={prevPage} maxW={availW} maxH={availH} zoom={1} />
+                <PageCanvas pdfDoc={pdfDoc} pageNum={prevPage} maxW={availW} maxH={availH} zoom={1} rotation={rotation} />
               </div>
             )}
 
-            {/* CURRENT page — center 50% */}
             <div style={{
               ...slot(posC, false),
               overflow: zoom > 1 ? 'auto' : 'hidden',
             }}>
               <div style={{ boxShadow: '0 28px 100px rgba(0,0,0,0.96)', borderRadius: 8, lineHeight: 0 }}>
-                <PageCanvas pdfDoc={pdfDoc} pageNum={pageNum} maxW={availW} maxH={availH} zoom={zoom} />
+                <PageCanvas pdfDoc={pdfDoc} pageNum={pageNum} maxW={availW} maxH={availH} zoom={zoom} rotation={rotation} />
               </div>
             </div>
 
-            {/* NEXT page — right 25% peek */}
             {nextPage && (
               <div style={slot(posR, true)}>
-                <PageCanvas pdfDoc={pdfDoc} pageNum={nextPage} maxW={availW} maxH={availH} zoom={1} />
+                <PageCanvas pdfDoc={pdfDoc} pageNum={nextPage} maxW={availW} maxH={availH} zoom={1} rotation={rotation} />
               </div>
             )}
 
-            {/* Side nav arrows */}
             <NavArrow side="left"  onClick={() => { setIsPlaying(false); navigate(-1); }} disabled={pageNum <= 1} />
             <NavArrow side="right" onClick={() => { setIsPlaying(false); navigate(1); }}  disabled={pageNum >= numPages} />
 
-            {/* Page dot indicators */}
             <PageDots
               pageNum={pageNum}
               numPages={numPages}
               onChange={(p) => { setIsPlaying(false); setPageNum(p); }}
             />
 
-            {/* Vignette edges — frames the side peeks */}
             <div style={{
               position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 5,
               background: 'linear-gradient(to right, rgba(6,6,6,0.65) 0%, transparent 22%, transparent 78%, rgba(6,6,6,0.65) 100%)',
@@ -600,7 +645,7 @@ const posR = isMobile ? aw : sideVis + slideW;
         )}
       </div>
 
-      {/* ── Progress bar ── */}
+      {/* Progress bar */}
       <div style={{ height: 2, background: 'rgba(255,255,255,0.05)', flexShrink: 0 }}>
         <div style={{
           height: '100%',
@@ -610,7 +655,7 @@ const posR = isMobile ? aw : sideVis + slideW;
         }} />
       </div>
 
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      <style>{`@keyframes pdfSpin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }

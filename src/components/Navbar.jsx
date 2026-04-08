@@ -47,6 +47,7 @@ export default function Navbar() {
 
   return (
     <nav ref={navRef}
+      data-scroll-header
       className="fixed top-0 left-0 right-0 z-50 w-full max-w-full overflow-x-hidden transition-all duration-500"
       style={{
         background:    scrolled ? 'rgba(0,0,0,0.88)' : 'transparent',
