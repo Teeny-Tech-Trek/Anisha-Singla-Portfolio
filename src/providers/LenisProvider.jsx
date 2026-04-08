@@ -2,7 +2,9 @@ import { useLayoutEffect } from 'react';
 import Lenis from '@studio-freight/lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { replaySectionScrollAnimations } from '../hooks/useGsap';
 import {
+  SECTION_SCROLL_EVENT,
   clearLenisInstance,
   scrollToHash,
   setHash,
@@ -32,6 +34,7 @@ export default function LenisProvider({ children }) {
 
     let animationFrameId = 0;
     let initialHashFrameId = 0;
+    let cancelSectionReplay = () => {};
 
     const raf = (time) => {
       lenis.raf(time);
@@ -65,9 +68,29 @@ export default function LenisProvider({ children }) {
       scrollToHash(window.location.hash);
     };
 
+    const handleSectionScroll = (event) => {
+      const sectionId = event.detail?.sectionId;
+      const targetSection = sectionId ? document.getElementById(sectionId) : null;
+
+      if (!targetSection) {
+        return;
+      }
+
+      const rect = targetSection.getBoundingClientRect();
+      const isAlreadyVisible = rect.top <= window.innerHeight * 0.92 && rect.bottom >= 0;
+
+      if (!isAlreadyVisible) {
+        return;
+      }
+
+      cancelSectionReplay();
+      cancelSectionReplay = replaySectionScrollAnimations(sectionId);
+    };
+
     animationFrameId = window.requestAnimationFrame(raf);
     document.addEventListener('click', handleAnchorClick);
     window.addEventListener('hashchange', handleHashChange);
+    window.addEventListener(SECTION_SCROLL_EVENT, handleSectionScroll);
 
     initialHashFrameId = window.requestAnimationFrame(() => {
       initialHashFrameId = window.requestAnimationFrame(() => {
@@ -86,7 +109,9 @@ export default function LenisProvider({ children }) {
 
       document.removeEventListener('click', handleAnchorClick);
       window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener(SECTION_SCROLL_EVENT, handleSectionScroll);
       lenis.off('scroll', handleLenisScroll);
+      cancelSectionReplay();
       clearLenisInstance(lenis);
       lenis.destroy();
     };

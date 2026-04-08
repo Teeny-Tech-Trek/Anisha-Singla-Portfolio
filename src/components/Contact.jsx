@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { useStaggerLeft, useStaggerRight } from '../hooks/useGsap';
+import { useFadeUp, useStaggerLeft, useStaggerRight } from '../hooks/useGsap';
 
 export default function Contact() {
   const [form, setForm]   = useState({ name:'', email:'', message:'' });
   const [sent, setSent]   = useState(false);
-  const leftRef  = useStaggerLeft('.stagger');
-  const rightRef = useStaggerRight('.stagger-r');
+  const headRef  = useFadeUp('.fade-up', { sectionId: 'contact' });
+  const leftRef  = useStaggerLeft('.stagger', { sectionId: 'contact' });
+  const rightRef = useStaggerRight('.stagger-r', { sectionId: 'contact', watch: sent });
 
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
   const handleSubmit = e => { e.preventDefault(); setSent(true); setForm({name:'',email:'',message:''}); };
@@ -28,9 +29,9 @@ export default function Contact() {
         filter:'blur(40px)',
       }}/>
 
-      <div className="max-w-7xl mx-auto">
-        <p className="section-label">08 / Get In Touch</p>
-        <h2 className="section-title text-white mb-14">Let's Build Something Great</h2>
+      <div ref={headRef} className="max-w-7xl mx-auto">
+        <p className="section-label fade-up">08 / Get In Touch</p>
+        <h2 className="section-title text-white mb-14 fade-up">Let's Build Something Great</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
           {/* Left info */}

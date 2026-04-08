@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import * as pdfjsLib from 'pdfjs-dist';
 import workerSrc from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
@@ -8,6 +8,11 @@ const AUTO_MS   = 4000;
 const ANIM_MS   = 380;
 const SIDE_FRAC = 0.25;
 const PAD       = 28;
+
+function normalizeRotation(value) {
+  const rotation = Number(value) || 0;
+  return ((rotation % 360) + 360) % 360;
+}
 
 /* ─────────────────────────────────────────────
    PageCanvas
@@ -354,7 +359,7 @@ export default function PdfReader({ study, onClose }) {
   const [numPages,  setNumPages]  = useState(0);
   const [pageNum,   setPageNum]   = useState(1);
   const [zoom,      setZoom]      = useState(1);
-  const [rotation,  setRotation]  = useState(0);
+  const [rotation,  setRotation]  = useState(() => normalizeRotation(study?.autoRotate));
   const [loading,   setLoading]   = useState(true);
   const [error,     setError]     = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -391,7 +396,7 @@ export default function PdfReader({ study, onClose }) {
   useEffect(() => {
     if (!study?.pdfUrl) { setLoading(false); return; }
     setLoading(true); setError(false);
-    setPdfDoc(null); setNumPages(0); setPageNum(1); setRotation(0);
+    setPdfDoc(null); setNumPages(0); setPageNum(1); setRotation(normalizeRotation(study?.autoRotate));
 
     let cancelled = false;
     const t = pdfjsLib.getDocument(study.pdfUrl);
@@ -407,7 +412,7 @@ export default function PdfReader({ study, onClose }) {
       .catch(() => { if (!cancelled) { setError(true); setLoading(false); } });
 
     return () => { cancelled = true; t.destroy(); };
-  }, [study?.pdfUrl]);
+  }, [study?.pdfUrl, study?.autoRotate]);
 
   /* Carousel dimensions */
   const isMobile = aw < 600;
@@ -423,7 +428,7 @@ export default function PdfReader({ study, onClose }) {
   const rotateBtnLeft = Math.max(posC + PAD, 12);
 
   /* Navigate */
-  const navigate = (dir) => {
+  const navigate = useCallback((dir) => {
     if (animatingRef.current) return;
     if (dir === 1  && pageNum >= numPages) return;
     if (dir === -1 && pageNum <= 1)        return;
@@ -443,9 +448,11 @@ export default function PdfReader({ study, onClose }) {
         })
       );
     }, ANIM_MS);
-  };
+  }, [numPages, pageNum, slideW]);
 
-  navRef.current = navigate;
+  useEffect(() => {
+    navRef.current = navigate;
+  }, [navigate]);
 
   /* Keyboard */
   useEffect(() => {

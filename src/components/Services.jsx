@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { getReplayScrollTrigger } from '../hooks/useGsap';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -210,17 +211,13 @@ const VisualDT = ({ visRef }) => {
 
 // ─── SVG animation hooks ───────────────────────────────────────────────────────
 
-function useAIAnimation(svgRef, trigger) {
+function useAIAnimation(svgRef, triggerRef) {
   useEffect(() => {
-    if (!svgRef.current) return;
+    if (!svgRef.current || !triggerRef.current) return;
     const svg = svgRef.current;
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger,
-          start: 'top 78%',
-          toggleActions: 'play none none none',
-        },
+        scrollTrigger: getReplayScrollTrigger(triggerRef.current, { start: 'top 78%' }),
       });
       tl.to(svg.querySelector('.ai-glow'), { opacity: 1, duration: 0.8 })
         .to(svg.querySelector('.ai-dot'),   { attr: { fillOpacity: 0.95 }, duration: 0.3 }, '-=0.3')
@@ -239,20 +236,16 @@ function useAIAnimation(svgRef, trigger) {
       });
     }, svg);
     return () => ctx.revert();
-  }, [svgRef, trigger]);
+  }, [svgRef, triggerRef]);
 }
 
-function useBDAnimation(svgRef, trigger) {
+function UnusedBDAnimation(svgRef, trigger) {
   useEffect(() => {
     if (!svgRef.current) return;
     const svg = svgRef.current;
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger,
-          start: 'top 78%',
-          toggleActions: 'play none none none',
-        },
+        scrollTrigger: getReplayScrollTrigger(trigger, { start: 'top 78%' }),
       });
       tl.to(svg.querySelector('.bd-glow'), { opacity: 1, duration: 0.6 })
         .to(svg.querySelectorAll('.bd-bar'), {
@@ -267,17 +260,13 @@ function useBDAnimation(svgRef, trigger) {
   }, [svgRef, trigger]);
 }
 
-function usePMAnimation(svgRef, trigger) {
+function UnusedPMAnimation(svgRef, trigger) {
   useEffect(() => {
     if (!svgRef.current) return;
     const svg = svgRef.current;
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger,
-          start: 'top 78%',
-          toggleActions: 'play none none none',
-        },
+        scrollTrigger: getReplayScrollTrigger(trigger, { start: 'top 78%' }),
       });
       tl.to(svg.querySelectorAll('.pm-row'), {
           opacity: 1, x: 0, duration: 0.45, stagger: 0.12, ease: 'power3.out',
@@ -302,17 +291,13 @@ function usePMAnimation(svgRef, trigger) {
   }, [svgRef, trigger]);
 }
 
-function useDTAnimation(svgRef, trigger) {
+function UnusedDTAnimation(svgRef, trigger) {
   useEffect(() => {
     if (!svgRef.current) return;
     const svg = svgRef.current;
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger,
-          start: 'top 78%',
-          toggleActions: 'play none none none',
-        },
+        scrollTrigger: getReplayScrollTrigger(trigger, { start: 'top 78%' }),
       });
       tl.to(svg.querySelector('.dt-glow'), { opacity: 1, duration: 0.7 })
         .to(svg.querySelectorAll('.dt-line'), {
@@ -347,11 +332,11 @@ function ServiceAI({ s, i }) {
   const svgRef  = useRef(null);
   const visRef  = useRef(null);
 
-  useAIAnimation(svgRef, secRef.current);
+  useAIAnimation(svgRef, secRef);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const st = { trigger: secRef.current, start: 'top 78%', toggleActions: 'play none none none' };
+      const st = getReplayScrollTrigger(secRef.current, { start: 'top 78%' });
       gsap.fromTo(textRef.current, { opacity: 0, x: s.flip ? 50 : -50 },
         { opacity: 1, x: 0, duration: 1.0, ease: 'power3.out', scrollTrigger: st });
       gsap.fromTo(visRef.current, { opacity: 0, scale: 0.9 },
@@ -360,7 +345,7 @@ function ServiceAI({ s, i }) {
         { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out', stagger: 0.07, delay: 0.35, scrollTrigger: st });
     }, secRef);
     return () => ctx.revert();
-  }, []);
+  }, [s.flip]);
 
   // trigger SVG animation after section mounts
   useEffect(() => {
@@ -368,7 +353,7 @@ function ServiceAI({ s, i }) {
     const svg = svgRef.current;
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
-        scrollTrigger: { trigger: secRef.current, start: 'top 78%', toggleActions: 'play none none none' },
+        scrollTrigger: getReplayScrollTrigger(secRef.current, { start: 'top 78%' }),
       });
       tl.to(svg.querySelector('.ai-glow'), { opacity: 1, duration: 1.8, ease: 'power1.out' })
         .to(svg.querySelector('.ai-dot'),   { attr: { fillOpacity: 0.95 }, duration: 0.8 }, '-=0.6')
@@ -382,7 +367,7 @@ function ServiceAI({ s, i }) {
       });
     }, svg);
     return () => ctx.revert();
-  }, []);
+  }, [s.flip]);
 
   return <SectionShell secRef={secRef} textRef={textRef} visRef={visRef} s={s} i={i}
     Visual={<VisualAI visRef={svgRef} />} />;
@@ -396,7 +381,7 @@ function ServiceBD({ s, i }) {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const st = { trigger: secRef.current, start: 'top 78%', toggleActions: 'play none none none' };
+      const st = getReplayScrollTrigger(secRef.current, { start: 'top 78%' });
       gsap.fromTo(textRef.current, { opacity: 0, x: s.flip ? 50 : -50 },
         { opacity: 1, x: 0, duration: 1.0, ease: 'power3.out', scrollTrigger: st });
       gsap.fromTo(visRef.current, { opacity: 0, scale: 0.9 },
@@ -405,7 +390,7 @@ function ServiceBD({ s, i }) {
         { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out', stagger: 0.07, delay: 0.35, scrollTrigger: st });
     }, secRef);
     return () => ctx.revert();
-  }, []);
+  }, [s.flip]);
 
   useEffect(() => {
     if (!secRef.current || !svgRef.current) return;
@@ -413,7 +398,7 @@ function ServiceBD({ s, i }) {
     gsap.set(svg.querySelectorAll('.bd-bar'), { y: 30 });
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
-        scrollTrigger: { trigger: secRef.current, start: 'top 78%', toggleActions: 'play none none none' },
+        scrollTrigger: getReplayScrollTrigger(secRef.current, { start: 'top 78%' }),
       });
       tl.to(svg.querySelector('.bd-glow'), { opacity: 1, duration: 1.4, ease: 'power1.out' })
         .to(svg.querySelectorAll('.bd-bar'), { opacity: 1, y: 0, duration: 1.1, stagger: 0.18, ease: 'power2.out' }, 0.5)
@@ -421,7 +406,7 @@ function ServiceBD({ s, i }) {
         .to(svg.querySelectorAll('.bd-dot'), { attr: { fillOpacity: 0.9 }, duration: 0.7, stagger: 0.14 }, 1.6);
     }, svg);
     return () => ctx.revert();
-  }, []);
+  }, [s.flip]);
 
   return <SectionShell secRef={secRef} textRef={textRef} visRef={visRef} s={s} i={i}
     Visual={<VisualBD visRef={svgRef} />} />;
@@ -435,7 +420,7 @@ function ServicePM({ s, i }) {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const st = { trigger: secRef.current, start: 'top 78%', toggleActions: 'play none none none' };
+      const st = getReplayScrollTrigger(secRef.current, { start: 'top 78%' });
       gsap.fromTo(textRef.current, { opacity: 0, x: s.flip ? 50 : -50 },
         { opacity: 1, x: 0, duration: 1.0, ease: 'power3.out', scrollTrigger: st });
       gsap.fromTo(visRef.current, { opacity: 0, scale: 0.9 },
@@ -444,7 +429,7 @@ function ServicePM({ s, i }) {
         { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out', stagger: 0.07, delay: 0.35, scrollTrigger: st });
     }, secRef);
     return () => ctx.revert();
-  }, []);
+  }, [s.flip]);
 
   useEffect(() => {
     if (!secRef.current || !svgRef.current) return;
@@ -452,7 +437,7 @@ function ServicePM({ s, i }) {
     gsap.set(svg.querySelectorAll('.pm-row'), { x: -20 });
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
-        scrollTrigger: { trigger: secRef.current, start: 'top 78%', toggleActions: 'play none none none' },
+        scrollTrigger: getReplayScrollTrigger(secRef.current, { start: 'top 78%' }),
       });
       tl.to(svg.querySelectorAll('.pm-row'), { opacity: 1, x: 0, duration: 1.0, stagger: 0.22, ease: 'power2.out' })
         .to(svg.querySelector('.pm-now'),       { attr: { strokeOpacity: 0.35 }, duration: 1.0 }, 1.2)
@@ -463,7 +448,7 @@ function ServicePM({ s, i }) {
       }
     }, svg);
     return () => ctx.revert();
-  }, []);
+  }, [s.flip]);
 
   return <SectionShell secRef={secRef} textRef={textRef} visRef={visRef} s={s} i={i}
     Visual={<VisualPM visRef={svgRef} />} />;
@@ -477,7 +462,7 @@ function ServiceDT({ s, i }) {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const st = { trigger: secRef.current, start: 'top 78%', toggleActions: 'play none none none' };
+      const st = getReplayScrollTrigger(secRef.current, { start: 'top 78%' });
       gsap.fromTo(textRef.current, { opacity: 0, x: s.flip ? 50 : -50 },
         { opacity: 1, x: 0, duration: 1.0, ease: 'power3.out', scrollTrigger: st });
       gsap.fromTo(visRef.current, { opacity: 0, scale: 0.9 },
@@ -486,7 +471,7 @@ function ServiceDT({ s, i }) {
         { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out', stagger: 0.07, delay: 0.35, scrollTrigger: st });
     }, secRef);
     return () => ctx.revert();
-  }, []);
+  }, [s.flip]);
 
   useEffect(() => {
     if (!secRef.current || !svgRef.current) return;
@@ -494,7 +479,7 @@ function ServiceDT({ s, i }) {
     gsap.set(svg.querySelectorAll('.dt-node'), { scale: 0.8, transformOrigin: 'center center' });
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
-        scrollTrigger: { trigger: secRef.current, start: 'top 78%', toggleActions: 'play none none none' },
+        scrollTrigger: getReplayScrollTrigger(secRef.current, { start: 'top 78%' }),
       });
       tl.to(svg.querySelector('.dt-glow'), { opacity: 1, duration: 1.6, ease: 'power1.out' })
         .to(svg.querySelectorAll('.dt-line'), { attr: { strokeOpacity: 0.28 }, duration: 0.8, stagger: 0.22 }, 0.5)
@@ -630,7 +615,7 @@ export default function Services() {
         { opacity: 0, y: 40 },
         {
           opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', stagger: 0.12,
-          scrollTrigger: { trigger: headRef.current, start: 'top 86%', toggleActions: 'play none none none' },
+          scrollTrigger: getReplayScrollTrigger(headRef.current, { start: 'top 86%' }),
         }
       );
     }, sectionRef);

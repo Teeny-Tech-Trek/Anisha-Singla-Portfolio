@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { projects, statusStyle } from '../data/projectsData';
+import { getReplayScrollTrigger } from '../hooks/useGsap';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -131,22 +132,22 @@ export default function Projects({ onViewAll }) {
       gsap.fromTo(headingRef.current.querySelectorAll('.reveal'),
         { opacity: 0, y: 55 },
         { opacity: 1, y: 0, duration: 1, ease: 'power3.out', stagger: .12,
-          scrollTrigger: { trigger: headingRef.current, start: 'top 86%', toggleActions: 'play none none none' } });
+          scrollTrigger: getReplayScrollTrigger(headingRef.current, { start: 'top 86%' }) });
 
       gsap.fromTo('.feat-card',
         { opacity: 0, x: -70 },
         { opacity: 1, x: 0, duration: 1.1, ease: 'power3.out',
-          scrollTrigger: { trigger: '.feat-card', start: 'top 83%', toggleActions: 'play none none none' } });
+          scrollTrigger: getReplayScrollTrigger('.feat-card', { start: 'top 83%' }) });
 
       gsap.fromTo(gridRef.current.querySelectorAll('.proj-card'),
         { opacity: 0, y: 65, scale: .96 },
         { opacity: 1, y: 0, scale: 1, duration: .88, ease: 'power3.out', stagger: .11,
-          scrollTrigger: { trigger: gridRef.current, start: 'top 83%', toggleActions: 'play none none none' } });
+          scrollTrigger: getReplayScrollTrigger(gridRef.current, { start: 'top 83%' }) });
 
       gsap.fromTo('.view-all-btn',
         { opacity: 0, y: 30 },
         { opacity: 1, y: 0, duration: .8, ease: 'power2.out',
-          scrollTrigger: { trigger: '.view-all-btn', start: 'top 92%', toggleActions: 'play none none none' } });
+          scrollTrigger: getReplayScrollTrigger('.view-all-btn', { start: 'top 92%' }) });
 
     }, sectionRef);
     return () => ctx.revert();

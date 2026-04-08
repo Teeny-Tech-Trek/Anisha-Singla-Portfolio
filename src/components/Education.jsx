@@ -246,6 +246,18 @@ export default function Education() {
             playHeading();
           }
         },
+        onEnterBack: () => {
+          if (!isReplayPending) {
+            playHeading(true);
+          }
+        },
+        onLeaveBack: () => {
+          if (!isReplayPending) {
+            hasPlayedHeading = false;
+            headingTween?.kill();
+            resetHeading();
+          }
+        },
       });
 
       const sectionTrigger = ScrollTrigger.create({
@@ -254,6 +266,18 @@ export default function Education() {
         onEnter: () => {
           if (!isReplayPending) {
             playTimeline();
+          }
+        },
+        onEnterBack: () => {
+          if (!isReplayPending) {
+            playTimeline(true);
+          }
+        },
+        onLeaveBack: () => {
+          if (!isReplayPending) {
+            hasPlayedTimeline = false;
+            timeline?.kill();
+            resetTimeline();
           }
         },
       });

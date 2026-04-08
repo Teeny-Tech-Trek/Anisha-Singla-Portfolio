@@ -251,7 +251,7 @@ function buildFolders() {
   const certs = certificationsData.map(c => ({
     id: c.id, label: c.name, category: 'cert',
     items: c.pdfUrl || c.imageUrl
-      ? [{ name: c.name, pdfUrl: c.pdfUrl, imageUrl: c.imageUrl }]
+      ? [{ name: c.name, pdfUrl: c.pdfUrl, imageUrl: c.imageUrl, autoRotate: c.autoRotate }]
       : [],
   }));
   const awards = awardsData.map(a => ({
@@ -976,7 +976,12 @@ export default function Certifications() {
   }
 
   function openPdf(item) {
-    setActivePdf({ category: activeFolder?.label || '', title: item.name, pdfUrl: item.pdfUrl });
+    setActivePdf({
+      category: activeFolder?.label || '',
+      title: item.name,
+      pdfUrl: item.pdfUrl,
+      autoRotate: item.autoRotate,
+    });
   }
 
   const certs  = FOLDERS.filter(f => f.category === 'cert');

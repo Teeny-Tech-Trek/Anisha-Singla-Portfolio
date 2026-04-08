@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { getReplayScrollTrigger } from '../hooks/useGsap';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -17,7 +18,7 @@ const experiences = [
   { role:'Event Manager',                        company:'CGC Jhanjeri',                period:'Aug 2018 – Apr 2020',  location:'Mohali, India',   highlight:false },
 ];
 
-function Card({ exp, side, cardRef }) {
+function Card({ exp, cardRef }) {
   return (
     <div
       ref={cardRef}
@@ -82,10 +83,7 @@ export default function Experience() {
             opacity: 1,
             duration: 1.8,
             ease: 'power2.out',
-            scrollTrigger: {
-              trigger: lineRef.current,
-              start: 'top 80%',
-            },
+            scrollTrigger: getReplayScrollTrigger(lineRef.current, { start: 'top 80%' }),
           }
         );
       }
@@ -100,10 +98,7 @@ export default function Experience() {
             opacity: 1,
             duration: 1.8,
             ease: 'power2.out',
-            scrollTrigger: {
-              trigger: mobileLineRef.current,
-              start: 'top 80%',
-            },
+            scrollTrigger: getReplayScrollTrigger(mobileLineRef.current, { start: 'top 80%' }),
           }
         );
       }
@@ -124,10 +119,7 @@ export default function Experience() {
             x: 0,
             duration: 0.7,
             ease: 'power3.out',
-            scrollTrigger: {
-              trigger: card,
-              start: 'top 85%',
-            },
+            scrollTrigger: getReplayScrollTrigger(card, { start: 'top 85%' }),
           }
         );
       });
@@ -142,10 +134,7 @@ export default function Experience() {
             opacity: 1,
             duration: 0.4,
             ease: 'back.out(2)',
-            scrollTrigger: {
-              trigger: dot,
-              start: 'top 88%',
-            },
+            scrollTrigger: getReplayScrollTrigger(dot, { start: 'top 88%' }),
           }
         );
       });
@@ -161,10 +150,7 @@ export default function Experience() {
             opacity: 1,
             duration: 0.45,
             ease: 'back.out(2.5)',
-            scrollTrigger: {
-              trigger: dot,
-              start: 'top 88%',
-            },
+            scrollTrigger: getReplayScrollTrigger(dot, { start: 'top 88%' }),
           }
         );
       });
@@ -180,10 +166,7 @@ export default function Experience() {
             x: 0,
             duration: 0.6,
             ease: 'power3.out',
-            scrollTrigger: {
-              trigger: card,
-              start: 'top 88%',
-            },
+            scrollTrigger: getReplayScrollTrigger(card, { start: 'top 88%' }),
           }
         );
       });
@@ -295,7 +278,6 @@ export default function Experience() {
                       {isLeft && (
                         <Card
                           exp={exp}
-                          side="left"
                           cardRef={(el) => (cardRefs.current[i] = el)}
                         />
                       )}
@@ -319,7 +301,6 @@ export default function Experience() {
                       {!isLeft && (
                         <Card
                           exp={exp}
-                          side="right"
                           cardRef={(el) => (cardRefs.current[i] = el)}
                         />
                       )}

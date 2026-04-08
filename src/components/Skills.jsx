@@ -1,4 +1,4 @@
-import { useProgressBars, useStaggerLeft } from '../hooks/useGsap';
+import { useFadeUp, useProgressBars, useStaggerLeft } from '../hooks/useGsap';
 
 const skills = [
   { name:'Artificial Intelligence',          level:95 },
@@ -16,14 +16,15 @@ const tags = [
 ];
 
 export default function Skills() {
-  const barsRef  = useProgressBars();
-  const tagsRef  = useStaggerLeft('.stagger');
+  const headRef  = useFadeUp('.fade-up', { sectionId: 'skills' });
+  const barsRef  = useProgressBars({ sectionId: 'skills' });
+  const tagsRef  = useStaggerLeft('.stagger', { sectionId: 'skills' });
 
   return (
     <section id="skills" className="py-8 px-6 md:px-14" style={{background:'#000'}}>
-      <div className="max-w-7xl mx-auto">
-        <p className="section-label">06 / Expertise</p>
-        <h2 className="section-title text-white mb-14">Skills</h2>
+      <div ref={headRef} className="max-w-7xl mx-auto">
+        <p className="section-label fade-up">06 / Expertise</p>
+        <h2 className="section-title text-white mb-14 fade-up">Skills</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
           {/* Skill bars */}
