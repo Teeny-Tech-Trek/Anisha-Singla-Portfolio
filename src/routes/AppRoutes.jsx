@@ -46,7 +46,7 @@ function HomeRoute() {
       <Education />
       <Skills />
       <Certifications />
-      <Contact />
+      {/* <Contact /> */}
       <Footer />
     </div>
   );

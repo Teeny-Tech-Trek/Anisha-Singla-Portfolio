@@ -9,7 +9,7 @@ const links = [
   { label: 'Education', type: 'section', target: 'education' },
   { label: 'Skills', type: 'section', target: 'skills' },
   { label: 'Case Studies', type: 'route', target: ROUTES.CASE_STUDIES },
-  { label: 'Contact', type: 'section', target: 'contact' },
+  // { label: 'Contact', type: 'section', target: 'contact' },
 ];
 
 export default function Footer() {
@@ -46,11 +46,19 @@ export default function Footer() {
           </svg>
         </a>
       </div>
-      <div className="max-w-7xl mx-auto mt-6 pt-6" style={{borderTop:'1px solid rgba(255,255,255,0.05)'}}>
-        <p className="font-body text-xs text-center" style={{color:'rgba(255,255,255,0.6)',letterSpacing:'.1em'}}>
-          © 2026 Anisha Singla. All rights reserved. · Teeny Tech Trek
-        </p>
-      </div>
+     <div className="max-w-7xl mx-auto mt-6 pt-6" style={{borderTop:'1px solid rgba(255,255,255,0.05)'}}>
+  <p className="font-body text-xs text-center" style={{color:'rgba(255,255,255,0.6)',letterSpacing:'.1em'}}>
+    © 2026 Anisha Singla. All rights reserved. 
+    <a 
+      href="https://www.teenytechtrek.com/" 
+      target="_blank" 
+      rel="noopener noreferrer"
+      className="text-gold transition-colors hover:text-white"
+    >
+      · Teeny Tech Trek
+    </a>
+  </p>
+</div>
     </footer>
   );
 }

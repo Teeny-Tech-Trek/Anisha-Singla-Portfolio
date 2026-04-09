@@ -1,7 +1,7 @@
 import { useFadeUp, useStaggerLeft, useStaggerRight } from '../hooks/useGsap';
 
 const stats = [
-  { value:'5+', label:'Years of Experience', sub:'AI & Tech Industry' },
+  { value:'3+', label:'Years of Experience', sub:'AI & Tech Industry' },
   { value:'1', label:'Company Founded',     sub:'Teeny Tech Trek' },
   { value:'2',  label:'Postgraduate Degrees',sub:'AI & Project Management' },
 ];

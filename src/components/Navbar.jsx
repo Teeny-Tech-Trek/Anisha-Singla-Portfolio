@@ -12,7 +12,7 @@ const links = [
   { label: 'Education', type: 'section', target: 'education' },
   { label: 'Skills', type: 'section', target: 'skills' },
   { label: 'Case Studies', type: 'route', target: ROUTES.CASE_STUDIES },
-  { label: 'Contact', type: 'section', target: 'contact' },
+  // { label: 'Contact', type: 'section', target: 'contact' },
 ];
 
 export default function Navbar() {
@@ -61,11 +61,11 @@ export default function Navbar() {
 
         {/* desktop */}
         <ul className="hidden md:flex items-center gap-8">
-          {links.map(link => link.label === 'Contact' ? (
+          {links.map(link => link.label === 'Case Studies' ? (
             <li key={link.label}>
               <button onClick={() => go(link)}
                 className="font-body text-xs rounded-lg tracking-widest uppercase border border-gold text-gold px-5 py-2 transition-all duration-300 hover:bg-gold hover:text-black">
-                Contact
+                Case Studies
               </button>
             </li>
           ) : (

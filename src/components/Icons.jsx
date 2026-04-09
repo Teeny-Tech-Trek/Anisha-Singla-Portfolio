@@ -2,6 +2,68 @@
    Inline SVG brand icons — no external deps
 ───────────────────────────────────────────── */
 
+/* eslint-disable react-refresh/only-export-components */
+const ICON_GLOW_COLOR = '#FFE06B';
+
+function getSizeValue(size, multiplier = 1) {
+  if (typeof size === 'number') {
+    return size * multiplier;
+  }
+
+  if (typeof size === 'string') {
+    return multiplier === 1 ? size : `calc(${size} * ${multiplier})`;
+  }
+
+  return 32 * multiplier;
+}
+
+function IconGlow({ size = 32, children }) {
+  const dimension = getSizeValue(size);
+  const haloSize = getSizeValue(size, 1.65);
+
+  return (
+    <span
+      style={{
+        position: 'relative',
+        width: dimension,
+        height: dimension,
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexShrink: 0,
+      }}
+    >
+      <span
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          width: haloSize,
+          height: haloSize,
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(255,224,107,0.62) 0%, rgba(255,212,79,0.34) 34%, rgba(201,168,76,0.18) 58%, rgba(201,168,76,0) 76%)',
+          filter: 'blur(10px)',
+          opacity: 0.95,
+          pointerEvents: 'none',
+          mixBlendMode: 'screen',
+        }}
+      />
+      <span
+        style={{
+          position: 'relative',
+          width: dimension,
+          height: dimension,
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          filter: 'drop-shadow(0 0 7px rgba(255,224,107,0.5)) drop-shadow(0 0 16px rgba(255,214,92,0.3))',
+        }}
+      >
+        {children}
+      </span>
+    </span>
+  );
+}
+
 export function PythonIcon({ size = 32 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 256 255" xmlns="http://www.w3.org/2000/svg">
@@ -34,8 +96,11 @@ export function CppIcon({ size = 32 }) {
 }
 
 export function PhpIcon({ size = 32 }) {
+  const width = getSizeValue(size);
+  const height = getSizeValue(size, 0.53);
+
   return (
-    <svg width={size} height={size * 0.53} viewBox="0 0 256 135" xmlns="http://www.w3.org/2000/svg">
+    <svg width={width} height={height} viewBox="0 0 256 135" xmlns="http://www.w3.org/2000/svg">
       <ellipse fill="#8892BF" cx="128" cy="67.3" rx="128" ry="67.3"/>
       <path fill="#fff" d="M35.945 87.005l12.571-63.5H82.38c14.97 0 22.015 7.19 20.88 18.85-.684 7.02-4.204 13.443-9.927 17.84-5.66 4.356-12.666 6.124-20.84 6.124H58.26L55.16 87.005H35.945zm25.558-34.289h10.502c5.77 0 10.007-3.218 10.626-9.35.38-3.876-1.727-6.107-6.487-6.107H65.68l-4.177 15.457z M104.18 87.005l12.572-63.5h19.213l-3.178 16.049h14.335c13.89 0 19.963 6.437 18.146 16.738l-5.434 30.713h-19.43l4.97-27.951c.702-3.96-.44-5.787-4.224-5.787h-12.3l-6.458 33.738H104.18z M172.79 87.005l12.57-63.5h33.865c14.97 0 22.016 7.19 20.88 18.85-.683 7.02-4.203 13.443-9.926 17.84-5.66 4.356-12.665 6.124-20.84 6.124h-14.232L192.006 87.005H172.79zm25.557-34.289h10.502c5.77 0 10.008-3.218 10.627-9.35.38-3.876-1.727-6.107-6.488-6.107h-10.464l-4.177 15.457z"/>
     </svg>
@@ -54,18 +119,21 @@ export function DesignIcon({ size = 32 }) {
 }
 
 export function EmojiIcon({ symbol, label, size = 32 }) {
+  const dimension = getSizeValue(size);
+
   return (
     <span
       role="img"
       aria-label={label}
       style={{
-        width: size,
-        height: size,
+        width: dimension,
+        height: dimension,
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
-        fontSize: size,
+        fontSize: dimension,
         lineHeight: 1,
+        textShadow: `0 0 10px ${ICON_GLOW_COLOR}66`,
       }}
     >
       {symbol}
@@ -152,7 +220,9 @@ export function getIcon(id, size = 32) {
     'deans-list':               <EmojiIcon symbol="🎓" label="Dean's List" size={s} />,
     'sports':                   <EmojiIcon symbol="🏆" label="Sports Achievement" size={s} />,
   };
-  return map[id] || <ScrollIcon size={s} />;
+  const icon = map[id] || <ScrollIcon size={s} />;
+
+  return <IconGlow size={s}>{icon}</IconGlow>;
 }
 
 export const FOLDER_COLORS = {

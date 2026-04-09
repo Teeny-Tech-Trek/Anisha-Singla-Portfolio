@@ -121,6 +121,7 @@ export default function Hero() {
 
   const VIDEO_EDGE_COLOR = '#000000';
   const videoRef = useRef(null);
+  const heroSectionRef = useRef(null);
   const hasAutoScrolledRef = useRef(false);
 
   useEffect(() => {
@@ -134,13 +135,30 @@ export default function Hero() {
     let readyTimerId;
     let scrollTimerId;
 
+    const isUserViewingHero = () => {
+      const heroSection = heroSectionRef.current;
+
+      if (!heroSection) {
+        return false;
+      }
+
+      const { top, bottom } = heroSection.getBoundingClientRect();
+      const viewportMidpoint = window.innerHeight / 2;
+
+      return top <= viewportMidpoint && bottom >= viewportMidpoint;
+    };
+
     const scheduleAboutScroll = () => {
-      if (hasAutoScrolledRef.current) {
+      if (hasAutoScrolledRef.current || !isUserViewingHero()) {
         return;
       }
 
-      hasAutoScrolledRef.current = true;
       scrollTimerId = window.setTimeout(() => {
+        if (hasAutoScrolledRef.current || !isUserViewingHero()) {
+          return;
+        }
+
+        hasAutoScrolledRef.current = true;
         scrollToSection('about');
       }, 250);
     };
@@ -544,6 +562,7 @@ export default function Hero() {
 
       <section
         id="home"
+        ref={heroSectionRef}
         className="hero-shell"
         style={{
           '--hero-edge-color': VIDEO_EDGE_COLOR,
