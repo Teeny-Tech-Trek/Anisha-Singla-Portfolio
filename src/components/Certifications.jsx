@@ -25,6 +25,19 @@ function buildFolders() {
 const FOLDERS = buildFolders();
 
 /* ─────────────────────────────────────────────
+   WINDOW WIDTH HOOK
+───────────────────────────────────────────── */
+function useWindowWidth() {
+  const [w, setW] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
+  useEffect(() => {
+    const h = () => setW(window.innerWidth);
+    window.addEventListener('resize', h);
+    return () => window.removeEventListener('resize', h);
+  }, []);
+  return w;
+}
+
+/* ─────────────────────────────────────────────
    LAPTOP SVG SHELL  — screen ke andar halka yellow glow
 ───────────────────────────────────────────── */
 function LaptopShell({ children }) {
@@ -49,7 +62,7 @@ function LaptopShell({ children }) {
   }, [sync]);
 
   return (
-    <div ref={rootRef} style={{ position: 'relative', width: '100%', maxWidth: 920, margin: '0 auto' }}>
+    <div ref={rootRef} style={{ position: 'relative', width: '100%', maxWidth: 1100, margin: '0 auto' }}>
       <svg viewBox="0 0 920 582" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', width: '100%' }}>
         <defs>
           <linearGradient id="lsS" x1="0" y1="0" x2="0" y2="1">
@@ -202,16 +215,62 @@ function DesktopOS({ children, time, openPanel }) {
 }
 
 /* ─────────────────────────────────────────────
+   MOBILE OS CARD  — laptop shell ki jagah mobile par
+───────────────────────────────────────────── */
+function MobileOSCard({ children, time, openPanel }) {
+  return (
+    <div style={{
+      borderRadius: 12,
+      background: 'radial-gradient(ellipse at 50% 48%, #261d0e 0%, #1a1530 22%, #0e0e1e 52%, #060610 100%)',
+      border: '1px solid rgba(201,168,76,0.2)',
+      boxShadow: '0 20px 60px rgba(0,0,0,0.6)',
+      overflow: 'hidden',
+      fontFamily: "'SF Mono','JetBrains Mono',monospace",
+      position: 'relative',
+    }}>
+      <div style={{
+        position: 'absolute', inset: 0, pointerEvents: 'none',
+        backgroundImage: 'linear-gradient(rgba(201,168,76,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.04) 1px,transparent 1px)',
+        backgroundSize: '36px 36px',
+      }}/>
+      <div style={{
+        background: 'rgba(8,8,18,0.92)', backdropFilter: 'blur(12px)',
+        borderBottom: '1px solid rgba(201,168,76,0.1)',
+        display: 'flex', alignItems: 'center', padding: '0 14px', gap: 12, height: 36, position: 'relative',
+      }}>
+        <span style={{ color: '#C9A84C', fontSize: 11, fontWeight: 700, letterSpacing: '0.12em' }}>◆ PORTFOLIO OS</span>
+        {openPanel && <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: 10 }}>{openPanel.toUpperCase()}</span>}
+        <div style={{ flex: 1 }}/>
+        <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: 10 }}>{time}</span>
+      </div>
+      <div style={{ position: 'relative', padding: '16px 14px 14px' }}>
+        {children}
+      </div>
+      <div style={{
+        background: 'rgba(8,8,18,0.92)', backdropFilter: 'blur(12px)',
+        borderTop: '1px solid rgba(201,168,76,0.08)',
+        display: 'flex', alignItems: 'center', padding: '0 14px', gap: 6, height: 32, position: 'relative',
+      }}>
+        <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#C9A84C', boxShadow: '0 0 5px #C9A84C' }}/>
+        <span style={{ color: 'rgba(255,255,255,0.22)', fontSize: 9, letterSpacing: '0.08em' }}>TAP ANY ICON · PREVIEW CERTIFICATE</span>
+        <div style={{ flex: 1 }}/>
+        <span style={{ color: 'rgba(255,255,255,0.18)', fontSize: 9 }}>11 ITEMS</span>
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
    ICON TILE
 ───────────────────────────────────────────── */
-function IconTile({ folder, onClick, isActive }) {
+function IconTile({ folder, onClick, isActive, mobile }) {
   const [hov, setHov] = useState(false);
   const color  = FOLDER_COLORS[folder.id] || '#C9A84C';
   const active = isActive || hov;
   const rgb    = hexToRgb(color);
   const isCert = folder.category === 'cert';
-  const iconScale = isCert ? '44%' : '52%';
-  const iconSize = isCert ? 52 : 58;
+  const iconScale = mobile ? '48%' : (isCert ? '44%' : '52%');
+  const iconSize = mobile ? 44 : (isCert ? 52 : 58);
   const tileWidth = isCert ? 148 : null;
 
   return (
@@ -222,9 +281,9 @@ function IconTile({ folder, onClick, isActive }) {
       style={{
         background: 'none', border: 'none', cursor: 'pointer', padding: 0,
         display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
-        flex: isCert ? `0 0 ${tileWidth}px` : '1 1 0',
-        width: isCert ? tileWidth : 'auto',
-        minWidth: isCert ? tileWidth : 0,
+        flex: mobile ? 'none' : (isCert ? `0 0 ${tileWidth}px` : '1 1 0'),
+        width: mobile ? '100%' : (isCert ? tileWidth : 'auto'),
+        minWidth: mobile ? 0 : (isCert ? tileWidth : 0),
         transition: 'transform 0.18s ease',
         transform: hov ? `translateY(-5px) scale(${isCert ? 1.04 : 1.07})` : 'none',
       }}
@@ -515,7 +574,7 @@ function PdfCard({ item, index, color, onSelect, totalItems }) {
 /* ─────────────────────────────────────────────
    PDF LIST PANEL
 ───────────────────────────────────────────── */
-function PdfListPanel({ folder, onSelectPdf, onClose }) {
+function PdfListPanel({ folder, onSelectPdf, onClose, isMobile }) {
   const [visible, setVisible] = useState(false);
   const color = FOLDER_COLORS[folder.id] || '#C9A84C';
   const rgb   = hexToRgb(color);
@@ -533,14 +592,15 @@ function PdfListPanel({ folder, onSelectPdf, onClose }) {
     <div
       onClick={e => { if (e.target === e.currentTarget) handleClose(); }}
       style={{
-        position: 'absolute', inset: 0, zIndex: 50,
+        position: isMobile ? 'fixed' : 'absolute', inset: 0,
+        zIndex: isMobile ? 1000 : 50,
         background: 'rgba(6,6,16,0.55)', backdropFilter: 'blur(5px)',
         display: 'flex', alignItems: 'stretch', justifyContent: 'flex-end',
         opacity: visible ? 1 : 0, transition: 'opacity 0.22s ease',
       }}
     >
       <div style={{
-        width: '72%', height: '100%',
+        width: isMobile ? '92%' : '72%', height: '100%',
         background: 'linear-gradient(155deg, #13132a 0%, #0c0c1e 100%)',
         borderLeft: `1.5px solid ${color}44`,
         boxShadow: `-20px 0 60px rgba(0,0,0,0.7), 0 0 40px ${color}11`,
@@ -555,9 +615,12 @@ function PdfListPanel({ folder, onSelectPdf, onClose }) {
           background: `rgba(${rgb},0.07)`,
           display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0,
         }}>
-          <button onClick={handleClose} style={dotBtn('#ef4444')}/>
-          <div style={dotBtn('#f59e0b')}/>
-          <div style={dotBtn('#22c55e')}/>
+          <button onClick={handleClose} style={dotBtn('#ef4444')}>
+            <svg width="9" height="9" viewBox="0 0 10 10" style={{ display: 'block' }}>
+              <line x1="1" y1="1" x2="9" y2="9" stroke="#7a0000" strokeWidth="2" strokeLinecap="round"/>
+              <line x1="9" y1="1" x2="1" y2="9" stroke="#7a0000" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
+          </button>
           <div style={{ flex: 1, minWidth: 0, marginLeft: 4 }}>
             <div style={{ fontSize: 8.5, color, letterSpacing: '0.12em', fontWeight: 700 }}>
               {folder.category === 'cert' ? '◆ CERTIFICATION' : '★ AWARD'}
@@ -606,6 +669,8 @@ export default function Certifications() {
   const [activeFolder, setActiveFolder] = useState(null);
   const [activePdf,    setActivePdf]    = useState(null);
   const [time, setTime] = useState('');
+  const windowWidth = useWindowWidth();
+  const isMobile = windowWidth < 640;
 
   useEffect(() => {
     const tick = () => setTime(new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }));
@@ -632,8 +697,11 @@ export default function Certifications() {
 
   return (
     <>
-      <section id="certifications" style={{ background: '#050505', padding: '60px 24px' }}>
-        <div style={{ maxWidth: 960, margin: '0 auto' }}>
+      <section id="certifications" style={{
+        background: '#050505',
+        padding: isMobile ? '40px 16px' : windowWidth < 1024 ? '50px 20px' : '60px 24px',
+      }}>
+        <div style={{ maxWidth: windowWidth >= 1400 ? 1200 : 960, margin: '0 auto' }}>
           <p style={{ fontSize: 10.5, letterSpacing: '0.22em', color: '#C9A84C', fontFamily: "'SF Mono',monospace", marginBottom: 8 }}>
             07 / RECOGNITION
           </p>
@@ -641,61 +709,114 @@ export default function Certifications() {
             fontFamily: "'Bebas Neue',sans-serif",
             fontSize: 'clamp(2.2rem,5vw,3.2rem)',
             letterSpacing: '0.06em', color: '#fff',
-            marginBottom: 36, lineHeight: 1,
+            marginBottom: isMobile ? 24 : 36, lineHeight: 1,
           }}>
             Certifications &amp; Awards
           </h2>
 
-          <LaptopShell>
-            <DesktopOS time={time} openPanel={activeFolder?.label}>
-              <div style={{
-                position: 'absolute', inset: 0,
-                padding: '16px 20px 12px',
-                overflowY: 'auto',
-                display: 'flex', flexDirection: 'column',
-              }}>
-                {/* Certifications row */}
+          {isMobile ? (
+            /* ── MOBILE LAYOUT: no laptop SVG, plain OS card ── */
+            <>
+              <MobileOSCard time={time} openPanel={activeFolder?.label}>
                 <div style={catLabel}>◆ Certifications</div>
                 <div style={{
-                  display: 'flex', gap: 14,
-                  padding: '8px 0 18px',
-                  flex: '0 0 auto',
-                  flexWrap: 'wrap',
-                  alignItems: 'flex-start',
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(3, 1fr)',
+                  gap: 10,
+                  padding: '10px 0 18px',
                 }}>
                   {certs.map(f => (
-                    <IconTile key={f.id} folder={f} onClick={openFolder} isActive={activeFolder?.id === f.id}/>
+                    <IconTile key={f.id} folder={f} onClick={openFolder} isActive={activeFolder?.id === f.id} mobile />
                   ))}
                 </div>
 
                 <div style={{ height: 1, background: 'rgba(201,168,76,0.08)', marginBottom: 14 }}/>
 
-                {/* Awards row */}
                 <div style={catLabel}>★ Awards &amp; Honors</div>
-                <div style={{ display: 'flex', gap: 10, padding: '8px 0 10px', flex: '0 0 auto' }}>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(3, 1fr)',
+                  gap: 10,
+                  padding: '10px 0 8px',
+                }}>
                   {awards.map(f => (
-                    <IconTile key={f.id} folder={f} onClick={openFolder} isActive={activeFolder?.id === f.id}/>
+                    <IconTile key={f.id} folder={f} onClick={openFolder} isActive={activeFolder?.id === f.id} mobile />
                   ))}
                 </div>
-              </div>
+              </MobileOSCard>
 
               {activeFolder && (
                 <PdfListPanel
                   folder={activeFolder}
                   onSelectPdf={openPdf}
                   onClose={() => setActiveFolder(null)}
+                  isMobile
                 />
               )}
-            </DesktopOS>
-          </LaptopShell>
 
-          <p style={{
-            textAlign: 'center', marginTop: 14,
-            fontSize: 9.5, color: 'rgba(255,255,255,0.15)',
-            letterSpacing: '0.14em', fontFamily: "'SF Mono',monospace",
-          }}>
-            ↑ CLICK ANY ICON → PREVIEW CERTIFICATE → OPEN DOCUMENT
-          </p>
+              <p style={{
+                textAlign: 'center', marginTop: 14,
+                fontSize: 9.5, color: 'rgba(255,255,255,0.15)',
+                letterSpacing: '0.14em', fontFamily: "'SF Mono',monospace",
+              }}>
+                ↑ TAP ANY ICON → PREVIEW CERTIFICATE → OPEN DOCUMENT
+              </p>
+            </>
+          ) : (
+            /* ── TABLET / DESKTOP LAYOUT: laptop SVG shell ── */
+            <>
+              <LaptopShell>
+                <DesktopOS time={time} openPanel={activeFolder?.label}>
+                  <div style={{
+                    position: 'absolute', inset: 0,
+                    padding: '16px 20px 12px',
+                    overflowY: 'auto',
+                    display: 'flex', flexDirection: 'column',
+                  }}>
+                    {/* Certifications row */}
+                    <div style={catLabel}>◆ Certifications</div>
+                    <div style={{
+                      display: 'flex', gap: 14,
+                      padding: '8px 0 18px',
+                      flex: '0 0 auto',
+                      flexWrap: 'wrap',
+                      alignItems: 'flex-start',
+                    }}>
+                      {certs.map(f => (
+                        <IconTile key={f.id} folder={f} onClick={openFolder} isActive={activeFolder?.id === f.id}/>
+                      ))}
+                    </div>
+
+                    <div style={{ height: 1, background: 'rgba(201,168,76,0.08)', marginBottom: 14 }}/>
+
+                    {/* Awards row */}
+                    <div style={catLabel}>★ Awards &amp; Honors</div>
+                    <div style={{ display: 'flex', gap: 10, padding: '8px 0 10px', flex: '0 0 auto' }}>
+                      {awards.map(f => (
+                        <IconTile key={f.id} folder={f} onClick={openFolder} isActive={activeFolder?.id === f.id}/>
+                      ))}
+                    </div>
+                  </div>
+
+                  {activeFolder && (
+                    <PdfListPanel
+                      folder={activeFolder}
+                      onSelectPdf={openPdf}
+                      onClose={() => setActiveFolder(null)}
+                    />
+                  )}
+                </DesktopOS>
+              </LaptopShell>
+
+              <p style={{
+                textAlign: 'center', marginTop: 14,
+                fontSize: 9.5, color: 'rgba(255,255,255,0.15)',
+                letterSpacing: '0.14em', fontFamily: "'SF Mono',monospace",
+              }}>
+                ↑ CLICK ANY ICON → PREVIEW CERTIFICATE → OPEN DOCUMENT
+              </p>
+            </>
+          )}
         </div>
       </section>
 
@@ -720,9 +841,10 @@ const catLabel = {
 };
 
 const dotBtn = (color) => ({
-  width: 9, height: 9, borderRadius: '50%',
+  width: 20, height: 20, borderRadius: '50%',
   background: color, border: 'none', cursor: 'pointer',
-  boxShadow: `0 0 5px ${color}88`, flexShrink: 0, padding: 0,
+  boxShadow: `0 0 8px ${color}88`, flexShrink: 0, padding: 0,
+  display: 'flex', alignItems: 'center', justifyContent: 'center',
 });
 
 function hexToRgb(hex) {
