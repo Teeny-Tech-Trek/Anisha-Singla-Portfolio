@@ -20,15 +20,23 @@ function ProjectCard({ p }) {
     if (arrow) gsap.to(arrow, { x: 0, opacity: 0, duration: .25 });
   };
 
+  const handleClick = () => {
+    if ((p.status === 'Live' || p.status === 'Completed') && p.liveUrl) {
+      window.open(p.liveUrl, '_blank', 'noreferrer');
+    }
+  };
+
   return (
-    <div ref={cardRef} className="relative overflow-hidden cursor-pointer"
+    <div ref={cardRef} className="relative overflow-hidden"
       style={{ background:'#0d0d0d', border:'1px solid rgba(255,255,255,0.07)',
-        borderTop:'2px solid rgba(201,168,76,0.35)', transition:'box-shadow .3s ease', height:'100%' }}
-      onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
+        borderTop:'2px solid rgba(201,168,76,0.35)', transition:'box-shadow .3s ease', height:'100%',
+        cursor: (p.status === 'Live' || p.status === 'Completed') && p.liveUrl ? 'pointer' : 'default' }}
+      onMouseEnter={handleEnter} onMouseLeave={handleLeave} onClick={handleClick}>
 
       <div className="absolute inset-0 pointer-events-none" style={{ background: p.gradient, opacity: .55 }}/>
 
       <div className="relative z-10 p-6 flex flex-col h-full min-h-[270px]">
+
         {/* Badges */}
         <div className="flex items-center justify-between gap-2 mb-5 flex-wrap">
           <span className="font-body text-xs tracking-widest uppercase px-3 py-1"
@@ -45,9 +53,24 @@ function ProjectCard({ p }) {
               onMouseEnter={e => { e.currentTarget.style.background=statusStyle['Live'].color; e.currentTarget.style.color='#000'; }}
               onMouseLeave={e => { e.currentTarget.style.background=statusStyle['Live'].bg; e.currentTarget.style.color=statusStyle['Live'].color; }}>
               ● {p.status}
+              {/* External link icon */}
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
                 <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+              </svg>
+            </a>
+          ) : p.status === 'Completed' && p.liveUrl ? (
+            <a href={p.liveUrl} target="_blank" rel="noreferrer"
+              onClick={e => e.stopPropagation()}
+              className="font-body text-xs font-bold px-3 py-1 flex items-center gap-1.5 transition-all duration-300"
+              style={{ background:statusStyle['Completed'].bg, color:statusStyle['Completed'].color,
+                border:`1px solid ${statusStyle['Completed'].border}`, textDecoration:'none' }}
+              onMouseEnter={e => { e.currentTarget.style.background=statusStyle['Completed'].color; e.currentTarget.style.color='#000'; }}
+              onMouseLeave={e => { e.currentTarget.style.background=statusStyle['Completed'].bg; e.currentTarget.style.color=statusStyle['Completed'].color; }}>
+              ● {p.status}
+              {/* GitHub icon */}
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
               </svg>
             </a>
           ) : (
@@ -84,8 +107,8 @@ function ProjectCard({ p }) {
             <span className="font-body text-xs tracking-widest" style={{ color:'rgba(255,255,255,0.22)' }}>
               {p.year}
             </span>
-            <div className="card-arrow flex items-center gap-1.5 font-body text-xs tracking-widest uppercase text-gold"
-              style={{ opacity:0 }}>
+            <div className="card-arrow flex items-center gap-1.5 font-body text-xs tracking-widest uppercase"
+              style={{ opacity:0, color:'#C9A84C' }}>
               View
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -217,8 +240,8 @@ export default function AllProjects({ onBack }) {
         {/* Empty state */}
         {filtered.length === 0 && (
           <div className="flex flex-col items-center justify-center py-24 text-center">
-            <p className="font-title text-4xl text-gold mb-3"
-              style={{ fontFamily:"'Bebas Neue',sans-serif", letterSpacing:'.1em' }}>
+            <p className="font-title text-4xl mb-3"
+              style={{ fontFamily:"'Bebas Neue',sans-serif", letterSpacing:'.1em', color:'#C9A84C' }}>
               No Projects Found
             </p>
             <p className="font-body text-sm" style={{ color:'rgba(255,255,255,0.35)' }}>

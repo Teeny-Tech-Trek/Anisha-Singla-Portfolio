@@ -25,6 +25,8 @@ function ProjectCard({ p, featured = false }) {
   const handleClick = () => {
     if (p.status === 'Live' && p.liveUrl) {
       window.open(p.liveUrl, '_blank', 'noreferrer');
+    } else if (p.status === 'Completed' && p.liveUrl) {
+      window.open(p.liveUrl, '_blank', 'noreferrer');
     }
   };
 
@@ -37,7 +39,7 @@ function ProjectCard({ p, featured = false }) {
         border: featured ? '1px solid rgba(201,168,76,0.25)' : '1px solid rgba(255,255,255,0.07)',
         borderTop: `2px solid ${featured ? '#C9A84C' : 'rgba(201,168,76,0.3)'}`,
         transition: 'box-shadow .35s ease',
-        cursor: p.status === 'Live' && p.liveUrl ? 'pointer' : 'default',
+        cursor: (p.status === 'Live' || p.status === 'Completed') && p.liveUrl ? 'pointer' : 'default',
       }}
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
@@ -63,6 +65,17 @@ function ProjectCard({ p, featured = false }) {
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
                 <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+              </svg>
+            </span>
+          ) : p.status === 'Completed' && p.liveUrl ? (
+            <span
+              className="font-body text-xs font-bold px-3 py-1 flex items-center gap-1.5"
+              style={{ background: statusStyle['Completed'].bg, color: statusStyle['Completed'].color,
+                border: `1px solid ${statusStyle['Completed'].border}` }}>
+              ● {p.status}
+              {/* GitHub icon */}
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
               </svg>
             </span>
           ) : (
@@ -104,13 +117,6 @@ function ProjectCard({ p, featured = false }) {
             <span className="font-body text-xs tracking-widest" style={{ color: 'rgba(255,255,255,0.22)' }}>
               {p.year}
             </span>
-            {/* <div className="card-arrow flex items-center gap-1.5 font-body text-xs tracking-widest uppercase text-gold"
-              style={{ opacity: 0 }}>
-              View
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M5 12h14M12 5l7 7-7 7"/>
-              </svg>
-            </div> */}
           </div>
         </div>
       </div>
