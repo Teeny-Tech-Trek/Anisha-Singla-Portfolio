@@ -83,6 +83,7 @@ export default function Hero() {
   const TYPE_SEQUENCE_START_DELAY_MS = 0;
   const TEXT_TOTAL_DURATION_MS = 6000;
   const VIDEO_PLAY_DURATION_MS = 8000;
+  const VERCEL_VIDEO_URL = "https://arbgtqtruugewk5g.public.blob.vercel-storage.com/HeroPage-Video.MP4"; 
 
   const totalTypingCharacters = [LINE1, LINE2, LINE3, LINE4].reduce((total, line) => total + line.length, 0);
   const getLineDuration = (line) => (line.length / totalTypingCharacters) * TEXT_TOTAL_DURATION_MS;
@@ -575,7 +576,7 @@ export default function Hero() {
           <video
             className="hero-video"
             ref={videoRef}
-            src="/Final-Video.MP4"
+            src={VERCEL_VIDEO_URL}
             muted
             playsInline
             preload="auto"
