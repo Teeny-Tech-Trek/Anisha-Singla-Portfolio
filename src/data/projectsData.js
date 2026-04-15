@@ -27,8 +27,8 @@ export const projects = [
 },
   {
   id: 3,
-  title: 'PulseRobot',
-  category: 'Real Estate AI',
+  title: 'Nex-Estate',
+  category: 'Real Estate AI Avatar Platform',
   description:
     'A SaaS platform where real estate agents deploy a personalized AI avatar via QR code. Buyers scan, chat, get property recommendations, and book visits — 24/7. Includes lead scoring, CRM pipeline, team management, and Razorpay billing.',
   tags: ['React', 'TypeScript', 'Node.js', 'MongoDB', 'AWS', 'Razorpay'],
@@ -38,8 +38,21 @@ export const projects = [
   featured: false,
   gradient: 'radial-gradient(ellipse at bottom left, rgba(180,100,255,0.09) 0%, transparent 65%)',
 },
-  {
+{
   id: 4,
+  title: 'Neo Scripting',
+  category: 'Generative AI Multi-Agent System',
+  description:
+    'A production-grade multi-agent AI content engine that transforms raw prompts into AEO/GEO-optimized blog posts and platform-specific social content in a single API call. Built with a 10-agent pipeline, RAG-powered Qdrant knowledge base, and live web research, Neo Scripting is designed to rank in AI answer engines and be cited by LLMs like ChatGPT and Gemini.',
+  tags: ['Python', 'FastAPI', 'React', 'Vite', 'Tailwind CSS', 'Gemini', 'Qdrant', 'Docker', 'Vercel', 'Railway'],
+  status: 'Completed',
+  liveUrl: 'https://github.com/Anisha-Singla-22/Neo-Scripting',
+  year: '2025',
+  featured: true,
+  gradient: 'radial-gradient(ellipse at top left, rgba(120,220,255,0.12) 0%, transparent 65%)',
+},
+  {
+  id: 5,
   title: 'Flipkart Sentiment Analyzer',
   category: 'Machine Learning',
   description:
@@ -51,19 +64,19 @@ export const projects = [
   featured: false,
   gradient: 'radial-gradient(ellipse at top left, rgba(255,120,100,0.08) 0%, transparent 65%)',
 },
-  {
-  id: 5,
-  title: 'Toxic Comment Classifier',
-  category: 'AI Safety',
-  description:
-    'Multi-label toxicity classifier on 159K Wikipedia comments across 6 categories — built as a safety artifact. Compares TF-IDF + Logistic Regression vs Bi-LSTM, with three safety audits: identity-term bias probe (19 terms), adversarial robustness (leetspeak, spacing, punctuation), and calibration reliability diagrams.',
-  tags: ['Python', 'TensorFlow', 'Sklearn', 'Bi-LSTM', 'TF-IDF', 'Kaggle'],
-  status: 'Completed',
-  liveUrl: 'https://github.com/Anisha-Singla-22/Jigsaw',
-  year: '2024',
-  featured: false,
-  gradient: 'radial-gradient(ellipse at bottom right, rgba(80,220,160,0.08) 0%, transparent 65%)',
-},
+//   {
+//   id: 6,
+//   title: 'Toxic Comment Classifier',
+//   category: 'AI Safety',
+//   description:
+//     'Multi-label toxicity classifier on 159K Wikipedia comments across 6 categories — built as a safety artifact. Compares TF-IDF + Logistic Regression vs Bi-LSTM, with three safety audits: identity-term bias probe (19 terms), adversarial robustness (leetspeak, spacing, punctuation), and calibration reliability diagrams.',
+//   tags: ['Python', 'TensorFlow', 'Sklearn', 'Bi-LSTM', 'TF-IDF', 'Kaggle'],
+//   status: 'Completed',
+//   liveUrl: 'https://github.com/Anisha-Singla-22/Jigsaw',
+//   year: '2024',
+//   featured: false,
+//   gradient: 'radial-gradient(ellipse at bottom right, rgba(80,220,160,0.08) 0%, transparent 65%)',
+// },
   {
   id: 6,
   title: 'UGC Video Generator',
@@ -98,11 +111,37 @@ export const projects = [
     'Multi-label text classifier on 159K Wikipedia comments across 6 toxicity categories — built for the Kaggle Jigsaw 2018 challenge. Compares Logistic Regression, Decision Tree, and Random Forest with a TF-IDF pipeline and repeat-word ablation study. Logistic Regression scored 0.96963 on the private leaderboard.',
   tags: ['Python', 'Sklearn', 'TF-IDF', 'NLTK', 'Kaggle', 'Jupyter'],
   status: 'Completed',
-  liveUrl: 'https://github.com/Anisha-Singla-22/Ad-Maths-MP',
+  liveUrl: 'https://github.com/Anisha-Singla-22/Jigsaw',
   year: '2024',
   featured: false,
   gradient: 'radial-gradient(ellipse at bottom left, rgba(100,220,200,0.08) 0%, transparent 65%)',
 },
+{
+  id: 9,
+  title: 'ML & NLP Suite',
+  category: 'Machine Learning & NLP Collection',
+  description:
+    'A comprehensive suite of 7 end-to-end machine learning, NLP, and computer vision projects covering text classification, topic modeling, recommendation systems, summarization, image segmentation, and real-time video processing. Designed as a portfolio-grade reference demonstrating core ML concepts with practical implementations and evaluation metrics.',
+  tags: ['Python', 'scikit-learn', 'Gensim', 'OpenCV', 'spaCy', 'NLTK', 'TensorFlow', 'Computer Vision', 'NLP'],
+  status: 'Completed',
+  liveUrl: 'https://github.com/Anisha-Singla-22/ML-NLP-suite',
+  year: '2024',
+  featured: false,
+  gradient: 'radial-gradient(ellipse at bottom right, rgba(255,180,120,0.10) 0%, transparent 65%)',
+},
+{
+  id: 10,
+  title: 'ShakeGen — Shakespeare Text Generator',
+  category: 'Deep Learning · Sequence Modeling',
+  description:
+    'A character-level language model built using GRU networks to generate Shakespearean-style text. Trained on ~1.1M characters from Shakespeare’s works, the model learns sequential patterns and generates text using temperature-controlled sampling, demonstrating core concepts of RNNs, embeddings, and autoregressive generation.',
+  tags: ['Python', 'TensorFlow', 'Keras', 'GRU', 'Deep Learning', 'NLP', 'Jupyter'],
+  status: 'Completed',
+  liveUrl: 'https://github.com/Anisha-Singla-22/Shakegen',
+  year: '2023',
+  featured: false,
+  gradient: 'radial-gradient(ellipse at top right, rgba(180,140,255,0.10) 0%, transparent 65%)',
+}
   
 ];
 
