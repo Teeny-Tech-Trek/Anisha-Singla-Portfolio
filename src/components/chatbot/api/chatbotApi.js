@@ -116,9 +116,11 @@ function normalizeStreamEvent(rawEvent) {
 
   logDebug("Processing raw event", rawEvent.substring(0, 100)); // Log first 100 chars
 
-  const lines = rawEvent
+  // Normalize line endings to \n for consistent parsing
+  const normalized = rawEvent.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+  
+  const lines = normalized
     .split("\n")
-    .map((line) => line.replace(/\r$/, ""))
     .filter((line) => line.trim() !== "");
 
   if (!lines.length) {
@@ -130,6 +132,12 @@ function normalizeStreamEvent(rawEvent) {
   const dataLines = [];
 
   for (const line of lines) {
+    // Skip comment lines (starting with :)
+    if (line.startsWith(":")) {
+      logDebug("Skipping SSE comment line", line.substring(0, 50));
+      continue;
+    }
+    
     if (line.startsWith("event:")) {
       event = line.slice(6).trim();
       logDebug("Event type identified", event);
@@ -194,10 +202,22 @@ function normalizeStreamEvent(rawEvent) {
 }
 
 function parseSseEvents(buffer) {
-  const parts = buffer.split("\n\n");
+  // Handle both \n\n and \r\n\r\n as event separators
+  // First normalize line endings to \n for consistent parsing
+  const normalized = buffer.replace(/\r\n/g, "\n");
+  
+  // Split by double newlines (event separator)
+  const parts = normalized.split("\n\n");
+  
+  // Keep the last incomplete part as pending
   const pending = parts.pop() ?? "";
+  
+  // Parse all complete events
   const events = parts
-    .map((part) => normalizeStreamEvent(part))
+    .map((part) => {
+      if (!part || !part.trim()) return null;
+      return normalizeStreamEvent(part);
+    })
     .filter(Boolean);
 
   if (events.length > 0) {
@@ -309,14 +329,34 @@ export async function streamChatbotResponse(
 
     try {
       while (true) {
-        const { done, value } = await reader.read();
+        let chunk;
+        try {
+          chunk = await reader.read();
+        } catch (readError) {
+          logError("Error reading from stream", readError);
+          throw new Error(`Failed to read stream: ${readError.message}`);
+        }
+
+        const { done, value } = chunk;
 
         if (done) {
           logInfo("✅ Stream reading complete (done=true)");
           break;
         }
 
-        const chunkText = decoder.decode(value, { stream: true });
+        if (!value || value.length === 0) {
+          logDebug("Empty chunk received, skipping");
+          continue;
+        }
+
+        let chunkText;
+        try {
+          chunkText = decoder.decode(value, { stream: true });
+        } catch (decodeError) {
+          logError("Error decoding chunk", decodeError);
+          throw new Error(`Failed to decode stream chunk: ${decodeError.message}`);
+        }
+
         logDebug(`📦 Chunk received`, { 
           chunkSize: value.length, 
           chunkPreview: chunkText.substring(0, 100)
@@ -363,40 +403,80 @@ export async function streamChatbotResponse(
         }
       }
 
-      pending += decoder.decode();
+      // Process any remaining data in the buffer after stream ends
+      const finalChunk = decoder.decode();
+      if (finalChunk) {
+        logDebug("Processing final decode chunk", { length: finalChunk.length });
+        pending += finalChunk;
+      }
 
+      // Handle any remaining pending data
       if (pending.trim()) {
-        logDebug("Processing final pending buffer", { length: pending.length });
-        const finalEvent = normalizeStreamEvent(pending);
-
-        if (finalEvent) {
+        logDebug("Processing final pending buffer", { length: pending.length, preview: pending.substring(0, 100) });
+        
+        // Try to parse it as a complete event
+        const finalParsed = parseSseEvents(pending);
+        
+        // Process any complete events found
+        for (const event of finalParsed.events) {
           eventCount++;
           receivedAnyEvent = true;
 
           logDebug(`Final event #${eventCount}`, {
-            type: finalEvent.event,
-            done: finalEvent.done
+            type: event.event,
+            done: event.done,
+            hasText: !!event.text
           });
 
-          if (finalEvent.error) {
-            logError(`Error in final event`, finalEvent.error);
-            onError?.(finalEvent.error);
+          if (event.error) {
+            logError(`Error in final event`, event.error);
+            onError?.(event.error);
           }
 
-          if (finalEvent.text) {
-            totalTokensReceived += finalEvent.text.length;
+          if (event.text) {
+            totalTokensReceived += event.text.length;
             logInfo(`Token received in final event`, {
-              tokenLength: finalEvent.text.length,
+              tokenLength: event.text.length,
               totalLength: totalTokensReceived
             });
-            onToken(finalEvent.text, finalEvent);
+            onToken(event.text, event);
           }
-        } else {
-          logDebug("Final pending not recognized as event, treating as raw text");
-          const rawText = pending.trim();
-          totalTokensReceived += rawText.length;
-          onToken(rawText, { done: true, event: "message" });
-          receivedAnyEvent = true;
+        }
+
+        // If there's still unparsed data after final attempt, treat it as raw text
+        if (finalParsed.pending.trim()) {
+          const finalEvent = normalizeStreamEvent(finalParsed.pending);
+          if (finalEvent) {
+            eventCount++;
+            receivedAnyEvent = true;
+
+            logDebug(`Fallback final event #${eventCount}`, {
+              type: finalEvent.event,
+              done: finalEvent.done
+            });
+
+            if (finalEvent.error) {
+              logError(`Error in fallback final event`, finalEvent.error);
+              onError?.(finalEvent.error);
+            }
+
+            if (finalEvent.text) {
+              totalTokensReceived += finalEvent.text.length;
+              logInfo(`Token received in fallback final event`, {
+                tokenLength: finalEvent.text.length
+              });
+              onToken(finalEvent.text, finalEvent);
+            }
+          } else {
+            logDebug("Final pending data could not be parsed as SSE event");
+            const rawText = finalParsed.pending.trim();
+            if (rawText && !rawText.startsWith("{") && !rawText.startsWith("[")) {
+              // Only treat non-JSON text as raw content
+              totalTokensReceived += rawText.length;
+              onToken(rawText, { done: true, event: "message" });
+              receivedAnyEvent = true;
+            }
+          }
         }
       }
 
@@ -411,7 +491,11 @@ export async function streamChatbotResponse(
       });
     } finally {
       logInfo("Releasing reader lock");
-      reader.releaseLock();
+      try {
+        reader.releaseLock();
+      } catch (releaseError) {
+        logWarn("Error releasing reader lock", releaseError);
+      }
     }
   } catch (error) {
     if (requestSignal.aborted) {
@@ -428,11 +512,24 @@ export async function streamChatbotResponse(
 
     const errorMsg = error instanceof Error ? error.message : String(error);
     logError("Stream processing failed", errorMsg);
-    throw error instanceof Error ? error : new Error(FALLBACK_ERROR_MESSAGE);
+    
+    // Provide more specific error messages based on the error type
+    let userFriendlyError = errorMsg;
+    if (errorMsg.includes("Failed to read stream")) {
+      userFriendlyError = "Connection lost while receiving response. Please try again.";
+    } else if (errorMsg.includes("Failed to decode stream")) {
+      userFriendlyError = "Response data was corrupted. Please try again.";
+    } else if (errorMsg.includes("invalid empty stream")) {
+      userFriendlyError = "Server returned an empty response. Please try again.";
+    } else if (errorMsg.includes("Streaming is not supported")) {
+      userFriendlyError = "Your browser doesn't support streaming. Please use a modern browser.";
+    }
+    
+    throw new Error(userFriendlyError);
   } finally {
     cleanup();
     logInfo("🏁 streamChatbotResponse cleanup completed");
   }
 }
 
-export { FALLBACK_ERROR_MESSAGE, REQUEST_TIMEOUT_MS };
+export { FALLBACK_ERROR_MESSAGE, REQUEST_TIMEOUT_MS, logDebug, logError, logInfo, logWarn };

@@ -3,24 +3,12 @@ import {
   FALLBACK_ERROR_MESSAGE,
   getChatSessionId,
   streamChatbotResponse,
+  logDebug,
+  logError,
+  logInfo,
 } from "../api/chatbotApi";
 
 const LOG_PREFIX = "[useChatbot]";
-
-function logInfo(message, data = null) {
-  const timestamp = new Date().toISOString();
-  console.log(`${LOG_PREFIX} [${timestamp}] ${message}`, data || "");
-}
-
-function logError(message, error = null) {
-  const timestamp = new Date().toISOString();
-  console.error(`${LOG_PREFIX} [${timestamp}] ❌ ERROR: ${message}`, error || "");
-}
-
-function logDebug(message, data = null) {
-  const timestamp = new Date().toISOString();
-  console.debug(`${LOG_PREFIX} [${timestamp}] 🔍 DEBUG: ${message}`, data || "");
-}
 
 const createMessage = (role, content, citations = []) => ({
   id: `${role}-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
@@ -132,27 +120,34 @@ export function useChatbot() {
           }
 
           streamReportedError = message;
+          logError("Stream reported error", message);
         },
         onToken: (token, event) => {
-          // Track accumulated text for token events
-          if (event?.event === "token") {
-            accumulatedText += token;
-          }
+          try {
+            // Track accumulated text for token events
+            if (event?.event === "token") {
+              accumulatedText += token;
+            }
 
-          // Extract citations from the done event
-          if (event?.done && event?.raw?.citations) {
-            receivedCitations = Array.isArray(event.raw.citations) 
-              ? event.raw.citations 
-              : [event.raw.citations];
-          }
+            // Extract citations from the done event
+            if (event?.done && event?.raw?.citations) {
+              receivedCitations = Array.isArray(event.raw.citations) 
+                ? event.raw.citations 
+                : [event.raw.citations];
+              logDebug("Citations extracted from done event", receivedCitations.length);
+            }
 
-          setMessages((current) =>
-            current.map((message) =>
-              message.id === assistantMessage.id
-                ? { ...message, content: `${message.content}${token}` }
-                : message
-            )
-          );
+            setMessages((current) =>
+              current.map((message) =>
+                message.id === assistantMessage.id
+                  ? { ...message, content: `${message.content}${token}` }
+                  : message
+              )
+            );
+          } catch (tokenError) {
+            logError("Error processing token", tokenError);
+            // Don't rethrow - let streaming continue
+          }
         },
       });
 
