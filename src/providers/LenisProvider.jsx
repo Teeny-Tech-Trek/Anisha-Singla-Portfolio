@@ -1,5 +1,5 @@
 import { useLayoutEffect } from 'react';
-import Lenis from '@studio-freight/lenis';
+import Lenis from '../vendor/lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { replaySectionScrollAnimations } from '../hooks/useGsap';
