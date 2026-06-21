@@ -6,6 +6,7 @@ import {
 
 export const ROUTES = {
   HOME: '/',
+  PROJECTS: '/projects',
   CASE_STUDIES: '/case-studies',
 };
 

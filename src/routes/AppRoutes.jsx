@@ -7,16 +7,14 @@ import About from '../components/About';
 import Services from '../components/Services';
 import Experience from '../components/Experience';
 import Education from '../components/Education';
-import Skills from '../components/Skills';
 import Certifications from '../components/Certifications';
+import Volunteer from '../components/Volunteer';
 import Contact from '../components/Contact';
 import Footer from '../components/Footer';
 import AllCaseStudies from '../components/AllCaseStudies';
-import { ROUTES, consumePendingSection, getCurrentPath, scrollToSection } from './index';
+import { ROUTES, consumePendingSection, getCurrentPath, navigateTo, scrollToSection } from './index';
 
 function HomeRoute() {
-  const [showAllProjects, setShowAllProjects] = useState(false);
-
   useEffect(() => {
     const pendingSection = consumePendingSection();
 
@@ -31,10 +29,6 @@ function HomeRoute() {
     return () => window.clearTimeout(timeoutId);
   }, []);
 
-  if (showAllProjects) {
-    return <AllProjects onBack={() => setShowAllProjects(false)} />;
-  }
-
   return (
     <div className="bg-black min-h-screen w-full max-w-full overflow-x-hidden">
       <Navbar />
@@ -42,10 +36,10 @@ function HomeRoute() {
       <About />
       <Services />
       <Experience />
-      <Projects onViewAll={() => setShowAllProjects(true)} />
+      <Projects />
       <Education />
-      <Skills />
       <Certifications />
+      <Volunteer />
       {/* <Contact /> */}
       <Footer />
     </div>
@@ -64,6 +58,10 @@ export default function AppRoutes() {
 
   if (pathname === ROUTES.CASE_STUDIES) {
     return <AllCaseStudies />;
+  }
+
+  if (pathname === ROUTES.PROJECTS) {
+    return <AllProjects onBack={() => navigateTo(ROUTES.HOME)} />;
   }
 
   return <HomeRoute key={pathname} />;

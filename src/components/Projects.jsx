@@ -3,6 +3,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { projects, statusStyle } from '../data/projectsData';
 import { getReplayScrollTrigger } from '../hooks/useGsap';
+import { navigateTo, ROUTES } from '../routes';
+import ProjectLinks from './ProjectLinks';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -22,14 +24,6 @@ function ProjectCard({ p, featured = false }) {
     if (arrow) gsap.to(arrow, { x: 0, opacity: 0, duration: .3 });
   };
 
-  const handleClick = () => {
-    if (p.status === 'Live' && p.liveUrl) {
-      window.open(p.liveUrl, '_blank', 'noreferrer');
-    } else if (p.status === 'Completed' && p.liveUrl) {
-      window.open(p.liveUrl, '_blank', 'noreferrer');
-    }
-  };
-
   return (
     <div
       ref={cardRef}
@@ -39,11 +33,9 @@ function ProjectCard({ p, featured = false }) {
         border: featured ? '1px solid rgba(201,168,76,0.25)' : '1px solid rgba(255,255,255,0.07)',
         borderTop: `2px solid ${featured ? '#C9A84C' : 'rgba(201,168,76,0.3)'}`,
         transition: 'box-shadow .35s ease',
-        cursor: (p.status === 'Live' || p.status === 'Completed') && p.liveUrl ? 'pointer' : 'default',
       }}
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
-      onClick={handleClick}
     >
       <div className="absolute inset-0 pointer-events-none" style={{ background: p.gradient, opacity: .6 }} />
 
@@ -56,35 +48,12 @@ function ProjectCard({ p, featured = false }) {
             {p.category}
           </span>
 
-          {p.status === 'Live' && p.liveUrl ? (
-            <span
-              className="font-body text-xs font-bold px-3 py-1 flex items-center gap-1.5"
-              style={{ background: statusStyle[p.status].bg, color: statusStyle[p.status].color,
-                border: `1px solid ${statusStyle[p.status].border}` }}>
-              ● {p.status}
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
-              </svg>
-            </span>
-          ) : p.status === 'Completed' && p.liveUrl ? (
-            <span
-              className="font-body text-xs font-bold px-3 py-1 flex items-center gap-1.5"
-              style={{ background: statusStyle['Completed'].bg, color: statusStyle['Completed'].color,
-                border: `1px solid ${statusStyle['Completed'].border}` }}>
-              ● {p.status}
-              {/* GitHub icon */}
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
-              </svg>
-            </span>
-          ) : (
-            <span className="font-body text-xs font-bold px-3 py-1"
-              style={{ background: statusStyle[p.status]?.bg, color: statusStyle[p.status]?.color,
-                border: `1px solid ${statusStyle[p.status]?.border}` }}>
-              ● {p.status}
-            </span>
-          )}
+          {/* Status — a label, not a link (not focusable, no hover affordance) */}
+          <span className="font-body text-xs font-bold px-3 py-1"
+            style={{ background: statusStyle[p.status]?.bg, color: statusStyle[p.status]?.color,
+              border: `1px solid ${statusStyle[p.status]?.border}` }}>
+            ● {p.status}
+          </span>
         </div>
 
         {/* Title */}
@@ -119,12 +88,15 @@ function ProjectCard({ p, featured = false }) {
             </span>
           </div>
         </div>
+
+        {/* Action links — only render buttons for links that exist */}
+        <ProjectLinks project={p} />
       </div>
     </div>
   );
 }
 
-export default function Projects({ onViewAll }) {
+export default function Projects() {
   const sectionRef = useRef(null);
   const headingRef = useRef(null);
   const gridRef    = useRef(null);
@@ -204,7 +176,7 @@ export default function Projects({ onViewAll }) {
         {/* View All */}
         {projects.length > 7 && (
           <div className="view-all-btn mt-14 flex justify-center">
-            <button onClick={onViewAll}
+            <button onClick={() => navigateTo(ROUTES.PROJECTS)}
               className="font-body flex items-center gap-3 transition-all duration-300"
               style={{ fontWeight:600, fontSize:'.72rem', letterSpacing:'.2em', textTransform:'uppercase',
                 color:'#C9A84C', padding:'.9rem 3rem', border:'1px solid rgba(201,168,76,0.4)',

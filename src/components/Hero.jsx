@@ -2,6 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { scrollToSection } from '../routes';
+import SocialBar from './SocialBar';
+import { socials } from '../data/socials';
+
+const linkedInHref = socials.find((s) => s.label === 'LinkedIn')?.href;
 
 // ── Typewriter hook ──────────────────────────────────────────────
 function useTypewriter(text, { enabled = true, startDelay = 1000, duration = 1000 } = {}) {
@@ -684,13 +688,13 @@ export default function Hero() {
                   }}
                   onMouseEnter={(e) => { e.currentTarget.style.background = '#C9A84C'; e.currentTarget.style.color = '#000'; }}
                   onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#C9A84C'; }}
-                  onClick={() => scrollToSection('contact')}
+                  onClick={() => window.open(linkedInHref, '_blank', 'noopener,noreferrer')}
                 >
                   Let's Connect
                 </button>
               </div>
 
-              {/* LinkedIn */}
+              {/* Social links */}
               <div
                 className="hero-link-row"
                 style={{
@@ -698,16 +702,7 @@ export default function Hero() {
                   transition: 'opacity 0.7s ease 0.2s',
                 }}
               >
-                <div className="hero-link-line" />
-                <a
-                  className="hero-link text-white "
-                  href="https://www.linkedin.com/in/singlaanisha"
-                  target="_blank" rel="noreferrer"
-                  onMouseEnter={(e) => (e.currentTarget.style.color = '#C9A84C')}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.38)')}
-                >
-                  linkedin.com/in/singlaanisha
-                </a>
+                <SocialBar size="md" />
               </div>
             </div>
           </div>

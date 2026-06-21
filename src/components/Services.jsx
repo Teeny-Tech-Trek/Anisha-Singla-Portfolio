@@ -568,22 +568,162 @@ const VisualDT = () => {
   );
 };
 
+// ─── VisualMLE — RAG / Agent Build Pipeline (IN → embed → retrieve → LLM → ship()) ─
+
+const VisualMLE = () => (
+  <svg viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg"
+    style={{ width: '100%', height: '100%', display: 'block' }}>
+    <defs>
+      <radialGradient id="mleBg" cx="50%" cy="56%" r="55%">
+        <stop offset="0%"   stopColor="#C9A84C" stopOpacity="0.16"/>
+        <stop offset="100%" stopColor="#C9A84C" stopOpacity="0"/>
+      </radialGradient>
+      <style>{`
+        @keyframes mleBeam  { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -200; } }
+        @keyframes mleNode  { 0% { opacity: 0; transform: translateY(8px); }
+                              25%, 85% { opacity: 1; transform: translateY(0); }
+                              100% { opacity: 0.5; transform: translateY(0); } }
+        @keyframes mlePulse { 0%, 100% { opacity: 0.18; } 50% { opacity: 0.34; } }
+        @keyframes mleCaret { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+        @media (prefers-reduced-motion: reduce) { .mle-anim { animation: none !important; } }
+      `}</style>
+    </defs>
+
+    <ellipse className="mle-anim" cx="180" cy="110" rx="168" ry="84" fill="url(#mleBg)"
+      style={{ animation: 'mlePulse 3.6s ease-in-out infinite' }}/>
+
+    {/* Flow beam */}
+    <line x1="20" y1="96" x2="340" y2="96" stroke="#C9A84C" strokeWidth="0.5" strokeOpacity="0.18"/>
+    <line className="mle-anim" x1="20" y1="96" x2="340" y2="96" stroke="#C9A84C" strokeWidth="1.3"
+      strokeDasharray="8 12" strokeOpacity="0.6" style={{ animation: 'mleBeam 1.8s linear infinite' }}/>
+
+    {/* IN */}
+    <g className="mle-anim" style={{ animation: 'mleNode 4s ease-in-out infinite 0s' }}>
+      <rect x="10" y="76" width="46" height="40" rx="6" fill="#C9A84C" fillOpacity="0.12" stroke="#C9A84C" strokeWidth="0.9" strokeOpacity="0.5"/>
+      <text x="33" y="94"  textAnchor="middle" fontFamily="'DM Sans',sans-serif" fontSize="10"  fontWeight="700" fill="#FFE064" fillOpacity="0.92">IN</text>
+      <text x="33" y="107" textAnchor="middle" fontFamily="'DM Sans',sans-serif" fontSize="7.5" fill="#C9A84C" fillOpacity="0.55">prompt</text>
+    </g>
+    {/* EMBED */}
+    <g className="mle-anim" style={{ animation: 'mleNode 4s ease-in-out infinite 0.4s' }}>
+      <rect x="72" y="72" width="54" height="48" rx="7" fill="#C9A84C" fillOpacity="0.16" stroke="#C9A84C" strokeWidth="0.9" strokeOpacity="0.55"/>
+      <text x="99" y="92"  textAnchor="middle" fontFamily="'DM Sans',sans-serif" fontSize="8.5" fontWeight="600" fill="#C9A84C" fillOpacity="0.85">EMBED</text>
+      <text x="99" y="105" textAnchor="middle" fontFamily="'DM Sans',sans-serif" fontSize="7.5" fill="#C9A84C" fillOpacity="0.5">vectors</text>
+    </g>
+    {/* RETRIEVE — vector store */}
+    <g className="mle-anim" style={{ animation: 'mleNode 4s ease-in-out infinite 0.8s' }}>
+      <rect x="142" y="70" width="58" height="52" rx="7" fill="#C9A84C" fillOpacity="0.2" stroke="#C9A84C" strokeWidth="1" strokeOpacity="0.6"/>
+      <ellipse cx="171" cy="86" rx="15" ry="4.5" fill="none" stroke="#FFE064" strokeWidth="0.9" strokeOpacity="0.6"/>
+      <path d="M156 86 v16 a15 4.5 0 0 0 30 0 v-16" fill="none" stroke="#FFE064" strokeWidth="0.9" strokeOpacity="0.6"/>
+      <text x="171" y="116" textAnchor="middle" fontFamily="'DM Sans',sans-serif" fontSize="7" fontWeight="600" fill="#C9A84C" fillOpacity="0.8">RETRIEVE</text>
+    </g>
+    {/* LLM */}
+    <g className="mle-anim" style={{ animation: 'mleNode 4s ease-in-out infinite 1.2s' }}>
+      <rect x="216" y="68" width="56" height="56" rx="8" fill="#C9A84C" fillOpacity="0.24" stroke="#FFE064" strokeWidth="1.1" strokeOpacity="0.7"/>
+      <text x="244" y="92"  textAnchor="middle" fontFamily="'DM Sans',sans-serif" fontSize="11"  fontWeight="700" letterSpacing="1" fill="#FFE064" fillOpacity="0.95">LLM</text>
+      <text x="244" y="106" textAnchor="middle" fontFamily="'DM Sans',sans-serif" fontSize="7.5" fill="#C9A84C" fillOpacity="0.55">reason</text>
+    </g>
+    {/* ship() — teal code node */}
+    <g className="mle-anim" style={{ animation: 'mleNode 4s ease-in-out infinite 1.6s' }}>
+      <rect x="288" y="74" width="60" height="44" rx="6" fill="#5ED2A0" fillOpacity="0.1" stroke="#5ED2A0" strokeWidth="1" strokeOpacity="0.55"/>
+      <text x="318" y="95"  textAnchor="middle" fontFamily="ui-monospace,'JetBrains Mono',monospace" fontSize="10" fontWeight="700" fill="#5ED2A0" fillOpacity="0.95">ship()</text>
+      <text x="318" y="108" textAnchor="middle" fontFamily="ui-monospace,monospace" fontSize="7" fill="#5ED2A0" fillOpacity="0.5">deploy</text>
+    </g>
+
+    {/* Terminal strip */}
+    <rect x="40" y="150" width="280" height="46" rx="8" fill="#080808" stroke="#232323" strokeWidth="1"/>
+    <circle cx="54" cy="162" r="2.5" fill="#5ED2A0" fillOpacity="0.5"/>
+    <circle cx="63" cy="162" r="2.5" fill="#C9A84C" fillOpacity="0.5"/>
+    <circle cx="72" cy="162" r="2.5" fill="#9CA3AF" fillOpacity="0.4"/>
+    <text x="52" y="184" fontFamily="ui-monospace,'JetBrains Mono',monospace" fontSize="9.5" fill="#5ED2A0" fillOpacity="0.85">
+      <tspan fill="#3a3a3a">$ </tspan>build · retrieve · generate
+      <tspan className="mle-anim" fill="#5ED2A0" style={{ animation: 'mleCaret 1s step-end infinite' }}> ▋</tspan>
+    </text>
+  </svg>
+);
+
 // ─── Service sections ─────────────────────────────────────────────────────────
 
-function ServiceAI({ s, i }) {
+const SVC_MONO = "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace";
+
+// Shared text column for every service: number, tagline, title, description,
+// ✦ tags, optional tech-stack chips, and an optional decorative mono motif strip.
+function ServiceTextBlock({ s }) {
+  return (
+    <>
+      <div className="flex items-center gap-3 mb-5 flex-wrap">
+        <span className="font-body text-xs tracking-[.28em] uppercase font-semibold"
+          style={{ color: '#C9A84C' }}>{s.number}</span>
+        <div style={{ width: '28px', height: '1px', background: 'rgba(201,168,76,0.5)' }}/>
+        <span className="font-body text-xs tracking-[.16em] uppercase"
+          style={{ color: 'rgba(255,255,255,0.4)' }}>{s.subtitle}</span>
+      </div>
+      <h3 className="font-title mb-5"
+        style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(2.6rem,5vw,5rem)', letterSpacing: '.03em', lineHeight: 0.92, color: '#fff' }}>
+        {s.title}
+      </h3>
+      <div className="mb-6" style={{ width: '44px', height: '2px', background: '#C9A84C' }}/>
+      <p className="font-body text-base leading-relaxed mb-8"
+        style={{ color: 'rgba(255,255,255,0.62)', fontWeight: 300, maxWidth: '400px' }}>
+        {s.desc}
+      </p>
+      <div className="flex flex-wrap gap-x-5 gap-y-2">
+        {s.tags.map(t => (
+          <span key={t} className="svc-tag font-body text-xs tracking-widest uppercase font-medium"
+            style={{ color: 'rgba(255,255,255,0.5)' }}>
+            <span style={{ color: '#C9A84C', marginRight: '5px' }}>✦</span>{t}
+          </span>
+        ))}
+      </div>
+
+      {/* Tech-stack chips — only on technical cards that define `tech` */}
+      {s.tech?.length > 0 && (
+        <div className="flex flex-wrap gap-2 mt-5" style={{ maxWidth: '430px' }}>
+          {s.tech.map(t => (
+            <span key={t} style={{
+              fontFamily: SVC_MONO, fontSize: '10px', color: '#9CA3AF',
+              border: '1px solid #232323', borderRadius: '5px', padding: '3px 8px',
+              letterSpacing: '0.02em' }}>
+              {t}
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* Decorative mono motif strip — code style on the engineering card, muted-gold elsewhere */}
+      {s.motif && (s.motifCode ? (
+        <div className="mt-6" style={{
+          fontFamily: SVC_MONO, fontSize: '12px', color: '#5ED2A0',
+          background: '#080808', border: '1px solid #232323', borderRadius: '8px',
+          padding: '9px 13px', letterSpacing: '0.02em', maxWidth: '430px',
+          overflowX: 'auto', whiteSpace: 'nowrap' }}>
+          <span style={{ color: '#3a3a3a' }}>{'> '}</span>{s.motif}
+        </div>
+      ) : (
+        <div className="mt-6" style={{
+          fontFamily: SVC_MONO, fontSize: '11px', color: 'rgba(201,168,76,0.5)',
+          letterSpacing: '0.08em', maxWidth: '430px' }}>
+          {s.motif}
+        </div>
+      ))}
+    </>
+  );
+}
+
+// Section with a self-animating (CSS/canvas) visual and a text-left / visual-right layout.
+function ServiceSimple({ s, i, Visual, ratio = '360/280' }) {
   const secRef  = useRef(null);
   const textRef = useRef(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
       const st = getReplayScrollTrigger(secRef.current, { start: 'top 78%' });
-      gsap.fromTo(textRef.current, { opacity: 0, x: s.flip ? 50 : -50 },
+      gsap.fromTo(textRef.current, { opacity: 0, x: -50 },
         { opacity: 1, x: 0, duration: 1.0, ease: 'power3.out', scrollTrigger: st });
       gsap.fromTo(textRef.current.querySelectorAll('.svc-tag'), { opacity: 0, y: 10 },
         { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out', stagger: 0.07, delay: 0.35, scrollTrigger: st });
     }, secRef);
     return () => ctx.revert();
-  }, [s.flip]);
+  }, []);
 
   return (
     <div ref={secRef}
@@ -592,43 +732,28 @@ function ServiceAI({ s, i }) {
       <div className="relative z-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20 items-center">
         <div className="order-2 md:order-none">
           <div ref={textRef} className="flex flex-col justify-center">
-            <div className="flex items-center gap-3 mb-5 flex-wrap">
-              <span className="font-body text-xs tracking-[.28em] uppercase font-semibold"
-                style={{ color: '#C9A84C' }}>{s.number}</span>
-              <div style={{ width: '28px', height: '1px', background: 'rgba(201,168,76,0.5)' }}/>
-              <span className="font-body text-xs tracking-[.16em] uppercase"
-                style={{ color: 'rgba(255,255,255,0.4)' }}>{s.subtitle}</span>
-            </div>
-            <h3 className="font-title mb-5"
-              style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(2.6rem,5vw,5rem)', letterSpacing: '.03em', lineHeight: 0.92, color: '#fff' }}>
-              {s.title}
-            </h3>
-            <div className="mb-6" style={{ width: '44px', height: '2px', background: '#C9A84C' }}/>
-            <p className="font-body text-base leading-relaxed mb-8"
-              style={{ color: 'rgba(255,255,255,0.62)', fontWeight: 300, maxWidth: '400px' }}>
-              {s.desc}
-            </p>
-            <div className="flex flex-wrap gap-x-5 gap-y-2">
-              {s.tags.map(t => (
-                <span key={t} className="svc-tag font-body text-xs tracking-widest uppercase font-medium"
-                  style={{ color: 'rgba(255,255,255,0.5)' }}>
-                  <span style={{ color: '#C9A84C', marginRight: '5px' }}>✦</span>{t}
-                </span>
-              ))}
-            </div>
+            <ServiceTextBlock s={s} />
           </div>
         </div>
         <div className="order-1 md:order-none">
           <div className="flex items-center justify-center w-full"
             style={{ minHeight: '260px' }}>
-            <div style={{ width: '100%', maxWidth: '360px', aspectRatio: '360/220', position: 'relative' }}>
-              <VisualAI />
+            <div style={{ width: '100%', maxWidth: '360px', aspectRatio: ratio, position: 'relative' }}>
+              {Visual}
             </div>
           </div>
         </div>
       </div>
     </div>
   );
+}
+
+function ServiceMLE(props) {
+  return <ServiceSimple {...props} Visual={<VisualMLE />} ratio="360/220" />;
+}
+
+function ServiceAI(props) {
+  return <ServiceSimple {...props} Visual={<VisualAI />} ratio="360/220" />;
 }
 
 function ServiceBD({ s, i }) {
@@ -760,65 +885,8 @@ function ServicePM({ s, i }) {
     Visual={<VisualPM visRef={svgRef} />} />;
 }
 
-function ServiceDT({ s, i }) {
-  const secRef  = useRef(null);
-  const textRef = useRef(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      const st = getReplayScrollTrigger(secRef.current, { start: 'top 78%' });
-      gsap.fromTo(textRef.current, { opacity: 0, x: s.flip ? 50 : -50 },
-        { opacity: 1, x: 0, duration: 1.0, ease: 'power3.out', scrollTrigger: st });
-      gsap.fromTo(textRef.current.querySelectorAll('.svc-tag'), { opacity: 0, y: 10 },
-        { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out', stagger: 0.07, delay: 0.35, scrollTrigger: st });
-    }, secRef);
-    return () => ctx.revert();
-  }, [s.flip]);
-
-  return (
-    <div ref={secRef}
-      className="svc-section relative py-16 md:py-24"
-      style={{ borderTop: i === 0 ? 'none' : '1px solid rgba(255,255,255,0.07)' }}>
-      <div className="relative z-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20 items-center">
-        <div className="order-2 md:order-none">
-          <div className="flex items-center justify-center w-full"
-            style={{ minHeight: '260px' }}>
-            <div style={{ width: '100%', maxWidth: '360px', aspectRatio: '360/280', position: 'relative' }}>
-              <VisualDT />
-            </div>
-          </div>
-        </div>
-        <div className="order-1 md:order-none">
-          <div ref={textRef} className="flex flex-col justify-center">
-            <div className="flex items-center gap-3 mb-5 flex-wrap">
-              <span className="font-body text-xs tracking-[.28em] uppercase font-semibold"
-                style={{ color: '#C9A84C' }}>{s.number}</span>
-              <div style={{ width: '28px', height: '1px', background: 'rgba(201,168,76,0.5)' }}/>
-              <span className="font-body text-xs tracking-[.16em] uppercase"
-                style={{ color: 'rgba(255,255,255,0.4)' }}>{s.subtitle}</span>
-            </div>
-            <h3 className="font-title mb-5"
-              style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(2.6rem,5vw,5rem)', letterSpacing: '.03em', lineHeight: 0.92, color: '#fff' }}>
-              {s.title}
-            </h3>
-            <div className="mb-6" style={{ width: '44px', height: '2px', background: '#C9A84C' }}/>
-            <p className="font-body text-base leading-relaxed mb-8"
-              style={{ color: 'rgba(255,255,255,0.62)', fontWeight: 300, maxWidth: '400px' }}>
-              {s.desc}
-            </p>
-            <div className="flex flex-wrap gap-x-5 gap-y-2">
-              {s.tags.map(t => (
-                <span key={t} className="svc-tag font-body text-xs tracking-widest uppercase font-medium"
-                  style={{ color: 'rgba(255,255,255,0.5)' }}>
-                  <span style={{ color: '#C9A84C', marginRight: '5px' }}>✦</span>{t}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+function ServiceDT(props) {
+  return <ServiceSimple {...props} Visual={<VisualDT />} ratio="360/280" />;
 }
 
 // ─── Shared shell ─────────────────────────────────────────────────────────────
@@ -826,30 +894,7 @@ function ServiceDT({ s, i }) {
 function SectionShell({ secRef, textRef, visRef, s, i, Visual }) {
   const TextBlock = (
     <div ref={textRef} className="flex flex-col justify-center">
-      <div className="flex items-center gap-3 mb-5 flex-wrap">
-        <span className="font-body text-xs tracking-[.28em] uppercase font-semibold"
-          style={{ color: '#C9A84C' }}>{s.number}</span>
-        <div style={{ width: '28px', height: '1px', background: 'rgba(201,168,76,0.5)' }}/>
-        <span className="font-body text-xs tracking-[.16em] uppercase"
-          style={{ color: 'rgba(255,255,255,0.4)' }}>{s.subtitle}</span>
-      </div>
-      <h3 className="font-title mb-5"
-        style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 'clamp(2.6rem,5vw,5rem)', letterSpacing: '.03em', lineHeight: 0.92, color: '#fff' }}>
-        {s.title}
-      </h3>
-      <div className="mb-6" style={{ width: '44px', height: '2px', background: '#C9A84C' }}/>
-      <p className="font-body text-base leading-relaxed mb-8"
-        style={{ color: 'rgba(255,255,255,0.62)', fontWeight: 300, maxWidth: '400px' }}>
-        {s.desc}
-      </p>
-      <div className="flex flex-wrap gap-x-5 gap-y-2">
-        {s.tags.map(t => (
-          <span key={t} className="svc-tag font-body text-xs tracking-widest uppercase font-medium"
-            style={{ color: 'rgba(255,255,255,0.5)' }}>
-            <span style={{ color: '#C9A84C', marginRight: '5px' }}>✦</span>{t}
-          </span>
-        ))}
-      </div>
+      <ServiceTextBlock s={s} />
     </div>
   );
 
@@ -884,39 +929,54 @@ function SectionShell({ secRef, textRef, visRef, s, i, Visual }) {
 const services = [
   {
     number: '01',
-    title: 'AI Consultancy',
-    subtitle: 'Intelligence that works for you',
-    desc: 'We design and deploy custom AI systems that transform how your business operates — from intelligent automation to LLM-powered workflows.',
-    tags: ['LLM Integration', 'Automation', 'AI Strategy', 'Process Optimization'],
-    Component: ServiceAI,
+    title: 'AI / ML Engineering',
+    subtitle: 'I build it — not just advise on it',
+    desc: 'Hands-on development of RAG pipelines, multi-agent systems, and full-stack AI apps — from architecture through deployment.',
+    tags: ['RAG & vector search', 'Multi-agent systems', 'APIs & backends', 'Deployment'],
+    tech: ['Python', 'FastAPI', 'Claude', 'FAISS', 'Neo4j', 'React', 'AWS'],
+    motif: 'IN → embed → retrieve → LLM → ship()',
+    motifCode: true,
+    Component: ServiceMLE,
     flip: false,
   },
   {
     number: '02',
-    title: 'Business Development',
-    subtitle: 'Growth by design, not by chance',
-    desc: 'Strategic partnerships, go-to-market execution, and revenue architecture — built for sustainable scale and market dominance.',
-    tags: ['GTM Strategy', 'Partnerships', 'Revenue Growth', 'Market Research'],
-    Component: ServiceBD,
+    title: 'Technical Team Leadership',
+    subtitle: 'Leading engineers, owning delivery',
+    desc: 'I lead a 3–5 person engineering team through architecture, code review, and agile delivery — owning technical decisions end to end, on time and on scope.',
+    tags: ['System architecture', 'Code review', 'Mentoring', 'Agile delivery'],
+    motif: 'architect · review · mentor · ship',
+    Component: ServicePM,
     flip: true,
   },
   {
     number: '03',
-    title: 'Project Management',
-    subtitle: 'Every milestone, delivered',
-    desc: 'Precision planning meets agile execution. I manage complexity so your team stays focused — on time, on budget, beyond expectations.',
-    tags: ['Agile / Scrum', 'Risk Management', 'Team Leadership', 'Delivery'],
-    Component: ServicePM,
+    title: 'AI Consultancy & Strategy',
+    subtitle: 'Intelligence that works for you',
+    desc: 'I design and ship custom AI systems that change how a business operates — from intelligent automation to LLM-powered workflows.',
+    tags: ['LLM Integration', 'Automation', 'AI Strategy', 'Process Optimization'],
+    motif: 'IN input · EMBED tokens · LLM · DECODE output · OUT result',
+    Component: ServiceAI,
     flip: false,
   },
   {
     number: '04',
+    title: 'Business Development',
+    subtitle: 'Growth by design, not by chance',
+    desc: 'Strategic partnerships, go-to-market execution, and revenue architecture — built for sustainable scale and market dominance.',
+    tags: ['GTM Strategy', 'Partnerships', 'Revenue Growth', 'Market Research'],
+    motif: 'GTM · PARTNER · RESEARCH · REVENUE · MARKET',
+    Component: ServiceBD,
+    flip: true,
+  },
+  {
+    number: '05',
     title: 'Design Thinking',
     subtitle: 'Problems solved from the inside out',
     desc: 'Certified Design Thinking practitioner — I facilitate human-centered workshops that turn ambiguity into actionable, elegant solutions.',
     tags: ['User Research', 'Ideation', 'Prototyping', 'Facilitation'],
     Component: ServiceDT,
-    flip: true,
+    flip: false,
   },
 ];
 
@@ -948,7 +1008,7 @@ export default function Services() {
           <h2 className="section-title text-white">My Services</h2>
           <p className="font-body text-sm font-medium"
             style={{ color: 'rgba(255,255,255,0.45)', maxWidth: '300px', lineHeight: 1.7 }}>
-            Four core areas where I create transformative impact.
+            Five areas where I create impact.
           </p>
         </div>
         <div className="reveal mt-8"

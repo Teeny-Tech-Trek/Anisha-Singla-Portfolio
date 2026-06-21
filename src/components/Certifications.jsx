@@ -4,6 +4,7 @@ import * as pdfjsLib from 'pdfjs-dist';
 import workerSrc from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import { certificationsData } from '../data/certificationsData';
 import { awardsData }         from '../data/awardsData';
+import { skillsData }         from '../data/skillsData';
 import { getIcon, FOLDER_COLORS } from './Icons';
 import PdfReader from './PdfReader';
 
@@ -663,11 +664,159 @@ function PdfListPanel({ folder, onSelectPdf, onClose, isMobile }) {
 }
 
 /* ─────────────────────────────────────────────
+   TABS — Skills / Certifications / Awards
+───────────────────────────────────────────── */
+const MONO = "'JetBrains Mono','SF Mono',monospace";
+
+const TABS = [
+  { id: 'skills',         label: 'Skills' },
+  { id: 'certifications', label: 'Certifications' },
+  { id: 'awards',         label: 'Awards' },
+];
+
+function TabBar({ activeTab, onChange, mobile }) {
+  const refs = useRef([]);
+
+  const handleKeyDown = (e) => {
+    const idx = TABS.findIndex(t => t.id === activeTab);
+    let next = null;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = (idx + 1) % TABS.length;
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = (idx - 1 + TABS.length) % TABS.length;
+    else if (e.key === 'Home') next = 0;
+    else if (e.key === 'End') next = TABS.length - 1;
+    if (next === null) return;
+    e.preventDefault();
+    onChange(TABS[next].id);
+    refs.current[next]?.focus();
+  };
+
+  return (
+    <div role="tablist" aria-label="Expertise and recognition" onKeyDown={handleKeyDown}
+      style={{ display: 'flex', flexWrap: 'wrap', gap: mobile ? 6 : 8, marginBottom: mobile ? 14 : 16 }}>
+      {TABS.map((t, i) => {
+        const active = activeTab === t.id;
+        return (
+          <button
+            key={t.id}
+            ref={el => { refs.current[i] = el; }}
+            role="tab"
+            id={`tab-${t.id}`}
+            aria-controls={`panel-${t.id}`}
+            aria-selected={active}
+            tabIndex={active ? 0 : -1}
+            className="os-tab"
+            onClick={() => onChange(t.id)}
+            style={{
+              fontFamily: MONO, fontSize: mobile ? 11 : 10.5, fontWeight: 700,
+              letterSpacing: '0.1em', textTransform: 'uppercase',
+              padding: mobile ? '6px 13px' : '5px 13px', borderRadius: 7, cursor: 'pointer',
+              color: active ? '#C9A84C' : 'rgba(255,255,255,0.45)',
+              background: active ? 'rgba(201,168,76,0.12)' : 'transparent',
+              border: `1px solid ${active ? 'rgba(201,168,76,0.5)' : 'rgba(255,255,255,0.1)'}`,
+              transition: 'all 0.15s ease',
+            }}
+          >
+            {t.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/* Skills tab — terminal / file-tree aesthetic, data-driven, no numeric bars */
+function SkillsTerminal() {
+  return (
+    <div style={{ fontFamily: MONO, fontSize: 12, color: '#9CA3AF', lineHeight: 1.5 }}>
+      <div style={{ marginBottom: 12, color: 'rgba(255,255,255,0.85)' }}>
+        <span style={{ color: '#C9A84C' }}>anisha@portfolio</span>
+        <span style={{ color: 'rgba(255,255,255,0.3)' }}>:~$</span> ls ~/skills
+      </div>
+      {skillsData.map((cat, idx) => {
+        const last = idx === skillsData.length - 1;
+        return (
+          <div key={cat.id} style={{ marginBottom: 12 }}>
+            <div style={{ color: '#C9A84C', fontSize: 11.5, letterSpacing: '0.04em', marginBottom: 6 }}>
+              <span style={{ color: 'rgba(201,168,76,0.45)' }}>{last ? '└─' : '├─'}</span> {cat.folder}/
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, paddingLeft: 18 }}>
+              {cat.skills.map(s => (
+                <span key={s} style={{
+                  fontSize: 10, color: '#9CA3AF',
+                  border: '1px solid #232323', borderRadius: 5,
+                  padding: '3px 8px', background: 'rgba(255,255,255,0.02)',
+                  whiteSpace: 'nowrap',
+                }}>
+                  {s}
+                </span>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* Shared tab content — same OS screen for desktop (absolute) and mobile (flow) */
+function OSContent({ activeTab, onTabChange, certs, awards, openFolder, activeFolder, mobile }) {
+  const wrapStyle = mobile
+    ? { position: 'relative', display: 'flex', flexDirection: 'column' }
+    : { position: 'absolute', inset: 0, padding: '14px 20px 12px', overflowY: 'auto', display: 'flex', flexDirection: 'column' };
+
+  const certRow = mobile
+    ? { display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10, padding: '8px 0' }
+    : { display: 'flex', gap: 14, padding: '8px 0 18px', flexWrap: 'wrap', alignItems: 'flex-start' };
+
+  const awardRow = mobile
+    ? { display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10, padding: '8px 0' }
+    : { display: 'flex', gap: 10, padding: '8px 0 10px', flexWrap: 'wrap', alignItems: 'flex-start' };
+
+  return (
+    <div style={wrapStyle}>
+      <TabBar activeTab={activeTab} onChange={onTabChange} mobile={mobile} />
+
+      {activeTab === 'skills' && (
+        <div role="tabpanel" id="panel-skills" aria-labelledby="tab-skills">
+          <div style={catLabel}>◆ Skills</div>
+          <div style={{ marginTop: 12 }}>
+            <SkillsTerminal />
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'certifications' && (
+        <div role="tabpanel" id="panel-certifications" aria-labelledby="tab-certifications">
+          <div style={catLabel}>◆ Certifications</div>
+          <div style={certRow}>
+            {certs.map(f => (
+              <IconTile key={f.id} folder={f} onClick={openFolder} isActive={activeFolder?.id === f.id} mobile={mobile} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'awards' && (
+        <div role="tabpanel" id="panel-awards" aria-labelledby="tab-awards">
+          <div style={catLabel}>★ Awards &amp; Honors</div>
+          <div style={awardRow}>
+            {awards.map(f => (
+              <IconTile key={f.id} folder={f} onClick={openFolder} isActive={activeFolder?.id === f.id} mobile={mobile} />
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
    MAIN COMPONENT
 ───────────────────────────────────────────── */
 export default function Certifications() {
   const [activeFolder, setActiveFolder] = useState(null);
   const [activePdf,    setActivePdf]    = useState(null);
+  const [activeTab,    setActiveTab]    = useState('skills');
   const [time, setTime] = useState('');
   const windowWidth = useWindowWidth();
   const isMobile = windowWidth < 640;
@@ -681,6 +830,11 @@ export default function Certifications() {
 
   function openFolder(folder) {
     setActiveFolder(prev => prev?.id === folder.id ? null : folder);
+  }
+
+  function changeTab(tab) {
+    setActiveTab(tab);
+    setActiveFolder(null); // close any open certificate panel when switching tabs
   }
 
   function openPdf(item) {
@@ -697,13 +851,13 @@ export default function Certifications() {
 
   return (
     <>
-      <section id="certifications" style={{
+      <section id="skills" style={{
         background: '#050505',
         padding: isMobile ? '40px 16px' : windowWidth < 1024 ? '50px 20px' : '60px 24px',
       }}>
         <div style={{ maxWidth: windowWidth >= 1400 ? 1200 : 960, margin: '0 auto' }}>
           <p style={{ fontSize: 10.5, letterSpacing: '0.22em', color: '#C9A84C', fontFamily: "'SF Mono',monospace", marginBottom: 8 }}>
-            07 / RECOGNITION
+            06 / EXPERTISE &amp; RECOGNITION
           </p>
           <h2 style={{
             fontFamily: "'Bebas Neue',sans-serif",
@@ -711,38 +865,22 @@ export default function Certifications() {
             letterSpacing: '0.06em', color: '#fff',
             marginBottom: isMobile ? 24 : 36, lineHeight: 1,
           }}>
-            Certifications &amp; Awards
+            Skills, Certifications &amp; Awards
           </h2>
 
           {isMobile ? (
             /* ── MOBILE LAYOUT: no laptop SVG, plain OS card ── */
             <>
               <MobileOSCard time={time} openPanel={activeFolder?.label}>
-                <div style={catLabel}>◆ Certifications</div>
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(3, 1fr)',
-                  gap: 10,
-                  padding: '10px 0 18px',
-                }}>
-                  {certs.map(f => (
-                    <IconTile key={f.id} folder={f} onClick={openFolder} isActive={activeFolder?.id === f.id} mobile />
-                  ))}
-                </div>
-
-                <div style={{ height: 1, background: 'rgba(201,168,76,0.08)', marginBottom: 14 }}/>
-
-                <div style={catLabel}>★ Awards &amp; Honors</div>
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(3, 1fr)',
-                  gap: 10,
-                  padding: '10px 0 8px',
-                }}>
-                  {awards.map(f => (
-                    <IconTile key={f.id} folder={f} onClick={openFolder} isActive={activeFolder?.id === f.id} mobile />
-                  ))}
-                </div>
+                <OSContent
+                  activeTab={activeTab}
+                  onTabChange={changeTab}
+                  certs={certs}
+                  awards={awards}
+                  openFolder={openFolder}
+                  activeFolder={activeFolder}
+                  mobile
+                />
               </MobileOSCard>
 
               {activeFolder && (
@@ -767,36 +905,14 @@ export default function Certifications() {
             <>
               <LaptopShell>
                 <DesktopOS time={time} openPanel={activeFolder?.label}>
-                  <div style={{
-                    position: 'absolute', inset: 0,
-                    padding: '16px 20px 12px',
-                    overflowY: 'auto',
-                    display: 'flex', flexDirection: 'column',
-                  }}>
-                    {/* Certifications row */}
-                    <div style={catLabel}>◆ Certifications</div>
-                    <div style={{
-                      display: 'flex', gap: 14,
-                      padding: '8px 0 18px',
-                      flex: '0 0 auto',
-                      flexWrap: 'wrap',
-                      alignItems: 'flex-start',
-                    }}>
-                      {certs.map(f => (
-                        <IconTile key={f.id} folder={f} onClick={openFolder} isActive={activeFolder?.id === f.id}/>
-                      ))}
-                    </div>
-
-                    <div style={{ height: 1, background: 'rgba(201,168,76,0.08)', marginBottom: 14 }}/>
-
-                    {/* Awards row */}
-                    <div style={catLabel}>★ Awards &amp; Honors</div>
-                    <div style={{ display: 'flex', gap: 10, padding: '8px 0 10px', flex: '0 0 auto' }}>
-                      {awards.map(f => (
-                        <IconTile key={f.id} folder={f} onClick={openFolder} isActive={activeFolder?.id === f.id}/>
-                      ))}
-                    </div>
-                  </div>
+                  <OSContent
+                    activeTab={activeTab}
+                    onTabChange={changeTab}
+                    certs={certs}
+                    awards={awards}
+                    openFolder={openFolder}
+                    activeFolder={activeFolder}
+                  />
 
                   {activeFolder && (
                     <PdfListPanel
@@ -828,6 +944,7 @@ export default function Certifications() {
       <style>{`
       @keyframes thumbSpin { to { transform: rotate(360deg); } }
       @keyframes glowPulse { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
+      .os-tab:focus-visible { outline: 2px solid #C9A84C; outline-offset: 2px; }
     `}</style>
     </>
   );

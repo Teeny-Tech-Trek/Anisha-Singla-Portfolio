@@ -1,4 +1,7 @@
 import { useFadeUp, useStaggerLeft, useStaggerRight } from '../hooks/useGsap';
+import { socials } from '../data/socials';
+
+const linkedInHref = socials.find((s) => s.label === 'LinkedIn')?.href;
 
 const stats = [
   { value:'3+', label:'Years of Experience', sub:'AI & Tech Industry' },
@@ -37,7 +40,7 @@ export default function About() {
             <p className="stagger font-body text-lg leading-relaxed" style={{color:'rgba(255,255,255,0.5)',fontWeight:300}}>
               I thrive on collaborating with visionary teams to bring transformative ideas to life — leveraging automation and AI to help organizations unlock their full potential.
             </p>
-            <a href="https://www.linkedin.com/in/singlaanisha" target="_blank" rel="noreferrer"
+            <a href={linkedInHref} target="_blank" rel="noopener noreferrer"
               className="stagger btn-gold inline-block mt-8">
               View LinkedIn Profile
             </a>

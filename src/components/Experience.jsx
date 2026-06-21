@@ -7,15 +7,9 @@ gsap.registerPlugin(ScrollTrigger);
 
 const experiences = [
   { role:'Founder & CEO',                        company:'Teeny Tech Trek',             period:'Sep 2024 – Present',   location:'Mohali, India',   highlight:true, badge:'FOUNDER' },
-  { role:'Community Coordinator',                company:'Connect Circles: Chandigarh', period:'Mar 2026 – Present',   location:'Mohali, India',   highlight:false },
-  { role:'Associate Member',                     company:'TiE Chandigarh',              period:'Dec 2025 – Present',   location:'Mohali, India',   highlight:false },
   { role:'Project Manager — Business Dev',       company:'Appu International',          period:'Jun 2024 – Present',   location:'Ludhiana, India', highlight:false },
-  { role:'President, AI Club',                   company:'George Brown College',        period:'Oct 2023 – Apr 2024',  location:'Toronto, Canada', highlight:false },
-  { role:'VP, AI Club',                          company:'George Brown College',        period:'Nov 2022 – Oct 2023',  location:'Toronto, Canada', highlight:false },
   { role:'Support Advisor & Entrepreneur',       company:'startGBC',                    period:'May 2023 – Dec 2023',  location:'Toronto, Canada', highlight:false },
-  { role:'Sales Floor Team Member',              company:'Tim Hortons',                 period:'Sep 2022 – Feb 2024',  location:'Toronto, Canada', highlight:false },
   { role:'Frontend Developer',                   company:'CETPA Infotech Pvt. Ltd.',    period:'Feb 2021 – Jul 2021',  location:'Noida, India',    highlight:false },
-  { role:'Event Manager',                        company:'CGC Jhanjeri',                period:'Aug 2018 – Apr 2020',  location:'Mohali, India',   highlight:false },
 ];
 
 function Card({ exp, cardRef }) {

@@ -11,6 +11,7 @@ const links = [
   { label: 'Projects', type: 'section', target: 'projects' },
   { label: 'Education', type: 'section', target: 'education' },
   { label: 'Skills', type: 'section', target: 'skills' },
+  { label: 'Volunteer', type: 'section', target: 'volunteer' },
   { label: 'Case Studies', type: 'route', target: ROUTES.CASE_STUDIES },
   // { label: 'Contact', type: 'section', target: 'contact' },
 ];
