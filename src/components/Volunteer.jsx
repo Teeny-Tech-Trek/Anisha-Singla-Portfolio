@@ -21,7 +21,8 @@ const groups = [
     category: 'COMMUNITY',
     items: [
       { role:'Community Coordinator', org:'Connect Circles: Chandigarh', date:'Mar 2026 – Present', location:'Mohali, India' },
-      { role:'Associate Member',      org:'TiE Chandigarh',              date:'Dec 2025 – Present', location:'Mohali, India' },
+      { role:'Charter Member',        org:'TiE Chandigarh',              date:'May 2026 – Present', location:'Mohali, India' },
+      { role:'Associate Member',      org:'TiE Chandigarh',              date:'Dec 2025 – Apr 2026', location:'Mohali, India' },
     ],
   },
 ];
