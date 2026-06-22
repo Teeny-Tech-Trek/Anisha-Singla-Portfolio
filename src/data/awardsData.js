@@ -94,22 +94,22 @@ export const awardsData = [
     title: "Dean's List",
     items: [
       {
-        name: 'Academic Semester 1',
+        name: 'A1_Dean_letter_101411015',
         pdfUrl: '/Certificates/A1_Dean_letter_101411015.pdf',
         imageUrl: '/Certificates-Photos/A1_Dean_Letter.png',
       },
       {
-        name: 'Academic Semester 2',
+        name: 'A2_Dean_letter_101411015',
         pdfUrl: '/Certificates/A2_Dean_letter_101411015.pdf',
         imageUrl: '/Certificates-Photos/A2_Dean_Letter.png',
       },
       {
-        name: 'Presidents List Semester 1',
+        name: 'PM1_Dean_letter_101411015',
         pdfUrl: '/Certificates/P1_Dean_letter_101411015.pdf',
         imageUrl: '/Certificates-Photos/P1_Dean_letter_2023.png',
       },
       {
-        name: 'Presidents List Semester 2',
+        name: 'PM2_Dean_letter_101411015',
         pdfUrl: '/Certificates/P2_Dean_letter_101411015.pdf',
         imageUrl: '/Certificates-Photos/P2_Dean_letter_2024.png',
       },

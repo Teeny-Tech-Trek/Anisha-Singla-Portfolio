@@ -45,7 +45,7 @@ export default function Volunteer() {
   return (
     <section id="volunteer" className="py-2 px-6 md:px-14" style={{ background: '#000' }}>
       <div className="max-w-5xl mx-auto">
-        <p className="section-label">08 / Beyond Work</p>
+        <p className="section-label">07 / Beyond Work</p>
         <h2 className="section-title text-white mb-16">Volunteer &amp; Community</h2>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: 30 }}>

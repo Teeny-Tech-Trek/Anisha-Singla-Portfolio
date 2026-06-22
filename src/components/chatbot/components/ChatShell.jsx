@@ -8,14 +8,20 @@ function looksLikeCode(text) {
   return /[{}<>]|=>|;\s|\bfunction\b|```/.test(text || "");
 }
 
-function BotIcon() {
+// "AS" monogram — Anisha Singla's initials in the portfolio's display font.
+function Monogram({ size = 15 }) {
   return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="4" y="8" width="16" height="11" rx="3" />
-      <path d="M12 8V4M9 3h6" />
-      <circle cx="9" cy="13" r="1.2" fill="currentColor" stroke="none" />
-      <circle cx="15" cy="13" r="1.2" fill="currentColor" stroke="none" />
-    </svg>
+    <span
+      style={{
+        fontFamily: "'Bebas Neue', sans-serif",
+        fontSize: `${size}px`,
+        lineHeight: 1,
+        letterSpacing: "0.5px",
+        fontWeight: 400,
+      }}
+    >
+      AS
+    </span>
   );
 }
 
@@ -63,7 +69,7 @@ export default function ChatShell({ onExit, mobile = false }) {
   return (
     <section className="pa-chat" role="dialog" aria-label="Portfolio assistant" aria-modal={mobile ? "true" : undefined}>
       <header className="pa-header">
-        <span className="pa-bot" aria-hidden="true"><BotIcon /></span>
+        <span className="pa-bot" aria-hidden="true"><Monogram size={15} /></span>
         <div>
           <div className="pa-title">Portfolio Assistant</div>
           <div className="pa-online">● online</div>

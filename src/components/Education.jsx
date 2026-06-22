@@ -320,7 +320,7 @@ export default function Education() {
       />
 
       <div ref={headRef} className="max-w-7xl mx-auto">
-        <p className="reveal section-label">04 / Academics</p>
+        <p className="reveal section-label">05 / Academics</p>
         <div className="reveal flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-16">
           <h2 className="section-title text-white">Education</h2>
           <p

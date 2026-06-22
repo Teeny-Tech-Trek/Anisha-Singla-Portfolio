@@ -83,27 +83,22 @@ export function PythonIcon({ size = 32 }) {
   );
 }
 
-export function CppIcon({ size = 32 }) {
+// Image-based badge for the AI Security & Governance certificate (served from public/).
+export function AiSecurityIcon({ size = 32 }) {
+  const dimension = getSizeValue(size);
   return (
-    <svg width={size} height={size} viewBox="0 0 306 344" xmlns="http://www.w3.org/2000/svg">
-      <path fill="#00599C" d="M302.107 258.262c2.401-4.159 3.893-8.845 3.893-13.053V99.135c0-4.208-1.49-8.893-3.893-13.052L153 172.175z"/>
-      <path fill="#004482" d="M166.25 341.193l126.5-73.034c3.644-2.104 6.956-5.737 9.357-9.897L153 172.175 3.893 258.262c2.401 4.16 5.713 7.793 9.357 9.897l126.5 73.034c7.287 4.208 19.213 4.208 26.5 0z"/>
-      <path fill="#659AD2" d="M302.107 86.083c-2.401-4.16-5.713-7.793-9.357-9.897L166.25 3.152c-7.287-4.208-19.213-4.208-26.5 0L13.25 76.186C5.962 80.394 0 90.69 0 99.135v146.074c0 4.208 1.49 8.893 3.893 13.052L153 172.175z"/>
-      <path fill="#fff" d="M153 274.175c-56.243 0-102-45.757-102-102s45.757-102 102-102c36.292 0 70.139 19.53 88.331 50.968l-44.143 25.544c-9.105-15.736-26.038-25.512-44.188-25.512-28.122 0-51 22.878-51 51s22.878 51 51 51c18.152 0 35.085-9.776 44.191-25.515l44.143 25.543C223.131 254.614 189.29 274.175 153 274.175z"/>
-      <path fill="#fff" d="M255 166.175h-10v-10h-10v10h-10v10h10v10h10v-10h10zM289 166.175h-10v-10h-10v10h-10v10h10v10h10v-10h10z"/>
-    </svg>
-  );
-}
-
-export function PhpIcon({ size = 32 }) {
-  const width = getSizeValue(size);
-  const height = getSizeValue(size, 0.53);
-
-  return (
-    <svg width={width} height={height} viewBox="0 0 256 135" xmlns="http://www.w3.org/2000/svg">
-      <ellipse fill="#8892BF" cx="128" cy="67.3" rx="128" ry="67.3"/>
-      <path fill="#fff" d="M35.945 87.005l12.571-63.5H82.38c14.97 0 22.015 7.19 20.88 18.85-.684 7.02-4.204 13.443-9.927 17.84-5.66 4.356-12.666 6.124-20.84 6.124H58.26L55.16 87.005H35.945zm25.558-34.289h10.502c5.77 0 10.007-3.218 10.626-9.35.38-3.876-1.727-6.107-6.487-6.107H65.68l-4.177 15.457z M104.18 87.005l12.572-63.5h19.213l-3.178 16.049h14.335c13.89 0 19.963 6.437 18.146 16.738l-5.434 30.713h-19.43l4.97-27.951c.702-3.96-.44-5.787-4.224-5.787h-12.3l-6.458 33.738H104.18z M172.79 87.005l12.57-63.5h33.865c14.97 0 22.016 7.19 20.88 18.85-.683 7.02-4.203 13.443-9.926 17.84-5.66 4.356-12.665 6.124-20.84 6.124h-14.232L192.006 87.005H172.79zm25.557-34.289h10.502c5.77 0 10.008-3.218 10.627-9.35.38-3.876-1.727-6.107-6.488-6.107h-10.464l-4.177 15.457z"/>
-    </svg>
+    <img
+      src="/cert-icons/ai-governance-course-badge.webp"
+      alt=""
+      aria-hidden="true"
+      style={{
+        width: dimension,
+        height: dimension,
+        objectFit: 'contain',
+        display: 'block',
+        filter: 'drop-shadow(0 0 8px rgba(34,195,230,0.35))',
+      }}
+    />
   );
 }
 
@@ -207,11 +202,13 @@ export function SportsIcon({ size = 32, color = '#C9A84C' }) {
    Pass size='100%' from IconTile to make icon fill its wrapper div. */
 export function getIcon(id, size = 32) {
   const s = size;
+  // Image badge — rendered without the gold IconGlow so its own colors stay clean.
+  if (id === 'ai-security-governance') {
+    return <AiSecurityIcon size={s} />;
+  }
   const map = {
     'python':                   <PythonIcon size={s} />,
     'design-thinking':          <DesignIcon size={s} />,
-    'advanced-cpp':             <CppIcon size={s} />,
-    'cdac-php':                 <PhpIcon size={s} />,
     'letter-appreciation':      <EmojiIcon symbol="✉️" label="Letter of Appreciation" size={s} />,
     'certificate-appreciation': <EmojiIcon symbol="🏅" label="Certificate of Appreciation" size={s} />,
     'certificate-coordination': <ScrollIcon size={s} color="#06b6d4" />,
@@ -226,10 +223,9 @@ export function getIcon(id, size = 32) {
 }
 
 export const FOLDER_COLORS = {
+  'ai-security-governance':   '#22c3e6',
   'python':                   '#3b82f6',
   'design-thinking':          '#FF6B6B',
-  'advanced-cpp':             '#00599C',
-  'cdac-php':                 '#8892BF',
   'letter-appreciation':      '#10b981',
   'certificate-appreciation': '#f43f5e',
   'certificate-coordination': '#06b6d4',

@@ -244,7 +244,7 @@ const VisualBD = ({ visRef }) => (
       <circle className="bd-dot-ring" cx="82" cy="68" r="0" fill="none" stroke="#C9A84C" strokeWidth="0.6" opacity="0"/>
       <text x="82" y="47" textAnchor="middle"
         fontFamily="'DM Sans',sans-serif" fontSize="8" fontWeight="600" letterSpacing="1"
-        fill="#C9A84C" fillOpacity="0.72">GTM</text>
+        fill="#C9A84C" fillOpacity="0.72">RISK</text>
     </g>
 
     {/* PARTNER — top-right */}
@@ -256,7 +256,7 @@ const VisualBD = ({ visRef }) => (
       <circle className="bd-dot-ring" cx="278" cy="68" r="0" fill="none" stroke="#C9A84C" strokeWidth="0.6" opacity="0"/>
       <text x="278" y="47" textAnchor="middle"
         fontFamily="'DM Sans',sans-serif" fontSize="8" fontWeight="600" letterSpacing="1"
-        fill="#C9A84C" fillOpacity="0.72">PARTNER</text>
+        fill="#C9A84C" fillOpacity="0.72">OVERSIGHT</text>
     </g>
 
     {/* RESEARCH — mid-left */}
@@ -268,7 +268,7 @@ const VisualBD = ({ visRef }) => (
       <circle className="bd-dot-ring" cx="56" cy="168" r="0" fill="none" stroke="#C9A84C" strokeWidth="0.6" opacity="0"/>
       <text x="40" y="190" textAnchor="middle"
         fontFamily="'DM Sans',sans-serif" fontSize="8" fontWeight="600" letterSpacing="1"
-        fill="#C9A84C" fillOpacity="0.72">RESEARCH</text>
+        fill="#C9A84C" fillOpacity="0.72">EVAL</text>
     </g>
 
     {/* REVENUE — mid-right */}
@@ -280,7 +280,7 @@ const VisualBD = ({ visRef }) => (
       <circle className="bd-dot-ring" cx="304" cy="185" r="0" fill="none" stroke="#C9A84C" strokeWidth="0.6" opacity="0"/>
       <text x="322" y="207" textAnchor="middle"
         fontFamily="'DM Sans',sans-serif" fontSize="8" fontWeight="600" letterSpacing="1"
-        fill="#C9A84C" fillOpacity="0.72">REVENUE</text>
+        fill="#C9A84C" fillOpacity="0.72">FALLBACK</text>
     </g>
 
     {/* MARKET — bottom-center */}
@@ -292,7 +292,7 @@ const VisualBD = ({ visRef }) => (
       <circle className="bd-dot-ring" cx="180" cy="248" r="0" fill="none" stroke="#C9A84C" strokeWidth="0.6" opacity="0"/>
       <text x="180" y="271" textAnchor="middle"
         fontFamily="'DM Sans',sans-serif" fontSize="8" fontWeight="600" letterSpacing="1"
-        fill="#C9A84C" fillOpacity="0.72">MARKET</text>
+        fill="#C9A84C" fillOpacity="0.72">ADOPTION</text>
     </g>
 
     {/* Section label — top-left, matches original image */}
@@ -645,6 +645,22 @@ const VisualMLE = () => (
 
 const SVC_MONO = "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace";
 
+// Format a serial number as an uppercase Roman numeral (1 → I, 4 → IV, …).
+function toRoman(num) {
+  const map = [
+    [1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'],
+    [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'],
+    [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I'],
+  ];
+  let n = Number(num);
+  if (!Number.isFinite(n) || n <= 0) return String(num);
+  let out = '';
+  for (const [value, symbol] of map) {
+    while (n >= value) { out += symbol; n -= value; }
+  }
+  return out;
+}
+
 // Shared text column for every service: number, tagline, title, description,
 // ✦ tags, optional tech-stack chips, and an optional decorative mono motif strip.
 function ServiceTextBlock({ s }) {
@@ -652,7 +668,7 @@ function ServiceTextBlock({ s }) {
     <>
       <div className="flex items-center gap-3 mb-5 flex-wrap">
         <span className="font-body text-xs tracking-[.28em] uppercase font-semibold"
-          style={{ color: '#C9A84C' }}>{s.number}</span>
+          style={{ color: '#C9A84C' }}>{toRoman(s.number)}</span>
         <div style={{ width: '28px', height: '1px', background: 'rgba(201,168,76,0.5)' }}/>
         <span className="font-body text-xs tracking-[.16em] uppercase"
           style={{ color: 'rgba(255,255,255,0.4)' }}>{s.subtitle}</span>
@@ -709,7 +725,7 @@ function ServiceTextBlock({ s }) {
   );
 }
 
-// Section with a self-animating (CSS/canvas) visual and a text-left / visual-right layout.
+// Section with a self-animating (CSS/canvas) visual. Text/visual sides swap with s.flip.
 function ServiceSimple({ s, i, Visual, ratio = '360/280' }) {
   const secRef  = useRef(null);
   const textRef = useRef(null);
@@ -717,13 +733,27 @@ function ServiceSimple({ s, i, Visual, ratio = '360/280' }) {
   useEffect(() => {
     const ctx = gsap.context(() => {
       const st = getReplayScrollTrigger(secRef.current, { start: 'top 78%' });
-      gsap.fromTo(textRef.current, { opacity: 0, x: -50 },
+      gsap.fromTo(textRef.current, { opacity: 0, x: s.flip ? 50 : -50 },
         { opacity: 1, x: 0, duration: 1.0, ease: 'power3.out', scrollTrigger: st });
       gsap.fromTo(textRef.current.querySelectorAll('.svc-tag'), { opacity: 0, y: 10 },
         { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out', stagger: 0.07, delay: 0.35, scrollTrigger: st });
     }, secRef);
     return () => ctx.revert();
-  }, []);
+  }, [s.flip]);
+
+  const TextCol = (
+    <div ref={textRef} className="flex flex-col justify-center">
+      <ServiceTextBlock s={s} />
+    </div>
+  );
+
+  const VisualCol = (
+    <div className="flex items-center justify-center w-full" style={{ minHeight: '260px' }}>
+      <div style={{ width: '100%', maxWidth: '360px', aspectRatio: ratio, position: 'relative' }}>
+        {Visual}
+      </div>
+    </div>
+  );
 
   return (
     <div ref={secRef}
@@ -731,17 +761,10 @@ function ServiceSimple({ s, i, Visual, ratio = '360/280' }) {
       style={{ borderTop: i === 0 ? 'none' : '1px solid rgba(255,255,255,0.07)' }}>
       <div className="relative z-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20 items-center">
         <div className="order-2 md:order-none">
-          <div ref={textRef} className="flex flex-col justify-center">
-            <ServiceTextBlock s={s} />
-          </div>
+          {s.flip ? VisualCol : TextCol}
         </div>
         <div className="order-1 md:order-none">
-          <div className="flex items-center justify-center w-full"
-            style={{ minHeight: '260px' }}>
-            <div style={{ width: '100%', maxWidth: '360px', aspectRatio: ratio, position: 'relative' }}>
-              {Visual}
-            </div>
-          </div>
+          {s.flip ? TextCol : VisualCol}
         </div>
       </div>
     </div>
@@ -929,52 +952,53 @@ function SectionShell({ secRef, textRef, visRef, s, i, Visual }) {
 const services = [
   {
     number: '01',
-    title: 'AI / ML Engineering',
-    subtitle: 'I build it — not just advise on it',
-    desc: 'Hands-on development of RAG pipelines, multi-agent systems, and full-stack AI apps — from architecture through deployment.',
-    tags: ['RAG & vector search', 'Multi-agent systems', 'APIs & backends', 'Deployment'],
-    tech: ['Python', 'FastAPI', 'Claude', 'FAISS', 'Neo4j', 'React', 'AWS'],
-    motif: 'IN → embed → retrieve → LLM → ship()',
-    motifCode: true,
-    Component: ServiceMLE,
+    title: 'AI Strategy & Use Case Discovery',
+    subtitle: 'Where AI actually creates value',
+    desc: 'Identifying business workflows where AI can create measurable value, scoping requirements, and prioritizing practical implementation paths.',
+    tags: ['Use-case discovery', 'Requirement scoping', 'Feasibility', 'Roadmapping'],
+    motif: 'discover · scope · prioritize · roadmap',
+    Component: ServicePM,
     flip: false,
   },
   {
     number: '02',
-    title: 'Technical Team Leadership',
-    subtitle: 'Leading engineers, owning delivery',
-    desc: 'I lead a 3–5 person engineering team through architecture, code review, and agile delivery — owning technical decisions end to end, on time and on scope.',
-    tags: ['System architecture', 'Code review', 'Mentoring', 'Agile delivery'],
-    motif: 'architect · review · mentor · ship',
-    Component: ServicePM,
+    title: 'Agentic Workflows & Automation',
+    subtitle: 'Beyond demos, into production',
+    desc: 'Designing AI agents, tool-using workflows, and automation systems that move beyond prototypes into real business processes.',
+    tags: ['AI agents', 'Tool use', 'Orchestration', 'Automation'],
+    tech: ['Python', 'FastAPI', 'Claude', 'LangChain', 'n8n'],
+    motif: 'plan → act → call tools → observe → automate',
+    motifCode: true,
+    Component: ServiceMLE,
     flip: true,
   },
   {
     number: '03',
-    title: 'AI Consultancy & Strategy',
-    subtitle: 'Intelligence that works for you',
-    desc: 'I design and ship custom AI systems that change how a business operates — from intelligent automation to LLM-powered workflows.',
-    tags: ['LLM Integration', 'Automation', 'AI Strategy', 'Process Optimization'],
-    motif: 'IN input · EMBED tokens · LLM · DECODE output · OUT result',
+    title: 'RAG & Knowledge Assistants',
+    subtitle: 'Answers grounded in your knowledge',
+    desc: 'Building retrieval-based assistants that answer from business documents, websites, FAQs, and internal knowledge sources.',
+    tags: ['RAG', 'Vector search', 'Embeddings', 'Knowledge bases'],
+    motif: 'IN query · EMBED · RETRIEVE · LLM · grounded answer',
     Component: ServiceAI,
     flip: false,
   },
   {
     number: '04',
-    title: 'Business Development',
-    subtitle: 'Growth by design, not by chance',
-    desc: 'Strategic partnerships, go-to-market execution, and revenue architecture — built for sustainable scale and market dominance.',
-    tags: ['GTM Strategy', 'Partnerships', 'Revenue Growth', 'Market Research'],
-    motif: 'GTM · PARTNER · RESEARCH · REVENUE · MARKET',
+    title: 'Responsible AI & Governance',
+    subtitle: 'AI you can actually trust',
+    desc: 'Thinking through risk, human oversight, evaluation, fallback paths, and adoption readiness for AI systems.',
+    tags: ['Risk & guardrails', 'Human oversight', 'Evaluation', 'Adoption readiness'],
+    motif: 'RISK · OVERSIGHT · EVAL · FALLBACK · ADOPTION',
     Component: ServiceBD,
     flip: true,
   },
   {
     number: '05',
-    title: 'Design Thinking',
-    subtitle: 'Problems solved from the inside out',
-    desc: 'Certified Design Thinking practitioner — I facilitate human-centered workshops that turn ambiguity into actionable, elegant solutions.',
-    tags: ['User Research', 'Ideation', 'Prototyping', 'Facilitation'],
+    title: 'Design Thinking & Team Leadership',
+    subtitle: 'Human-centered, delivered by teams',
+    desc: 'Certified Design Thinking practitioner who facilitates human-centered problem solving, and leads small engineering teams through architecture, agile delivery, and clear communication.',
+    tags: ['Design thinking', 'Facilitation', 'Team leadership', 'Agile delivery'],
+    motif: 'empathize · ideate · prototype · lead · ship',
     Component: ServiceDT,
     flip: false,
   },
@@ -1005,7 +1029,7 @@ export default function Services() {
       <div ref={headRef} className="max-w-7xl mx-auto pb-10">
         <p className="reveal section-label">02 / What I Do</p>
         <div className="reveal flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-          <h2 className="section-title text-white">My Services</h2>
+          <h2 className="section-title text-white">AI Capabilities</h2>
           <p className="font-body text-sm font-medium"
             style={{ color: 'rgba(255,255,255,0.45)', maxWidth: '300px', lineHeight: 1.7 }}>
             Five areas where I create impact.

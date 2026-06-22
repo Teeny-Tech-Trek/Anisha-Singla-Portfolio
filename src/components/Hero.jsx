@@ -3,9 +3,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { scrollToSection } from '../routes';
 import SocialBar from './SocialBar';
-import { socials } from '../data/socials';
-
-const linkedInHref = socials.find((s) => s.label === 'LinkedIn')?.href;
 
 // ── Typewriter hook ──────────────────────────────────────────────
 function useTypewriter(text, { enabled = true, startDelay = 1000, duration = 1000 } = {}) {
@@ -80,14 +77,14 @@ export default function Hero() {
 
   const LINE1 = 'Hey, there';
   const LINE2 = 'I AM ANISHA\nSINGLA';
-  const LINE3 = 'AI Founder & Innovator';
-  const LINE4 = 'Transforming businesses through the power of Artificial Intelligence — one solution at a time.';
+  const LINE3 = 'Applied AI Builder & Strategy Professional';
+  const LINE4 = 'Designing practical AI systems across agentic workflows, RAG, automation, and responsible AI adoption';
+  const LINE5 = 'Founder, Teeny Tech Trek | Applied AI + Project Management | AI Governance |AI Implementation';
 
   const VIDEO_READY_TEXT_DELAY_MS = 1000;
   const TYPE_SEQUENCE_START_DELAY_MS = 0;
   const TEXT_TOTAL_DURATION_MS = 6000;
-  const VIDEO_PLAY_DURATION_MS = 8000;
-  const VERCEL_VIDEO_URL = "https://arbgtqtruugewk5g.public.blob.vercel-storage.com/HeroPage-Video.MP4"; 
+  const VERCEL_VIDEO_URL = "https://arbgtqtruugewk5g.public.blob.vercel-storage.com/HeroPage-Video.MP4";
 
   const totalTypingCharacters = [LINE1, LINE2, LINE3, LINE4].reduce((total, line) => total + line.length, 0);
   const getLineDuration = (line) => (line.length / totalTypingCharacters) * TEXT_TOTAL_DURATION_MS;
@@ -136,67 +133,14 @@ export default function Hero() {
       return undefined;
     }
 
-    let stopTimerId;
     let readyTimerId;
-    let scrollTimerId;
-
-    const isUserViewingHero = () => {
-      const heroSection = heroSectionRef.current;
-
-      if (!heroSection) {
-        return false;
-      }
-
-      const { top, bottom } = heroSection.getBoundingClientRect();
-      const viewportMidpoint = window.innerHeight / 2;
-
-      return top <= viewportMidpoint && bottom >= viewportMidpoint;
-    };
-
-    const scheduleAboutScroll = () => {
-      if (hasAutoScrolledRef.current || !isUserViewingHero()) {
-        return;
-      }
-
-      scrollTimerId = window.setTimeout(() => {
-        if (hasAutoScrolledRef.current || !isUserViewingHero()) {
-          return;
-        }
-
-        hasAutoScrolledRef.current = true;
-        scrollToSection('about');
-      }, 250);
-    };
-
-    const stopVideo = () => {
-      videoElement.pause();
-      const stopAtSecond = VIDEO_PLAY_DURATION_MS / 1000;
-
-      if (Number.isFinite(videoElement.duration) && videoElement.duration > 0) {
-        videoElement.currentTime = Math.min(stopAtSecond, videoElement.duration);
-        scheduleAboutScroll();
-        return;
-      }
-
-      videoElement.currentTime = stopAtSecond;
-      scheduleAboutScroll();
-    };
 
     const handleLoadedData = () => {
       setIsVideoReady(true);
     };
 
-    const handleVideoEnded = () => {
-      if (stopTimerId) {
-        window.clearTimeout(stopTimerId);
-      }
-
-      scheduleAboutScroll();
-    };
-
     videoElement.currentTime = 0;
     videoElement.addEventListener('loadeddata', handleLoadedData);
-    videoElement.addEventListener('ended', handleVideoEnded);
     const playPromise = videoElement.play();
     if (playPromise?.catch) {
       playPromise.catch(() => {});
@@ -206,22 +150,48 @@ export default function Hero() {
       readyTimerId = window.setTimeout(handleLoadedData, 0);
     }
 
-    stopTimerId = window.setTimeout(stopVideo, VIDEO_PLAY_DURATION_MS);
-
     return () => {
       if (readyTimerId) {
         window.clearTimeout(readyTimerId);
       }
-      if (scrollTimerId) {
-        window.clearTimeout(scrollTimerId);
-      }
-      window.clearTimeout(stopTimerId);
       videoElement.removeEventListener('loadeddata', handleLoadedData);
-      videoElement.removeEventListener('ended', handleVideoEnded);
       videoElement.pause();
       videoElement.currentTime = 0;
     };
-  }, [VIDEO_PLAY_DURATION_MS]);
+  }, []);
+
+  // Once the hero text has fully typed in, freeze the video on its current frame.
+  // Then, after the remaining intro animations (buttons + credibility line) settle,
+  // auto-scroll to the next section — but only if the user is still on the hero.
+  useEffect(() => {
+    if (!startTyping || !tw4.done) {
+      return undefined;
+    }
+
+    videoRef.current?.pause();
+
+    const scrollTimerId = window.setTimeout(() => {
+      if (hasAutoScrolledRef.current) {
+        return;
+      }
+
+      const heroSection = heroSectionRef.current;
+      if (!heroSection) {
+        return;
+      }
+
+      const { top, bottom } = heroSection.getBoundingClientRect();
+      const viewportMidpoint = window.innerHeight / 2;
+      const isViewingHero = top <= viewportMidpoint && bottom >= viewportMidpoint;
+
+      if (isViewingHero) {
+        hasAutoScrolledRef.current = true;
+        scrollToSection('about');
+      }
+    }, 1100);
+
+    return () => window.clearTimeout(scrollTimerId);
+  }, [startTyping, tw4.done]);
 
   return (
     <>
@@ -658,6 +628,25 @@ export default function Hero() {
                 {!tw4.done && tw4.displayed.length > 0 && <Cursor />}
               </p>
 
+              {/* LINE 5 — credibility line (fades in after the tagline finishes) */}
+              <p
+                className="hero-credibility"
+                style={{
+                  marginTop: '0.9rem',
+                  maxWidth: '34rem',
+                  fontFamily: "'JetBrains Mono', 'DM Sans', monospace",
+                  fontSize: 'clamp(0.62rem, 1.4vw, 0.72rem)',
+                  letterSpacing: '0.05em',
+                  lineHeight: 1.7,
+                  color: 'rgba(201,168,76,0.85)',
+                  opacity: tw4.done ? 1 : 0,
+                  transform: tw4.done ? 'translateY(0)' : 'translateY(8px)',
+                  transition: 'opacity 0.7s ease 0.15s, transform 0.7s ease 0.15s',
+                }}
+              >
+                {LINE5}
+              </p>
+
               {/* CTAs */}
               <div
                 className="hero-actions"
@@ -674,24 +663,32 @@ export default function Hero() {
                     color: '#000',
                     border: 'none', cursor: 'pointer',
                   }}
-                  onClick={() => scrollToSection('experience')}
+                  onClick={() => scrollToSection('projects')}
                 >
-                  Explore My Work
+                  View Projects
                 </button>
-                <button
+                <a
                   className="hero-button rounded-lg"
+                  href="/resume.pdf"
+                  download="Anisha-Singla-Resume.pdf"
                   style={{
                     fontWeight: 600,
                     color: '#C9A84C',
                     border: '1px solid #C9A84C', background: 'transparent',
                     cursor: 'pointer', transition: 'all 0.3s ease',
+                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                    gap: '0.5rem', textDecoration: 'none',
                   }}
                   onMouseEnter={(e) => { e.currentTarget.style.background = '#C9A84C'; e.currentTarget.style.color = '#000'; }}
                   onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#C9A84C'; }}
-                  onClick={() => window.open(linkedInHref, '_blank', 'noopener,noreferrer')}
                 >
-                  Let's Connect
-                </button>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  Resume
+                </a>
               </div>
 
               {/* Social links */}

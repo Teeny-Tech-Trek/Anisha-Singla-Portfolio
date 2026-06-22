@@ -20,6 +20,8 @@
  * @property {boolean} [requiresAuth]  Live URL is behind a login wall
  */
 
+// Order matters: the landing page features the first four (TeenyTechTrek, NetTwin,
+// NeoScript, Jigsaw Toxic Comment Classifier); the rest show in the all-projects view.
 export const projects = [
   {
   id: 1,
@@ -36,6 +38,54 @@ export const projects = [
   year: '2024',
   featured: true,
   gradient: 'radial-gradient(ellipse at top left, rgba(201,168,76,0.18) 0%, transparent 65%)',
+},
+  {
+  id: 11,
+  title: 'NetTwin',
+  category: 'Network Digital Twin Platform',
+  description:
+    'A network digital-twin platform that builds a live virtual replica of physical network infrastructure — letting teams visualize topology, simulate configuration changes, and stress-test failures safely before rolling them out to production.',
+  tags: ['React', 'TypeScript', 'Node.js', 'WebSockets', 'AWS'],
+  status: 'Live',
+  links: {
+    live: 'https://nettwin.techtrekkers.ai/',
+    code: 'https://github.com/Teeny-Tech-Trek/nettwin-frontend',
+  },
+  requiresAuth: true,
+  year: '2025',
+  featured: false,
+  gradient: 'radial-gradient(ellipse at top right, rgba(120,220,255,0.12) 0%, transparent 65%)',
+},
+{
+  id: 4,
+  title: 'NeoScript',
+  category: 'Generative AI Multi-Agent System',
+  description:
+    'A production-grade multi-agent AI content engine that transforms raw prompts into AEO/GEO-optimized blog posts and platform-specific social content in a single API call. Built with a 10-agent pipeline, RAG-powered Qdrant knowledge base, and live web research, NeoScript is designed to rank in AI answer engines and be cited by LLMs like ChatGPT and Gemini.',
+  tags: ['Python', 'FastAPI', 'React', 'Vite', 'Tailwind CSS', 'Gemini', 'Qdrant', 'Docker', 'Vercel', 'Railway'],
+  status: 'Completed',
+  links: {
+    live: 'https://neoscript.techtrekkers.ai/',
+    code: 'https://github.com/Teeny-Tech-Trek/neo-scripting-frontend',
+  },
+  year: '2025',
+  featured: true,
+  gradient: 'radial-gradient(ellipse at top left, rgba(120,220,255,0.12) 0%, transparent 65%)',
+},
+  {
+  id: 8,
+  title: 'Jigsaw Toxic Comment Classifier',
+  category: 'Natural Language Processing',
+  description:
+    'Multi-label text classifier on 159K Wikipedia comments across 6 toxicity categories — built for the Kaggle Jigsaw 2018 challenge. Compares Logistic Regression, Decision Tree, and Random Forest with a TF-IDF pipeline and repeat-word ablation study. Logistic Regression scored 0.96963 on the private leaderboard.',
+  tags: ['Python', 'Sklearn', 'TF-IDF', 'NLTK', 'Kaggle', 'Jupyter'],
+  status: 'Completed',
+  links: {
+    code: 'https://github.com/Anisha-Singla-22/Jigsaw',
+  },
+  year: '2024',
+  featured: false,
+  gradient: 'radial-gradient(ellipse at bottom left, rgba(100,220,200,0.08) 0%, transparent 65%)',
 },
  {
   id: 2,
@@ -71,39 +121,6 @@ export const projects = [
   gradient: 'radial-gradient(ellipse at bottom left, rgba(180,100,255,0.09) 0%, transparent 65%)',
 },
   {
-  id: 11,
-  title: 'NetTwin',
-  category: 'Network Digital Twin Platform',
-  description:
-    'A network digital-twin platform that builds a live virtual replica of physical network infrastructure — letting teams visualize topology, simulate configuration changes, and stress-test failures safely before rolling them out to production.',
-  tags: ['React', 'TypeScript', 'Node.js', 'WebSockets', 'AWS'],
-  status: 'Live',
-  links: {
-    live: 'https://nettwin.techtrekkers.ai/',
-    code: 'https://github.com/Teeny-Tech-Trek/nettwin-frontend',
-  },
-  requiresAuth: true,
-  year: '2025',
-  featured: false,
-  gradient: 'radial-gradient(ellipse at top right, rgba(120,220,255,0.12) 0%, transparent 65%)',
-},
-{
-  id: 4,
-  title: 'Neo Scripting',
-  category: 'Generative AI Multi-Agent System',
-  description:
-    'A production-grade multi-agent AI content engine that transforms raw prompts into AEO/GEO-optimized blog posts and platform-specific social content in a single API call. Built with a 10-agent pipeline, RAG-powered Qdrant knowledge base, and live web research, Neo Scripting is designed to rank in AI answer engines and be cited by LLMs like ChatGPT and Gemini.',
-  tags: ['Python', 'FastAPI', 'React', 'Vite', 'Tailwind CSS', 'Gemini', 'Qdrant', 'Docker', 'Vercel', 'Railway'],
-  status: 'Completed',
-  links: {
-    live: 'https://neoscript.techtrekkers.ai/',
-    code: 'https://github.com/Teeny-Tech-Trek/neo-scripting-frontend',
-  },
-  year: '2025',
-  featured: true,
-  gradient: 'radial-gradient(ellipse at top left, rgba(120,220,255,0.12) 0%, transparent 65%)',
-},
-  {
   id: 5,
   title: 'Flipkart Sentiment Analyzer',
   category: 'Machine Learning',
@@ -117,34 +134,6 @@ export const projects = [
   year: '2024',
   featured: false,
   gradient: 'radial-gradient(ellipse at top left, rgba(255,120,100,0.08) 0%, transparent 65%)',
-},
-//   {
-//   id: 6,
-//   title: 'Toxic Comment Classifier',
-//   category: 'AI Safety',
-//   description:
-//     'Multi-label toxicity classifier on 159K Wikipedia comments across 6 categories — built as a safety artifact. Compares TF-IDF + Logistic Regression vs Bi-LSTM, with three safety audits: identity-term bias probe (19 terms), adversarial robustness (leetspeak, spacing, punctuation), and calibration reliability diagrams.',
-//   tags: ['Python', 'TensorFlow', 'Sklearn', 'Bi-LSTM', 'TF-IDF', 'Kaggle'],
-//   status: 'Completed',
-//   liveUrl: 'https://github.com/Anisha-Singla-22/Jigsaw',
-//   year: '2024',
-//   featured: false,
-//   gradient: 'radial-gradient(ellipse at bottom right, rgba(80,220,160,0.08) 0%, transparent 65%)',
-// },
-  {
-  id: 6,
-  title: 'UGC Video Generator',
-  category: 'Generative AI',
-  description:
-    'An n8n workflow that turns a product image into 3 fully produced UGC video ads — no code, no manual work. Gemini builds a creator persona + writes 3 platform-native scripts, Veo 3.1 generates 8s 9:16 videos with native audio, and outputs are stored on Cloudflare R2. Supports 6 Indian languages.',
-  tags: ['n8n', 'Veo 3.1', 'Gemini', 'Cloudflare R2', 'LangChain', 'No-Code'],
-  status: 'Completed',
-  links: {
-    code: 'https://github.com/Anisha-Singla-22/GrammyVideo',
-  },
-  year: '2025',
-  featured: false,
-  gradient: 'radial-gradient(ellipse at center, rgba(201,168,76,0.12) 0%, transparent 65%)',
 },
   {
   id: 7,
@@ -160,21 +149,6 @@ export const projects = [
   year: '2024',
   featured: false,
   gradient: 'radial-gradient(ellipse at top right, rgba(255,200,80,0.09) 0%, transparent 65%)',
-},
-  {
-  id: 8,
-  title: 'Jigsaw Toxic Comment Classifier',
-  category: 'Natural Language Processing',
-  description:
-    'Multi-label text classifier on 159K Wikipedia comments across 6 toxicity categories — built for the Kaggle Jigsaw 2018 challenge. Compares Logistic Regression, Decision Tree, and Random Forest with a TF-IDF pipeline and repeat-word ablation study. Logistic Regression scored 0.96963 on the private leaderboard.',
-  tags: ['Python', 'Sklearn', 'TF-IDF', 'NLTK', 'Kaggle', 'Jupyter'],
-  status: 'Completed',
-  links: {
-    code: 'https://github.com/Anisha-Singla-22/Jigsaw',
-  },
-  year: '2024',
-  featured: false,
-  gradient: 'radial-gradient(ellipse at bottom left, rgba(100,220,200,0.08) 0%, transparent 65%)',
 },
 {
   id: 9,

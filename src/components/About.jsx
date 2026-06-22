@@ -31,19 +31,15 @@ export default function About() {
           {/* Left text */}
           <div ref={leftRef}>
             <p className="stagger font-body text-lg leading-relaxed mb-5" style={{color:'rgba(255,255,255,0.68)',fontWeight:300}}>
-              I'm <span className="text-gold font-semibold">Anisha Singla</span>, Founder of{' '}
-              <span className="text-gold font-semibold">Teeny Tech Trek</span> — a cutting-edge AI solutions company based in Mohali, Punjab. I'm passionate about transforming businesses through technology.
+              I'm <span className="text-gold font-semibold">Anisha Singla</span>, an Applied AI and Project Management professional who turns AI ideas into practical systems that solve real business problems. I studied Applied Artificial Intelligence Solutions and Project Management at George Brown College in Toronto and hold a valid Canadian work permit, so I'm authorized to work in Canada.
             </p>
             <p className="stagger font-body text-lg leading-relaxed mb-5" style={{color:'rgba(255,255,255,0.5)',fontWeight:300}}>
-              With postgraduate degrees in Artificial Intelligence and Project Management from George Brown College, Toronto, I blend deep technical expertise with strategic business acumen.
+              I founded <span className="text-gold font-semibold">Teeny Tech Trek</span>, an applied-AI studio, to work at the intersection of building and strategy. There I've designed and shipped AI assistants, chatbots, workflow automation, and business-facing prototypes for lean teams, which taught me that the hard part isn't an impressive demo, but turning it into something reliable that fits real users, real data, and real operational limits.
             </p>
+            
             <p className="stagger font-body text-lg leading-relaxed" style={{color:'rgba(255,255,255,0.5)',fontWeight:300}}>
-              I thrive on collaborating with visionary teams to bring transformative ideas to life — leveraging automation and AI to help organizations unlock their full potential.
+              I'm currently focused on roles in AI strategy, applied and forward-deployed AI, AI solutions, and AI product/program delivery, where I can help organizations move from idea to dependable system.
             </p>
-            <a href={linkedInHref} target="_blank" rel="noopener noreferrer"
-              className="stagger btn-gold inline-block mt-8">
-              View LinkedIn Profile
-            </a>
           </div>
 
           {/* Right stat cards */}
@@ -64,6 +60,12 @@ export default function About() {
                 </div>
               </div>
             ))}
+
+            {/* Moved here from the left column — sits directly below the stat cards */}
+            <a href={linkedInHref} target="_blank" rel="noopener noreferrer"
+              className="stagger-r btn-gold self-start mt-2">
+              View LinkedIn Profile
+            </a>
           </div>
         </div>
       </div>

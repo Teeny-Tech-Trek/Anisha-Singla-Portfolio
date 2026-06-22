@@ -264,7 +264,7 @@ function MobileOSCard({ children, time, openPanel }) {
 /* ─────────────────────────────────────────────
    ICON TILE
 ───────────────────────────────────────────── */
-function IconTile({ folder, onClick, isActive, mobile }) {
+function IconTile({ folder, onClick, isActive, mobile, ariaLabel }) {
   const [hov, setHov] = useState(false);
   const color  = FOLDER_COLORS[folder.id] || '#C9A84C';
   const active = isActive || hov;
@@ -276,6 +276,8 @@ function IconTile({ folder, onClick, isActive, mobile }) {
 
   return (
     <button
+      type="button"
+      aria-label={ariaLabel}
       onClick={() => onClick(folder)}
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
@@ -706,6 +708,18 @@ function TabBar({ activeTab, onChange, mobile }) {
             tabIndex={active ? 0 : -1}
             className="os-tab"
             onClick={() => onChange(t.id)}
+            onMouseEnter={(e) => {
+              if (active) return;
+              e.currentTarget.style.color = '#C9A84C';
+              e.currentTarget.style.borderColor = 'rgba(201,168,76,0.5)';
+              e.currentTarget.style.background = 'rgba(201,168,76,0.08)';
+            }}
+            onMouseLeave={(e) => {
+              if (active) return;
+              e.currentTarget.style.color = 'rgba(255,255,255,0.45)';
+              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
+              e.currentTarget.style.background = 'transparent';
+            }}
             style={{
               fontFamily: MONO, fontSize: mobile ? 11 : 10.5, fontWeight: 700,
               letterSpacing: '0.1em', textTransform: 'uppercase',
@@ -759,14 +773,15 @@ function SkillsTerminal() {
 }
 
 /* Shared tab content — same OS screen for desktop (absolute) and mobile (flow) */
-function OSContent({ activeTab, onTabChange, certs, awards, openFolder, activeFolder, mobile }) {
+function OSContent({ activeTab, onTabChange, certs, awards, openFolder, onOpenCert, activeFolder, mobile }) {
   const wrapStyle = mobile
     ? { position: 'relative', display: 'flex', flexDirection: 'column' }
     : { position: 'absolute', inset: 0, padding: '14px 20px 12px', overflowY: 'auto', display: 'flex', flexDirection: 'column' };
 
+  // 3 cert cards — center them so they don't cling to the left with an empty gap.
   const certRow = mobile
     ? { display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10, padding: '8px 0' }
-    : { display: 'flex', gap: 14, padding: '8px 0 18px', flexWrap: 'wrap', alignItems: 'flex-start' };
+    : { display: 'flex', gap: 14, padding: '8px 0 18px', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'center' };
 
   const awardRow = mobile
     ? { display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10, padding: '8px 0' }
@@ -790,7 +805,14 @@ function OSContent({ activeTab, onTabChange, certs, awards, openFolder, activeFo
           <div style={catLabel}>◆ Certifications</div>
           <div style={certRow}>
             {certs.map(f => (
-              <IconTile key={f.id} folder={f} onClick={openFolder} isActive={activeFolder?.id === f.id} mobile={mobile} />
+              <IconTile
+                key={f.id}
+                folder={f}
+                onClick={onOpenCert}
+                isActive={false}
+                ariaLabel={`Open ${f.label} certificate (PDF)`}
+                mobile={mobile}
+              />
             ))}
           </div>
         </div>
@@ -846,6 +868,18 @@ export default function Certifications() {
     });
   }
 
+  // Certifications open their PDF directly in the same viewer the Case Studies use.
+  function openCertificate(folder) {
+    const item = folder.items?.[0];
+    if (!item?.pdfUrl) return; // no PDF attached → open action disabled
+    setActivePdf({
+      category: 'Certification',
+      title: folder.label,
+      pdfUrl: item.pdfUrl,
+      autoRotate: item.autoRotate,
+    });
+  }
+
   const certs  = FOLDERS.filter(f => f.category === 'cert');
   const awards = FOLDERS.filter(f => f.category === 'award');
 
@@ -856,15 +890,8 @@ export default function Certifications() {
         padding: isMobile ? '40px 16px' : windowWidth < 1024 ? '50px 20px' : '60px 24px',
       }}>
         <div style={{ maxWidth: windowWidth >= 1400 ? 1200 : 960, margin: '0 auto' }}>
-          <p style={{ fontSize: 10.5, letterSpacing: '0.22em', color: '#C9A84C', fontFamily: "'SF Mono',monospace", marginBottom: 8 }}>
-            06 / EXPERTISE &amp; RECOGNITION
-          </p>
-          <h2 style={{
-            fontFamily: "'Bebas Neue',sans-serif",
-            fontSize: 'clamp(2.2rem,5vw,3.2rem)',
-            letterSpacing: '0.06em', color: '#fff',
-            marginBottom: isMobile ? 24 : 36, lineHeight: 1,
-          }}>
+          <p className="section-label">06 / Expertise &amp; Recognition</p>
+          <h2 className="section-title text-white" style={{ marginBottom: isMobile ? 24 : 36 }}>
             Skills, Certifications &amp; Awards
           </h2>
 
@@ -878,6 +905,7 @@ export default function Certifications() {
                   certs={certs}
                   awards={awards}
                   openFolder={openFolder}
+                  onOpenCert={openCertificate}
                   activeFolder={activeFolder}
                   mobile
                 />
@@ -911,6 +939,7 @@ export default function Certifications() {
                     certs={certs}
                     awards={awards}
                     openFolder={openFolder}
+                    onOpenCert={openCertificate}
                     activeFolder={activeFolder}
                   />
 
