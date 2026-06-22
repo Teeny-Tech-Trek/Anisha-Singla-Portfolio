@@ -2,13 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import {
   FALLBACK_ERROR_MESSAGE,
   getChatSessionId,
-  streamChatbotResponse,
-  logDebug,
+  getTwinId,
+  sendChatMessage,
   logError,
   logInfo,
 } from "../api/chatbotApi";
 
-const LOG_PREFIX = "[useChatbot]";
+const VISITOR_EMAIL = "visitor@example.com";
 
 const createMessage = (role, content, citations = []) => ({
   id: `${role}-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
@@ -24,42 +24,26 @@ const initialMessages = [
   ),
 ];
 
-const getDisplayErrorMessage = (errorMessage) => {
-  if (!errorMessage) {
-    return FALLBACK_ERROR_MESSAGE;
-  }
-
-  const normalized = errorMessage.trim().toLowerCase();
-
-  if (
-    normalized === "failed to fetch" ||
-    normalized.includes("networkerror") ||
-    normalized.includes("load failed") ||
-    normalized.includes("cors") ||
-    normalized.includes("invalid empty stream")
-  ) {
-    return FALLBACK_ERROR_MESSAGE;
-  }
-
-  return errorMessage;
-};
-
 export function useChatbot() {
   const [messages, setMessages] = useState(initialMessages);
   const [isOpen, setIsOpen] = useState(false);
+  // `isStreaming` keeps its name so the UI (typing dots + disabled input/send)
+  // works unchanged; it now means "a request is in flight".
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState("");
   const viewportRef = useRef(null);
   const abortControllerRef = useRef(null);
-  const sessionIdRef = useRef(getChatSessionId());
 
-  logInfo("Hook initialized with sessionId", sessionIdRef.current);
+  // Resolve the twin and its stable session id once on mount.
+  const twinIdRef = useRef(getTwinId());
+  const sessionIdRef = useRef(getChatSessionId(twinIdRef.current));
+
+  logInfo("Hook initialized", { twinId: twinIdRef.current, sessionId: sessionIdRef.current });
 
   const scrollToBottom = () => {
     if (!viewportRef.current) {
       return;
     }
-
     viewportRef.current.scrollTop = viewportRef.current.scrollHeight;
   };
 
@@ -70,24 +54,12 @@ export function useChatbot() {
   useEffect(() => {
     return () => {
       abortControllerRef.current?.abort();
-      logInfo("Cleanup: aborting current request if any");
     };
   }, []);
 
-  const openChat = () => {
-    logInfo("Opening chat");
-    setIsOpen(true);
-  };
-  
-  const closeChat = () => {
-    logInfo("Closing chat");
-    setIsOpen(false);
-  };
-  
-  const toggleChat = () => {
-    logDebug("Toggling chat visibility");
-    setIsOpen((current) => !current);
-  };
+  const openChat = () => setIsOpen(true);
+  const closeChat = () => setIsOpen(false);
+  const toggleChat = () => setIsOpen((current) => !current);
 
   const sendMessage = async (input) => {
     const trimmedMessage = input.trim();
@@ -106,97 +78,43 @@ export function useChatbot() {
 
     const controller = new AbortController();
     abortControllerRef.current = controller;
-    let streamReportedError = "";
-    let receivedCitations = [];
-    let accumulatedText = "";
 
     try {
-      await streamChatbotResponse(trimmedMessage, {
-        signal: controller.signal,
+      // The backend keeps history via sessionId, so only the latest user
+      // message is sent.
+      const data = await sendChatMessage({
+        twinId: twinIdRef.current,
+        userEmail: VISITOR_EMAIL,
         sessionId: sessionIdRef.current,
-        onError: (message) => {
-          if (!message) {
-            return;
-          }
-
-          streamReportedError = message;
-          logError("Stream reported error", message);
-        },
-        onToken: (token, event) => {
-          try {
-            // Track accumulated text for token events
-            if (event?.event === "token") {
-              accumulatedText += token;
-            }
-
-            // Extract citations from the done event
-            if (event?.done && event?.raw?.citations) {
-              receivedCitations = Array.isArray(event.raw.citations) 
-                ? event.raw.citations 
-                : [event.raw.citations];
-              logDebug("Citations extracted from done event", receivedCitations.length);
-            }
-
-            setMessages((current) =>
-              current.map((message) =>
-                message.id === assistantMessage.id
-                  ? { ...message, content: `${message.content}${token}` }
-                  : message
-              )
-            );
-          } catch (tokenError) {
-            logError("Error processing token", tokenError);
-            // Don't rethrow - let streaming continue
-          }
-        },
+        messages: [{ role: "user", content: trimmedMessage }],
+        signal: controller.signal,
       });
 
-      if (streamReportedError) {
-        setError(FALLBACK_ERROR_MESSAGE);
-      }
+      const reply =
+        (typeof data.reply === "string" && data.reply.trim()) ||
+        "I couldn't generate a response just yet. Please try again.";
+      const citations = Array.isArray(data.citations) ? data.citations : [];
 
-      setMessages((current) => {
-        const assistantEntry = current.find(
-          (message) => message.id === assistantMessage.id
-        );
-        const assistantContent = assistantEntry?.content.trim() || "";
-        const nextContent =
-          assistantContent ||
-          getDisplayErrorMessage(streamReportedError) ||
-          "I couldn't generate a response just yet. Please try again.";
-
-        return current.map((message) =>
-          message.id === assistantMessage.id
-            ? {
-                ...message,
-                content: nextContent,
-                citations: receivedCitations,
-              }
-            : message
-        );
-      });
-    } catch (streamError) {
-      if (streamError.name === "AbortError") {
-        return;
-      }
-
-      const friendlyMessage =
-        streamError instanceof Error && streamError.message
-          ? getDisplayErrorMessage(streamError.message)
-          : FALLBACK_ERROR_MESSAGE;
-
-      setError(FALLBACK_ERROR_MESSAGE);
       setMessages((current) =>
         current.map((message) =>
           message.id === assistantMessage.id
-            ? {
-                ...message,
-                content:
-                  message.content ||
-                  friendlyMessage ||
-                  FALLBACK_ERROR_MESSAGE,
-                citations: receivedCitations,
-              }
+            ? { ...message, content: reply, citations }
+            : message
+        )
+      );
+    } catch (requestError) {
+      if (requestError?.name === "AbortError") {
+        return;
+      }
+
+      logError("Chat request failed", requestError);
+      const displayMessage = requestError?.message || FALLBACK_ERROR_MESSAGE;
+
+      setError(displayMessage);
+      setMessages((current) =>
+        current.map((message) =>
+          message.id === assistantMessage.id
+            ? { ...message, content: displayMessage }
             : message
         )
       );
