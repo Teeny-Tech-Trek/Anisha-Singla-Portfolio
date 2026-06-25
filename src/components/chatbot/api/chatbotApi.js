@@ -16,6 +16,7 @@ const API_BASE_URL = (
   import.meta.env.VITE_API_BASE_URL || "https://api.nettwin.techtrekkers.ai"
 ).replace(/\/$/, "");
 const CHAT_URL = `${API_BASE_URL}/api/chat`;
+const STREAM_CHAT_URL = `${API_BASE_URL}/api/chat/stream`;
 const REQUEST_TIMEOUT_MS = 30_000;
 const VISITOR_EMAIL = "visitor@example.com";
 const FALLBACK_ERROR_MESSAGE = "Sorry, something went wrong. Please try again.";
@@ -173,3 +174,118 @@ export async function sendChatMessage({
 }
 
 export { API_BASE_URL, FALLBACK_ERROR_MESSAGE, REQUEST_TIMEOUT_MS, logError, logInfo };
+
+// ============= STREAMING CHAT CALL =============
+/**
+ * Open an SSE stream to the NetTwin backend and call `onToken` for every
+ * incremental text chunk from Gemini.
+ *
+ * Resolves with { reply, citations } on completion.
+ * Rejects with an Error whose `.streamedAny` flag tells the caller whether
+ * any tokens arrived (so it can decide whether to fall back or keep partial
+ * content).
+ */
+export async function streamChatMessage({
+  twinId = getTwinId(),
+  userEmail = VISITOR_EMAIL,
+  sessionId = getChatSessionId(twinId),
+  messages,
+  signal,
+} = {}) {
+  const body = { twinId, userEmail, sessionId, messages, session_id: sessionId };
+  const requestId = `req-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+  logInfo("📡 POST /api/chat/stream", { twinId, sessionId, messageCount: messages?.length, requestId });
+
+  let resp;
+  try {
+    resp = await fetch(STREAM_CHAT_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "text/event-stream",
+        "X-Request-ID": requestId,
+      },
+      body: JSON.stringify(body),
+      signal,
+    });
+  } catch (fetchErr) {
+    if (fetchErr?.name === "AbortError") throw fetchErr;
+    logError("stream fetch failed", fetchErr);
+    const err = new Error(fetchErr?.message || FALLBACK_ERROR_MESSAGE);
+    err.streamedAny = false;
+    throw err;
+  }
+
+  if (!resp.ok || !resp.body) {
+    const err = new Error(`stream_http_${resp.status}`);
+    err.streamedAny = false;
+    try {
+      const j = await resp.json();
+      err.fallback = j?.fallback;
+      err.code = j?.error;
+    } catch { /* non-JSON */ }
+    throw err;
+  }
+
+  // Return an async generator that callers can iterate over
+  return _readSseStream(resp.body);
+}
+
+/**
+ * Internal: parse SSE frames from the response body ReadableStream.
+ * Yields { done: false, text } for tokens, { done: true, reply, citations } on completion.
+ * Throws on event: error.
+ */
+async function* _readSseStream(body) {
+  const reader = body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  let full = "";
+  let citations = [];
+  let streamedAny = false;
+
+  try {
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+
+      let sep;
+      while ((sep = buffer.indexOf("\n\n")) !== -1) {
+        const frame = buffer.slice(0, sep);
+        buffer = buffer.slice(sep + 2);
+        let event = "message";
+        let dataStr = "";
+        for (const line of frame.split("\n")) {
+          if (line.startsWith("event:")) event = line.slice(6).trim();
+          else if (line.startsWith("data:")) dataStr += line.slice(5).trim();
+        }
+        if (!dataStr) continue;
+        let payload;
+        try { payload = JSON.parse(dataStr); } catch { continue; }
+
+        if (event === "token" && typeof payload.text === "string") {
+          full += payload.text;
+          streamedAny = true;
+          yield { done: false, text: payload.text };
+        } else if (event === "done") {
+          const reply = payload.answer ?? full;
+          citations = payload.citations || [];
+          yield { done: true, reply, citations };
+          return;
+        } else if (event === "error") {
+          const err = new Error("stream_error");
+          err.fallback = payload.fallback;
+          err.streamedAny = streamedAny;
+          throw err;
+        }
+      }
+    }
+  } finally {
+    try { reader.releaseLock(); } catch { /* already released */ }
+  }
+
+  // Stream ended without a done frame — return what we have
+  yield { done: true, reply: full, citations };
+}

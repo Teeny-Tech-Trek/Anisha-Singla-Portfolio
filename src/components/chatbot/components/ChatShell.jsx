@@ -44,7 +44,7 @@ function HomeGlyphSmall() {
  * (on desktop the phone's physical home button is the only exit).
  */
 export default function ChatShell({ onExit, mobile = false }) {
-  const { messages, isStreaming, error, sendMessage, viewportRef } = useChatbotContext();
+  const { messages, isStreaming, error, sendMessage, viewportRef, streamingBubbleIdRef } = useChatbotContext();
   const inputRef = useRef(null);
   const [value, setValue] = useState("");
 
@@ -52,6 +52,13 @@ export default function ChatShell({ onExit, mobile = false }) {
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
+
+  // The typing indicator shows only before the first token arrives on the
+  // currently-streaming bubble (i.e. its content is still empty).
+  const streamingMsg = streamingBubbleIdRef?.current
+    ? messages.find((m) => m.id === streamingBubbleIdRef.current)
+    : null;
+  const showTypingDots = isStreaming && (!streamingMsg || !streamingMsg.content);
 
   const submit = (event) => {
     event.preventDefault();
@@ -68,6 +75,13 @@ export default function ChatShell({ onExit, mobile = false }) {
 
   return (
     <section className="pa-chat" role="dialog" aria-label="Portfolio assistant" aria-modal={mobile ? "true" : undefined}>
+      {/* Inline keyframe for the streaming cursor — avoids requiring a CSS file change */}
+      <style>{`
+        @keyframes pa-cursor-blink {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0; }
+        }
+      `}</style>
       <header className="pa-header">
         <span className="pa-bot" aria-hidden="true"><Monogram size={15} /></span>
         <div>
@@ -85,12 +99,33 @@ export default function ChatShell({ onExit, mobile = false }) {
       <div className="pa-body" ref={viewportRef} aria-live="polite">
         {messages.map((message, index) => {
           const isUser = message.role === "user";
+          const isThisBubbleStreaming =
+            !isUser &&
+            isStreaming &&
+            streamingBubbleIdRef?.current === message.id;
           const hasCitations = !isUser && Array.isArray(message.citations) && message.citations.length > 0;
           return (
             <div key={message.id}>
               <div className={`pa-row ${isUser ? "user" : "assistant"}`}>
                 <div className={`pa-bubble ${isUser ? "user" : "assistant"} ${!isUser && looksLikeCode(message.content) ? "mono" : ""}`}>
-                  <p className="pa-text">{message.content}</p>
+                  <p className="pa-text">
+                    {message.content}
+                    {/* Streaming cursor — blinks while tokens are flowing */}
+                    {isThisBubbleStreaming && (
+                      <span
+                        style={{
+                          display: "inline-block",
+                          width: "2px",
+                          height: "1em",
+                          background: "currentColor",
+                          marginLeft: "2px",
+                          verticalAlign: "middle",
+                          animation: "pa-cursor-blink 0.9s step-end infinite",
+                        }}
+                        aria-hidden="true"
+                      />
+                    )}
+                  </p>
                   {hasCitations && (
                     <div className="pa-citations">
                       <p className="pa-citations-label">Sources</p>
@@ -120,7 +155,8 @@ export default function ChatShell({ onExit, mobile = false }) {
           );
         })}
 
-        {isStreaming && (
+        {/* Typing dots — show only before the first token arrives */}
+        {showTypingDots && (
           <div className="pa-row assistant">
             <div className="pa-typing" aria-label="Assistant is typing">
               <span /><span /><span />
