@@ -24,168 +24,173 @@
 // NeoScript, Jigsaw Toxic Comment Classifier); the rest show in the all-projects view.
 export const projects = [
   {
-  id: 1,
-  title: 'Teeny Tech Trek',
-  category: 'Company Website',
-  description:
-    'Official website for Teeny Tech Trek — an AI consultancy helping businesses adopt custom AI solutions, chatbots, and automation systems. Built with React 18, TypeScript, and Tailwind CSS, with a mobile-first, SEO-optimized, and accessibility-focused approach.',
-  tags: ['React', 'TypeScript', 'Tailwind CSS', 'Vite', 'React Router'],
-  status: 'Live',
-  links: {
-    live: 'https://www.teenytechtrek.com/',
-    code: 'https://github.com/Teeny-Tech-Trek/ttt_website_frontend',
+    id: 1,
+    title: 'Teeny Tech Trek',
+    category: 'Company Website',
+    description:
+      'Official website for Teeny Tech Trek — an AI consultancy helping businesses adopt custom AI solutions, chatbots, and automation systems. Built with React 18, TypeScript, and Tailwind CSS, with a mobile-first, SEO-optimized, and accessibility-focused approach.',
+    tags: ['React', 'TypeScript', 'Tailwind CSS', 'Vite', 'React Router'],
+    status: 'Live',
+    links: {
+      live: 'https://www.teenytechtrek.com/',
+      code: 'https://github.com/Teeny-Tech-Trek/ttt_website_frontend',
+      caseStudy: '/case-studies/responsible-ai-governance-framework+rag-business-knowledge-assistant',
+    },
+    year: '2024',
+    featured: true,
+    gradient: 'radial-gradient(ellipse at top left, rgba(201,168,76,0.18) 0%, transparent 65%)',
   },
-  year: '2024',
-  featured: true,
-  gradient: 'radial-gradient(ellipse at top left, rgba(201,168,76,0.18) 0%, transparent 65%)',
-},
   {
-  id: 11,
-  title: 'NetTwin',
-  category: 'Network Digital Twin Platform',
-  description:
-    'A network digital-twin platform that builds a live virtual replica of physical network infrastructure — letting teams visualize topology, simulate configuration changes, and stress-test failures safely before rolling them out to production.',
-  tags: ['React', 'TypeScript', 'Node.js', 'WebSockets', 'AWS'],
-  status: 'Live',
-  links: {
-    live: 'https://nettwin.techtrekkers.ai/',
-    code: 'https://github.com/Teeny-Tech-Trek/nettwin-frontend',
+    id: 7,
+    title: 'Transfer Learning Image Classifier',
+    category: 'Deep Learning',
+    description:
+      'Image classification using Xception (ImageNet pre-trained) on tf_flowers (5 classes) and cars196 (196 classes). Two-phase training — frozen base for head training, then full fine-tune — achieves 91%+ validation accuracy on just 3,670 images with a fraction of the compute cost.',
+    tags: ['Python', 'TensorFlow', 'Xception', 'Keras', 'Transfer Learning', 'Colab'],
+    status: 'Completed',
+    links: {
+      code: 'https://github.com/Anisha-Singla-22/TransferLearning',
+      caseStudy: '/case-studies/transfer-learning-image-classification',
+    },
+    year: '2024',
+    featured: false,
+    gradient: 'radial-gradient(ellipse at top right, rgba(255,200,80,0.09) 0%, transparent 65%)',
   },
-  requiresAuth: true,
-  year: '2025',
-  featured: false,
-  gradient: 'radial-gradient(ellipse at top right, rgba(120,220,255,0.12) 0%, transparent 65%)',
-},
-{
-  id: 4,
-  title: 'NeoScript',
-  category: 'Generative AI Multi-Agent System',
-  description:
-    'A production-grade multi-agent AI content engine that transforms raw prompts into AEO/GEO-optimized blog posts and platform-specific social content in a single API call. Built with a 10-agent pipeline, RAG-powered Qdrant knowledge base, and live web research, NeoScript is designed to rank in AI answer engines and be cited by LLMs like ChatGPT and Gemini.',
-  tags: ['Python', 'FastAPI', 'React', 'Vite', 'Tailwind CSS', 'Gemini', 'Qdrant', 'Docker', 'Vercel', 'Railway'],
-  status: 'Completed',
-  links: {
-    live: 'https://neoscript.techtrekkers.ai/',
-    code: 'https://github.com/Teeny-Tech-Trek/neo-scripting-frontend',
-  },
-  year: '2025',
-  featured: true,
-  gradient: 'radial-gradient(ellipse at top left, rgba(120,220,255,0.12) 0%, transparent 65%)',
-},
   {
-  id: 8,
-  title: 'Jigsaw Toxic Comment Classifier',
-  category: 'Natural Language Processing',
-  description:
-    'Multi-label text classifier on 159K Wikipedia comments across 6 toxicity categories — built for the Kaggle Jigsaw 2018 challenge. Compares Logistic Regression, Decision Tree, and Random Forest with a TF-IDF pipeline and repeat-word ablation study. Logistic Regression scored 0.96963 on the private leaderboard.',
-  tags: ['Python', 'Sklearn', 'TF-IDF', 'NLTK', 'Kaggle', 'Jupyter'],
-  status: 'Completed',
-  links: {
-    code: 'https://github.com/Anisha-Singla-22/Jigsaw',
+    id: 10,
+    title: 'ShakeGen — Shakespeare Text Generator',
+    category: 'Deep Learning · Sequence Modeling',
+    description:
+      'A character-level language model built using GRU networks to generate Shakespearean-style text. Trained on ~1.1M characters from Shakespeare’s works, the model learns sequential patterns and generates text using temperature-controlled sampling, demonstrating core concepts of RNNs, embeddings, and autoregressive generation.',
+    tags: ['Python', 'TensorFlow', 'Keras', 'GRU', 'Deep Learning', 'NLP', 'Jupyter'],
+    status: 'Completed',
+    links: {
+      code: 'https://github.com/Anisha-Singla-22/Shakegen',
+      caseStudy: '/case-studies/shakegen-character-level-language-model',
+    },
+    year: '2023',
+    featured: false,
+    gradient: 'radial-gradient(ellipse at top right, rgba(180,140,255,0.10) 0%, transparent 65%)',
   },
-  year: '2024',
-  featured: false,
-  gradient: 'radial-gradient(ellipse at bottom left, rgba(100,220,200,0.08) 0%, transparent 65%)',
-},
- {
-  id: 2,
-  title: 'TTT Website Chatbot',
-  category: 'Artificial Intelligence',
-  description:
-    'A production-grade hybrid AI chatbot for the Teeny Tech Trek website. Uses a 4-layer decision waterfall — Redis cache, guided flow engine, structured handler, and RAG (FAISS + Neo4j + Claude) — so the easy 80% of queries never hit the LLM at all.',
-  tags: ['FastAPI', 'Claude', 'FAISS', 'Neo4j', 'Redis', 'MongoDB', 'spaCy'],
-  status: 'Live',
-  links: {
-    live: 'https://www.teenytechtrek.com/',
-    code: 'https://github.com/Teeny-Tech-Trek/ttt_website_frontend',
-  },
-  year: '2024',
-  featured: false,
-  gradient: 'radial-gradient(ellipse at top right, rgba(100,180,255,0.1) 0%, transparent 65%)',
-},
   {
-  id: 3,
-  title: 'Nex-Estate',
-  category: 'Real Estate AI Avatar Platform',
-  description:
-    'A SaaS platform where real estate agents deploy a personalized AI avatar via QR code. Buyers scan, chat, get property recommendations, and book visits — 24/7. Includes lead scoring, CRM pipeline, team management, and Razorpay billing.',
-  tags: ['React', 'TypeScript', 'Node.js', 'MongoDB', 'AWS', 'Razorpay'],
-  status: 'Live',
-  links: {
-    live: 'https://nexestate.techtrekkers.ai/',
-    code: 'https://github.com/Teeny-Tech-Trek/nex-estate-frontend',
+    id: 4,
+    title: 'NeoScript',
+    category: 'Generative AI Multi-Agent System',
+    description:
+      'Neo Scripting is an MCP server. Plug it into Claude Desktop, Cursor, Windsurf, or any MCP-aware assistant and a ten-agent pipeline drafts trusted, citation-backed digital content directly inside your conversation.',
+    tags: ['Python', 'FastAPI', 'React', 'Vite', 'Tailwind CSS', 'Gemini', 'Qdrant', 'Docker', 'Vercel', 'Railway'],
+    status: 'Completed',
+    links: {
+      live: 'https://neoscript.techtrekkers.ai/',
+      code: 'https://github.com/Teeny-Tech-Trek/neo-scripting-frontend',
+      caseStudy: '/case-studies/multi-agent-content-intelligence-system',
+    },
+    year: '2025',
+    featured: true,
+    gradient: 'radial-gradient(ellipse at top left, rgba(120,220,255,0.12) 0%, transparent 65%)',
   },
-  requiresAuth: true,
-  year: '2025',
-  featured: false,
-  gradient: 'radial-gradient(ellipse at bottom left, rgba(180,100,255,0.09) 0%, transparent 65%)',
-},
   {
-  id: 5,
-  title: 'Flipkart Sentiment Analyzer',
-  category: 'Machine Learning',
-  description:
-    'Multi-class sentiment classifier on 169K Flipkart reviews — predicts star ratings (1–5) using GloVe embeddings with Logistic Regression (81.4% accuracy) and LSTM (~90%+). Full NLP pipeline: preprocessing, lemmatization, stopword removal, and GloVe mean pooling.',
-  tags: ['Python', 'TensorFlow', 'GloVe', 'NLTK', 'Sklearn', 'LSTM'],
-  status: 'Completed',
-  links: {
-    code: 'https://github.com/Anisha-Singla-22/SentimentalAnalysis',
+    id: 3,
+    title: 'Nex-Estate',
+    category: 'Real Estate AI Avatar Platform',
+    description:
+      'A SaaS platform where real estate agents deploy a personalized AI avatar via QR code. Buyers scan, chat, get property recommendations, and book visits — 24/7. Includes lead scoring, CRM pipeline, team management, and Razorpay billing.',
+    tags: ['React', 'TypeScript', 'Node.js', 'MongoDB', 'AWS', 'Razorpay'],
+    status: 'Live',
+    links: {
+      live: 'https://nexestate.techtrekkers.ai/',
+      code: 'https://github.com/Teeny-Tech-Trek/nex-estate-frontend',
+      caseStudy: '/case-studies/real-estate-intelligence-dashboard+rag-business-knowledge-assistant',
+    },
+    requiresAuth: true,
+    year: '2025',
+    featured: false,
+    gradient: 'radial-gradient(ellipse at bottom left, rgba(180,100,255,0.09) 0%, transparent 65%)',
   },
-  year: '2024',
-  featured: false,
-  gradient: 'radial-gradient(ellipse at top left, rgba(255,120,100,0.08) 0%, transparent 65%)',
-},
   {
-  id: 7,
-  title: 'Transfer Learning Image Classifier',
-  category: 'Deep Learning',
-  description:
-    'Image classification using Xception (ImageNet pre-trained) on tf_flowers (5 classes) and cars196 (196 classes). Two-phase training — frozen base for head training, then full fine-tune — achieves 91%+ validation accuracy on just 3,670 images with a fraction of the compute cost.',
-  tags: ['Python', 'TensorFlow', 'Xception', 'Keras', 'Transfer Learning', 'Colab'],
-  status: 'Completed',
-  links: {
-    code: 'https://github.com/Anisha-Singla-22/TransferLearning',
+    id: 11,
+    title: 'NetTwin',
+    category: 'Network Digital Twin Platform',
+    description:
+      'A network digital-twin platform that builds a live virtual replica of physical network infrastructure — letting teams visualize topology, simulate configuration changes, and stress-test failures safely before rolling them out to production.',
+    tags: ['React', 'TypeScript', 'Node.js', 'WebSockets', 'AWS'],
+    status: 'Live',
+    links: {
+      live: 'https://nettwin.techtrekkers.ai/',
+      code: 'https://github.com/Teeny-Tech-Trek/nettwin-frontend',
+    },
+    requiresAuth: true,
+    year: '2025',
+    featured: false,
+    gradient: 'radial-gradient(ellipse at top right, rgba(120,220,255,0.12) 0%, transparent 65%)',
   },
-  year: '2024',
-  featured: false,
-  gradient: 'radial-gradient(ellipse at top right, rgba(255,200,80,0.09) 0%, transparent 65%)',
-},
-{
-  id: 9,
-  title: 'ML & NLP Suite',
-  category: 'Machine Learning & NLP Collection',
-  description:
-    'A comprehensive suite of 7 end-to-end machine learning, NLP, and computer vision projects covering text classification, topic modeling, recommendation systems, summarization, image segmentation, and real-time video processing. Designed as a portfolio-grade reference demonstrating core ML concepts with practical implementations and evaluation metrics.',
-  tags: ['Python', 'scikit-learn', 'Gensim', 'OpenCV', 'spaCy', 'NLTK', 'TensorFlow', 'Computer Vision', 'NLP'],
-  status: 'Completed',
-  links: {
-    code: 'https://github.com/Anisha-Singla-22/ML-NLP-suite',
+  {
+    id: 8,
+    title: 'Jigsaw Toxic Comment Classifier',
+    category: 'Natural Language Processing',
+    description:
+      'Multi-label text classifier on 159K Wikipedia comments across 6 toxicity categories — built for the Kaggle Jigsaw 2018 challenge. Compares Logistic Regression, Decision Tree, and Random Forest with a TF-IDF pipeline and repeat-word ablation study. Logistic Regression scored 0.96963 on the private leaderboard.',
+    tags: ['Python', 'Sklearn', 'TF-IDF', 'NLTK', 'Kaggle', 'Jupyter'],
+    status: 'Completed',
+    links: {
+      code: 'https://github.com/Anisha-Singla-22/Jigsaw',
+    },
+    year: '2024',
+    featured: false,
+    gradient: 'radial-gradient(ellipse at bottom left, rgba(100,220,200,0.08) 0%, transparent 65%)',
   },
-  year: '2024',
-  featured: false,
-  gradient: 'radial-gradient(ellipse at bottom right, rgba(255,180,120,0.10) 0%, transparent 65%)',
-},
-{
-  id: 10,
-  title: 'ShakeGen — Shakespeare Text Generator',
-  category: 'Deep Learning · Sequence Modeling',
-  description:
-    'A character-level language model built using GRU networks to generate Shakespearean-style text. Trained on ~1.1M characters from Shakespeare’s works, the model learns sequential patterns and generates text using temperature-controlled sampling, demonstrating core concepts of RNNs, embeddings, and autoregressive generation.',
-  tags: ['Python', 'TensorFlow', 'Keras', 'GRU', 'Deep Learning', 'NLP', 'Jupyter'],
-  status: 'Completed',
-  links: {
-    code: 'https://github.com/Anisha-Singla-22/Shakegen',
+  {
+    id: 2,
+    title: 'TTT Website Chatbot',
+    category: 'Artificial Intelligence',
+    description:
+      'A production-grade hybrid AI chatbot for the Teeny Tech Trek website. Uses a 4-layer decision waterfall — Redis cache, guided flow engine, structured handler, and RAG (FAISS + Neo4j + Claude) — so the easy 80% of queries never hit the LLM at all.',
+    tags: ['FastAPI', 'Claude', 'FAISS', 'Neo4j', 'Redis', 'MongoDB', 'spaCy'],
+    status: 'Live',
+    links: {
+      live: 'https://www.teenytechtrek.com/',
+      code: 'https://github.com/Teeny-Tech-Trek/ttt_website_frontend',
+      caseStudy: '/case-studies/rag-business-knowledge-assistant',
+    },
+    year: '2024',
+    featured: false,
+    gradient: 'radial-gradient(ellipse at top right, rgba(100,180,255,0.1) 0%, transparent 65%)',
   },
-  year: '2023',
-  featured: false,
-  gradient: 'radial-gradient(ellipse at top right, rgba(180,140,255,0.10) 0%, transparent 65%)',
-}
-
+  {
+    id: 5,
+    title: 'Flipkart Sentiment Analyzer',
+    category: 'Machine Learning',
+    description:
+      'Multi-class sentiment classifier on 169K Flipkart reviews — predicts star ratings (1–5) using GloVe embeddings with Logistic Regression (81.4% accuracy) and LSTM (~90%+). Full NLP pipeline: preprocessing, lemmatization, stopword removal, and GloVe mean pooling.',
+    tags: ['Python', 'TensorFlow', 'GloVe', 'NLTK', 'Sklearn', 'LSTM'],
+    status: 'Completed',
+    links: {
+      code: 'https://github.com/Anisha-Singla-22/SentimentalAnalysis',
+    },
+    year: '2024',
+    featured: false,
+    gradient: 'radial-gradient(ellipse at top left, rgba(255,120,100,0.08) 0%, transparent 65%)',
+  },
+  {
+    id: 9,
+    title: 'ML & NLP Suite',
+    category: 'Machine Learning & NLP Collection',
+    description:
+      'A comprehensive suite of 7 end-to-end machine learning, NLP, and computer vision projects covering text classification, topic modeling, recommendation systems, summarization, image segmentation, and real-time video processing. Designed as a portfolio-grade reference demonstrating core ML concepts with practical implementations and evaluation metrics.',
+    tags: ['Python', 'scikit-learn', 'Gensim', 'OpenCV', 'spaCy', 'NLTK', 'TensorFlow', 'Computer Vision', 'NLP'],
+    status: 'Completed',
+    links: {
+      code: 'https://github.com/Anisha-Singla-22/ML-NLP-suite',
+    },
+    year: '2024',
+    featured: false,
+    gradient: 'radial-gradient(ellipse at bottom right, rgba(255,180,120,0.10) 0%, transparent 65%)',
+  }
 ];
 
 export const statusStyle = {
-  Live:         { bg: 'rgba(80,220,120,0.15)',  color: '#4dde8a', border: 'rgba(80,220,120,0.4)' },
-  Beta:         { bg: 'rgba(255,180,50,0.15)',   color: '#ffb432', border: 'rgba(255,180,50,0.4)' },
-  Completed:    { bg: 'rgba(120,160,255,0.15)',  color: '#7898ff', border: 'rgba(120,160,255,0.4)' },
-  'In Progress':{ bg: 'rgba(201,168,76,0.15)',   color: '#C9A84C', border: 'rgba(201,168,76,0.4)' },
+  Live: { bg: 'rgba(80,220,120,0.15)', color: '#4dde8a', border: 'rgba(80,220,120,0.4)' },
+  Beta: { bg: 'rgba(255,180,50,0.15)', color: '#ffb432', border: 'rgba(255,180,50,0.4)' },
+  Completed: { bg: 'rgba(120,160,255,0.15)', color: '#7898ff', border: 'rgba(120,160,255,0.4)' },
+  'In Progress': { bg: 'rgba(201,168,76,0.15)', color: '#C9A84C', border: 'rgba(201,168,76,0.4)' },
 };

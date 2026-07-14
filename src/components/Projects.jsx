@@ -12,8 +12,10 @@ function ProjectCard({ p, featured = false }) {
   const cardRef = useRef(null);
 
   const handleEnter = () => {
-    gsap.to(cardRef.current, { y: featured ? -4 : -7, duration: .35, ease: 'power2.out',
-      boxShadow: '0 20px 50px rgba(201,168,76,0.13)' });
+    gsap.to(cardRef.current, {
+      y: featured ? -4 : -7, duration: .35, ease: 'power2.out',
+      boxShadow: '0 20px 50px rgba(201,168,76,0.13)'
+    });
     const arrow = cardRef.current.querySelector('.card-arrow');
     if (arrow) gsap.to(arrow, { x: 5, opacity: 1, duration: .3 });
   };
@@ -27,46 +29,82 @@ function ProjectCard({ p, featured = false }) {
   return (
     <div
       ref={cardRef}
-      className="relative overflow-hidden"
+      className="relative overflow-hidden h-full"
       style={{
         background: '#0d0d0d',
         border: featured ? '1px solid rgba(201,168,76,0.25)' : '1px solid rgba(255,255,255,0.07)',
         borderTop: `2px solid ${featured ? '#C9A84C' : 'rgba(201,168,76,0.3)'}`,
         transition: 'box-shadow .35s ease',
+        height: '100%',
+        cursor: featured ? 'default' : 'pointer',
       }}
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
+      onClick={!featured ? (e) => {
+        if (e.target.closest('a') || e.target.closest('button')) {
+          return;
+        }
+        navigateTo(ROUTES.PROJECTS);
+      } : undefined}
     >
       <div className="absolute inset-0 pointer-events-none" style={{ background: p.gradient, opacity: .6 }} />
 
-      <div className={`relative z-10 flex flex-col ${featured ? 'p-8 md:p-10' : 'p-6 min-h-[260px]'}`}>
+      <div className={`relative z-10 flex flex-col h-full ${featured ? 'p-8 md:p-10' : 'p-6 min-h-[260px]'}`}>
 
         {/* Badges */}
-        <div className="flex items-center justify-between gap-3 mb-5 flex-wrap">
-          <span className="font-body text-xs tracking-widest uppercase px-3 py-1"
+        <div className="flex items-center justify-between gap-2 mb-5 w-full">
+          <span className="font-body text-[10px] tracking-wider uppercase px-2 py-0.5 truncate max-w-[70%]"
+            title={p.category}
             style={{ background: 'rgba(201,168,76,0.1)', color: '#C9A84C', border: '1px solid rgba(201,168,76,0.25)' }}>
             {p.category}
           </span>
 
           {/* Status — a label, not a link (not focusable, no hover affordance) */}
-          <span className="font-body text-xs font-bold px-3 py-1"
-            style={{ background: statusStyle[p.status]?.bg, color: statusStyle[p.status]?.color,
-              border: `1px solid ${statusStyle[p.status]?.border}` }}>
+          <span className="font-body text-[10px] font-bold px-2 py-0.5 shrink-0"
+            style={{
+              background: statusStyle[p.status]?.bg, color: statusStyle[p.status]?.color,
+              border: `1px solid ${statusStyle[p.status]?.border}`
+            }}>
             ● {p.status}
           </span>
         </div>
 
         {/* Title */}
-        <h3 className="font-title mb-3 text-white"
-          style={{ fontFamily: "'Bebas Neue', sans-serif",
+        <h3 className="font-title mb-3 text-white transition-colors duration-200"
+          onClick={p.links?.caseStudy ? (e) => {
+            e.stopPropagation();
+            navigateTo(p.links.caseStudy);
+          } : undefined}
+          style={{
+            fontFamily: "'Bebas Neue', sans-serif",
             fontSize: featured ? 'clamp(2rem,3.5vw,2.8rem)' : '1.75rem',
-            letterSpacing: '.04em', lineHeight: 1 }}>
+            letterSpacing: '.04em', lineHeight: 1,
+            cursor: p.links?.caseStudy ? 'pointer' : 'default',
+          }}
+          onMouseEnter={p.links?.caseStudy ? (e) => e.currentTarget.style.color = '#C9A84C' : undefined}
+          onMouseLeave={p.links?.caseStudy ? (e) => e.currentTarget.style.color = '#fff' : undefined}
+        >
           {p.title}
         </h3>
 
         {/* Desc */}
-        <p className="font-body text-sm leading-relaxed flex-1"
-          style={{ color: 'rgba(255,255,255,0.48)', fontWeight: 300 }}>
+        <p className="font-body text-sm leading-relaxed flex-1 transition-colors duration-200"
+          onClick={p.links?.caseStudy ? (e) => {
+            e.stopPropagation();
+            navigateTo(p.links.caseStudy);
+          } : undefined}
+          style={{
+            color: 'rgba(255,255,255,0.48)',
+            fontWeight: 300,
+            display: featured ? 'block' : '-webkit-box',
+            WebkitLineClamp: featured ? 'unset' : 2,
+            WebkitBoxOrient: 'vertical',
+            overflow: featured ? 'visible' : 'hidden',
+            cursor: p.links?.caseStudy ? 'pointer' : 'default',
+          }}
+          onMouseEnter={p.links?.caseStudy ? (e) => e.currentTarget.style.color = 'rgba(255,255,255,0.75)' : undefined}
+          onMouseLeave={p.links?.caseStudy ? (e) => e.currentTarget.style.color = 'rgba(255,255,255,0.48)' : undefined}
+        >
           {p.description}
         </p>
 
@@ -75,8 +113,10 @@ function ProjectCard({ p, featured = false }) {
           <div className="flex flex-wrap gap-1.5 mb-4">
             {p.tags.map(t => (
               <span key={t} className="font-body text-xs px-2.5 py-1"
-                style={{ background: 'rgba(255,255,255,0.04)', color: 'rgba(255,255,255,0.38)',
-                  border: '1px solid rgba(255,255,255,0.08)' }}>
+                style={{
+                  background: 'rgba(255,255,255,0.04)', color: 'rgba(255,255,255,0.38)',
+                  border: '1px solid rgba(255,255,255,0.08)'
+                }}>
                 {t}
               </span>
             ))}
@@ -99,33 +139,41 @@ function ProjectCard({ p, featured = false }) {
 export default function Projects() {
   const sectionRef = useRef(null);
   const headingRef = useRef(null);
-  const gridRef    = useRef(null);
+  const gridRef = useRef(null);
 
-  const visible  = projects.slice(0, 4);
+  const visible = projects.slice(0, 5);
   const featured = visible[0];
-  const rest     = visible.slice(1);
+  const rest = visible.slice(1);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.fromTo(headingRef.current.querySelectorAll('.reveal'),
         { opacity: 0, y: 55 },
-        { opacity: 1, y: 0, duration: 1, ease: 'power3.out', stagger: .12,
-          scrollTrigger: getReplayScrollTrigger(headingRef.current, { start: 'top 86%' }) });
+        {
+          opacity: 1, y: 0, duration: 1, ease: 'power3.out', stagger: .12,
+          scrollTrigger: getReplayScrollTrigger(headingRef.current, { start: 'top 86%' })
+        });
 
       gsap.fromTo('.feat-card',
         { opacity: 0, x: -70 },
-        { opacity: 1, x: 0, duration: 1.1, ease: 'power3.out',
-          scrollTrigger: getReplayScrollTrigger('.feat-card', { start: 'top 83%' }) });
+        {
+          opacity: 1, x: 0, duration: 1.1, ease: 'power3.out',
+          scrollTrigger: getReplayScrollTrigger('.feat-card', { start: 'top 83%' })
+        });
 
       gsap.fromTo(gridRef.current.querySelectorAll('.proj-card'),
         { opacity: 0, y: 65, scale: .96 },
-        { opacity: 1, y: 0, scale: 1, duration: .88, ease: 'power3.out', stagger: .11,
-          scrollTrigger: getReplayScrollTrigger(gridRef.current, { start: 'top 83%' }) });
+        {
+          opacity: 1, y: 0, scale: 1, duration: .88, ease: 'power3.out', stagger: .11,
+          scrollTrigger: getReplayScrollTrigger(gridRef.current, { start: 'top 83%' })
+        });
 
       gsap.fromTo('.view-all-btn',
         { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: .8, ease: 'power2.out',
-          scrollTrigger: getReplayScrollTrigger('.view-all-btn', { start: 'top 92%' }) });
+        {
+          opacity: 1, y: 0, duration: .8, ease: 'power2.out',
+          scrollTrigger: getReplayScrollTrigger('.view-all-btn', { start: 'top 92%' })
+        });
 
     }, sectionRef);
     return () => ctx.revert();
@@ -134,8 +182,8 @@ export default function Projects() {
   return (
     <section id="projects" ref={sectionRef} className="py-28 px-6 md:px-14 relative" style={{ background: '#000' }}>
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div style={{ position:'absolute',top:'8%',right:'-8%',width:'500px',height:'500px',borderRadius:'50%',background:'radial-gradient(circle,rgba(201,168,76,0.05) 0%,transparent 70%)',filter:'blur(60px)' }}/>
-        <div style={{ position:'absolute',bottom:'8%',left:'-8%',width:'400px',height:'400px',borderRadius:'50%',background:'radial-gradient(circle,rgba(100,150,255,0.04) 0%,transparent 70%)',filter:'blur(60px)' }}/>
+        <div style={{ position: 'absolute', top: '8%', right: '-8%', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(201,168,76,0.05) 0%,transparent 70%)', filter: 'blur(60px)' }} />
+        <div style={{ position: 'absolute', bottom: '8%', left: '-8%', width: '400px', height: '400px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(100,150,255,0.04) 0%,transparent 70%)', filter: 'blur(60px)' }} />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
@@ -146,17 +194,19 @@ export default function Projects() {
             04 / Selected Work
           </p>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-            <h2 className="reveal font-title" style={{ fontFamily:"'Bebas Neue',sans-serif",
-              fontSize:'clamp(3rem,6vw,5.5rem)', letterSpacing:'.05em', lineHeight:1, color:'#fff' }}>
+            <h2 className="reveal font-title" style={{
+              fontFamily: "'Bebas Neue',sans-serif",
+              fontSize: 'clamp(3rem,6vw,5.5rem)', letterSpacing: '.05em', lineHeight: 1, color: '#fff'
+            }}>
               Projects
             </h2>
             <p className="reveal font-body text-sm max-w-xs"
-              style={{ color:'rgba(255,255,255,0.38)', fontWeight:300, lineHeight:1.7 }}>
+              style={{ color: 'rgba(255,255,255,0.38)', fontWeight: 300, lineHeight: 1.7 }}>
               A curated selection of work spanning AI, product design, and business strategy.
             </p>
           </div>
           <div className="reveal mt-8"
-            style={{ height:'1px', background:'linear-gradient(to right,#C9A84C,rgba(201,168,76,0.08))' }}/>
+            style={{ height: '1px', background: 'linear-gradient(to right,#C9A84C,rgba(201,168,76,0.08))' }} />
         </div>
 
         {/* Featured full-width */}
@@ -164,32 +214,34 @@ export default function Projects() {
           <ProjectCard p={featured} featured={true} />
         </div>
 
-        {/* 3-col grid */}
-        <div ref={gridRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {/* 4-col grid for desktop, 2-col for tablet */}
+        <div ref={gridRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           {rest.map(p => (
-            <div key={p.id} className="proj-card">
+            <div key={p.id} className="proj-card h-full">
               <ProjectCard p={p} />
             </div>
           ))}
         </div>
 
         {/* View All */}
-        {projects.length > 7 && (
+        {/* {projects.length > 5 && (
           <div className="view-all-btn mt-14 flex justify-center">
             <button onClick={() => navigateTo(ROUTES.PROJECTS)}
               className="font-body flex items-center gap-3 transition-all duration-300"
-              style={{ fontWeight:600, fontSize:'.72rem', letterSpacing:'.2em', textTransform:'uppercase',
-                color:'#C9A84C', padding:'.9rem 3rem', border:'1px solid rgba(201,168,76,0.4)',
-                background:'transparent', cursor:'pointer' }}
-              onMouseEnter={e=>{ e.currentTarget.style.background='#C9A84C'; e.currentTarget.style.color='#000'; e.currentTarget.style.transform='translateY(-2px)'; }}
-              onMouseLeave={e=>{ e.currentTarget.style.background='transparent'; e.currentTarget.style.color='#C9A84C'; e.currentTarget.style.transform='translateY(0)'; }}>
+              style={{
+                fontWeight: 600, fontSize: '.72rem', letterSpacing: '.2em', textTransform: 'uppercase',
+                color: '#C9A84C', padding: '.9rem 3rem', border: '1px solid rgba(201,168,76,0.4)',
+                background: 'transparent', cursor: 'pointer'
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = '#C9A84C'; e.currentTarget.style.color = '#000'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#C9A84C'; e.currentTarget.style.transform = 'translateY(0)'; }}>
               View All Projects
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M5 12h14M12 5l7 7-7 7"/>
+                <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
             </button>
           </div>
-        )}
+        )} */}
       </div>
     </section>
   );

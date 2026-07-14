@@ -8,6 +8,7 @@ export const ROUTES = {
   HOME: '/',
   PROJECTS: '/projects',
   CASE_STUDIES: '/case-studies',
+  ABOUT: '/about',
 };
 
 export { SECTION_SCROLL_EVENT };

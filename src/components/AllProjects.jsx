@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { projects, statusStyle } from '../data/projectsData';
 import ProjectLinks from './ProjectLinks';
+import { navigateTo } from '../routes';
 
 const ALL = 'All';
 const categories = [ALL, ...Array.from(new Set(projects.map(p => p.category)))];
@@ -46,13 +47,31 @@ function ProjectCard({ p }) {
           </span>
         </div>
 
-        <h3 className="font-title mb-3 text-white"
-          style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:'1.75rem', letterSpacing:'.04em', lineHeight:1 }}>
+        <h3 className="font-title mb-3 text-white transition-colors duration-200"
+          onClick={p.links?.caseStudy ? (e) => {
+            e.stopPropagation();
+            navigateTo(p.links.caseStudy);
+          } : undefined}
+          style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:'1.75rem', letterSpacing:'.04em', lineHeight:1,
+            cursor: p.links?.caseStudy ? 'pointer' : 'default',
+          }}
+          onMouseEnter={p.links?.caseStudy ? (e) => e.currentTarget.style.color = '#C9A84C' : undefined}
+          onMouseLeave={p.links?.caseStudy ? (e) => e.currentTarget.style.color = '#fff' : undefined}
+        >
           {p.title}
         </h3>
 
-        <p className="font-body text-sm leading-relaxed flex-1"
-          style={{ color:'rgba(255,255,255,0.46)', fontWeight:300 }}>
+        <p className="font-body text-sm leading-relaxed flex-1 transition-colors duration-200"
+          onClick={p.links?.caseStudy ? (e) => {
+            e.stopPropagation();
+            navigateTo(p.links.caseStudy);
+          } : undefined}
+          style={{ color:'rgba(255,255,255,0.46)', fontWeight:300,
+            cursor: p.links?.caseStudy ? 'pointer' : 'default',
+          }}
+          onMouseEnter={p.links?.caseStudy ? (e) => e.currentTarget.style.color = 'rgba(255,255,255,0.75)' : undefined}
+          onMouseLeave={p.links?.caseStudy ? (e) => e.currentTarget.style.color = 'rgba(255,255,255,0.46)' : undefined}
+        >
           {p.description}
         </p>
 

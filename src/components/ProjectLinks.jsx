@@ -1,13 +1,13 @@
-import { FaArrowUpRightFromSquare, FaGithub, FaArrowRight } from 'react-icons/fa6';
+import { FaArrowUpRightFromSquare, FaGithub, FaFileLines } from 'react-icons/fa6';
 import { navigateTo } from '../routes';
 
 // Shared base styling for every action button: rounded-lg, thin border, small body
 // text, and a keyboard-accessible gold focus ring.
 const BASE =
-  'inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 font-body text-xs ' +
+  'inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 font-body text-xs ' +
   'tracking-wide transition-colors duration-200 cursor-pointer ' +
   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A84C] ' +
-  'focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d0d0d]';
+  'focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d0d0d] whitespace-nowrap';
 
 export default function ProjectLinks({ project }) {
   const links = project?.links;
@@ -18,14 +18,14 @@ export default function ProjectLinks({ project }) {
   }
 
   const title = project?.title || 'project';
-  const liveLabel = project?.requiresAuth ? 'Live (login required)' : 'Live demo';
+  const liveLabel = project?.requiresAuth ? 'Live' : 'Live demo';
 
   // Stop clicks from bubbling to any parent card handlers.
   const stop = (event) => event.stopPropagation();
 
   return (
     <div
-      className="mt-4 flex flex-wrap items-center gap-2"
+      className="mt-4 flex flex-row flex-nowrap items-center gap-1.5 overflow-x-auto scrollbar-none"
       style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '1rem' }}
     >
       {links.live && (
@@ -68,8 +68,8 @@ export default function ProjectLinks({ project }) {
           aria-label={`${title} — read the case study`}
           className={`${BASE} border-white/15 bg-transparent text-white/70 hover:text-[#C9A84C] hover:border-[#C9A84C]`}
         >
+          <FaFileLines size={12} aria-hidden="true" />
           Case study
-          <FaArrowRight size={12} aria-hidden="true" />
         </button>
       )}
     </div>

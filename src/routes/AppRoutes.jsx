@@ -12,7 +12,9 @@ import Volunteer from '../components/Volunteer';
 import Contact from '../components/Contact';
 import Footer from '../components/Footer';
 import AllCaseStudies from '../components/AllCaseStudies';
-import { ROUTES, consumePendingSection, getCurrentPath, navigateTo, scrollToSection } from './index';
+import CaseStudyDetail from '../components/CaseStudyDetail';
+import AboutDetail from '../components/AboutDetail';
+import { ROUTES, consumePendingSection, getCurrentPath, navigateTo, navigateToSection, scrollToSection } from './index';
 
 function HomeRoute() {
   useEffect(() => {
@@ -22,11 +24,24 @@ function HomeRoute() {
       return undefined;
     }
 
-    const timeoutId = window.setTimeout(() => {
+    // Try scrolling after 100ms, 300ms, and 600ms to align with dynamic height changes
+    const t1 = window.setTimeout(() => {
       scrollToSection(pendingSection);
-    }, 0);
+    }, 100);
 
-    return () => window.clearTimeout(timeoutId);
+    const t2 = window.setTimeout(() => {
+      scrollToSection(pendingSection);
+    }, 300);
+
+    const t3 = window.setTimeout(() => {
+      scrollToSection(pendingSection);
+    }, 600);
+
+    return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+      window.clearTimeout(t3);
+    };
   }, []);
 
   return (
@@ -60,8 +75,17 @@ export default function AppRoutes() {
     return <AllCaseStudies />;
   }
 
+  if (pathname.startsWith(`${ROUTES.CASE_STUDIES}/`)) {
+    const slug = pathname.slice(ROUTES.CASE_STUDIES.length + 1);
+    return <CaseStudyDetail key={slug} slug={slug} />;
+  }
+
+  if (pathname === ROUTES.ABOUT) {
+    return <AboutDetail />;
+  }
+
   if (pathname === ROUTES.PROJECTS) {
-    return <AllProjects onBack={() => navigateTo(ROUTES.HOME)} />;
+    return <AllProjects onBack={() => navigateToSection('projects')} />;
   }
 
   return <HomeRoute key={pathname} />;

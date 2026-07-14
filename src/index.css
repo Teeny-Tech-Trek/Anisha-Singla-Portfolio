@@ -144,7 +144,13 @@ body::after {
   0%,100% { transform: translateY(0); }
   50%      { transform: translateY(-14px); }
 }
-.float { animation: float 6s ease-in-out infinite; }
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 
 @media (max-width: 768px) {
   html,

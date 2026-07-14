@@ -2,101 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { caseStudies } from '../data/caseStudiesData';
 import { navigateTo, ROUTES } from '../routes';
-import PdfReader from './PdfReader'; // ya jahan bhi file rakho
-
-// ─── PDF Modal ────────────────────────────────────────────────────────────────
-// function PdfModal({ study, onClose }) {
-//   useEffect(() => {
-//     document.body.style.overflow = 'hidden';
-//     return () => { document.body.style.overflow = ''; };
-//   }, []);
-
-//   return (
-//     <div
-//       className="fixed inset-0 z-50 flex flex-col"
-//       style={{ background: 'rgba(0,0,0,0.97)', backdropFilter: 'blur(8px)' }}
-//     >
-//       <div
-//         className="flex items-center justify-between px-8 md:px-14 py-4 flex-shrink-0"
-//         style={{ borderBottom: '1px solid rgba(255,255,255,0.12)' }}
-//       >
-//         <div className="flex items-center gap-4">
-//           <span className="font-body text-xs tracking-[.25em] uppercase font-semibold" style={{ color: '#C9A84C' }}>
-//             {study.category}
-//           </span>
-//           <span style={{ width: 1, height: 12, background: 'rgba(255,255,255,0.25)', display: 'inline-block' }} />
-//           <h3
-//             className="font-title text-white tracking-wider uppercase"
-//             style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '1.25rem' }}
-//           >
-//             {study.title} — {study.subtitle}
-//           </h3>
-//         </div>
-//         <div className="flex items-center gap-3">
-//           {study.pdfUrl && (
-//             <a
-//               href={study.pdfUrl}
-//               download
-//               className="font-body text-xs font-semibold tracking-[.16em] uppercase px-5 py-2 transition-all duration-200 no-underline"
-//               style={{ color: '#C9A84C', border: '1px solid rgba(201,168,76,0.5)', background: 'transparent' }}
-//               onMouseEnter={e => { e.currentTarget.style.background = '#C9A84C'; e.currentTarget.style.color = '#000'; }}
-//               onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#C9A84C'; }}
-//             >
-//               Download
-//             </a>
-//           )}
-//           <button
-//             onClick={onClose}
-//             style={{
-//               width: 36, height: 36,
-//               border: '1px solid rgba(255,255,255,0.2)',
-//               color: 'rgba(255,255,255,0.7)',
-//               background: 'transparent', cursor: 'pointer',
-//               fontSize: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center',
-//             }}
-//             onMouseEnter={e => { e.currentTarget.style.borderColor = '#C9A84C'; e.currentTarget.style.color = '#C9A84C'; }}
-//             onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'; e.currentTarget.style.color = 'rgba(255,255,255,0.7)'; }}
-//           >
-//             ✕
-//           </button>
-//         </div>
-//       </div>
-
-//       <div className="flex-1 overflow-hidden p-6 md:p-8">
-//         {study.pdfUrl ? (
-//           <iframe src={study.pdfUrl} className="w-full h-full" style={{ border: 'none' }} title={study.title} />
-//         ) : (
-//           <div className="w-full h-full flex flex-col items-center justify-center gap-5 text-center">
-//             <div style={{
-//               width: 64, height: 64,
-//               border: '1px solid rgba(201,168,76,0.3)',
-//               display: 'flex', alignItems: 'center', justifyContent: 'center',
-//               color: 'rgba(201,168,76,0.6)',
-//             }}>
-//               <svg width="26" height="26" viewBox="0 0 22 22" fill="none">
-//                 <rect x="2" y="1" width="13" height="18" rx="2" stroke="currentColor" strokeWidth="1.2" />
-//                 <path d="M13 1v6h7" stroke="currentColor" strokeWidth="1.2" />
-//                 <path d="M5 10h8M5 13h5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-//               </svg>
-//             </div>
-//             <div>
-//               <p className="font-title mb-2" style={{
-//                 fontFamily: "'Bebas Neue', sans-serif",
-//                 fontSize: '2.2rem', letterSpacing: '.1em',
-//                 color: 'rgba(255,255,255,0.5)',
-//               }}>
-//                 Coming Soon
-//               </p>
-//               <p className="font-body text-sm" style={{ color: 'rgba(255,255,255,0.4)' }}>
-//                 This case study PDF hasn't been attached yet.
-//               </p>
-//             </div>
-//           </div>
-//         )}
-//       </div>
-//     </div>
-//   );
-// }
 
 // ─── Study Row ────────────────────────────────────────────────────────────────
 function StudyRow({ study, onClick }) {
@@ -262,7 +167,6 @@ const categories = [ALL, ...Array.from(new Set(caseStudies.map(s => s.category))
 
 export default function AllCaseStudies() {
   const [activeFilter, setActiveFilter] = useState(ALL);
-  const [activeStudy, setActiveStudy]   = useState(null);
   const pageRef = useRef(null);
 
   const handleBack = () => navigateTo(ROUTES.HOME);
@@ -381,7 +285,7 @@ export default function AllCaseStudies() {
           {/* Rows list */}
           <div>
             {filtered.map(study => (
-              <StudyRow key={study.id} study={study} onClick={() => setActiveStudy(study)} />
+              <StudyRow key={study.id} study={study} onClick={() => navigateTo(`${ROUTES.CASE_STUDIES}/${study.slug}`)} />
             ))}
           </div>
 
@@ -420,12 +324,6 @@ export default function AllCaseStudies() {
 
         </div>
       </div>
-
-      {/* PDF Modal */}
-      {/* PDF Reader */}
-{activeStudy && (
-  <PdfReader study={activeStudy} onClose={() => setActiveStudy(null)} />
-)}
     </>
   );
 }
