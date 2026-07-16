@@ -110,7 +110,11 @@ function ProjectCard({ p, featured = false }) {
 
         {/* Footer */}
         <div className="mt-5">
-          <div className="flex flex-wrap gap-1.5 mb-4">
+          {/* Tech tags are inert labels: they must not navigate. The card
+              wrapper has a click-to-open handler, so stop the event here and
+              use a default cursor so hover doesn't imply clickability. */}
+          <div className="flex flex-wrap gap-1.5 mb-4 cursor-default"
+            onClick={(e) => e.stopPropagation()}>
             {p.tags.map(t => (
               <span key={t} className="font-body text-xs px-2.5 py-1"
                 style={{

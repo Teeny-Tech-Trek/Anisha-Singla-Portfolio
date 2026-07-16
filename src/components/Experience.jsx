@@ -100,7 +100,7 @@ function getTags(exp) {
   return [];
 }
 
-function Card({ exp, index, isActive, onToggle }) {
+function Card({ exp, index, onToggle }) {
   const panelId = `tl-panel-${index}`;
   const tags = getTags(exp);
 
@@ -108,14 +108,13 @@ function Card({ exp, index, isActive, onToggle }) {
     <article className="tl-card">
       {exp.badge && <span className="tl-badge">{exp.badge}</span>}
 
-      {/* Header is a real button → click + Enter/Space toggle, keyboard
-          accessible, with aria-expanded / aria-controls. Scroll drives
-          the exact same active state. */}
+      {/* Header is a real button → click + Enter/Space set the active
+          (highlighted) card; scroll drives the same state. It's a highlight
+          control, not a disclosure — the body below is always visible, so no
+          aria-expanded/aria-controls (that would misreport hidden content). */}
       <button
         type="button"
         className="tl-head"
-        aria-expanded={isActive}
-        aria-controls={panelId}
         onClick={() => onToggle(index)}
       >
         <h3 className="tl-role">{exp.role}</h3>
@@ -123,10 +122,8 @@ function Card({ exp, index, isActive, onToggle }) {
         <p className="tl-meta">{exp.period} · {exp.location}</p>
       </button>
 
-      {/* CSS-grid reveal: real layout height animates 0fr → 1fr so text
-          stays crisp (no scaleY fakery). Inner content fades/slides in
-          slightly after the height opens. */}
-      <div id={panelId} className="tl-reveal" role="region" aria-hidden={!isActive}>
+      {/* Body is always rendered and always visible (no collapse). */}
+      <div id={panelId} className="tl-reveal">
         <div className="tl-reveal-inner">
           <div className="tl-reveal-content">
             {tags.length > 0 && (
@@ -176,16 +173,33 @@ export default function Experience() {
   }, []);
 
   // ── one-by-one entrance: each row reveals as it scrolls into view ──
-  useEffect(() => {
+  // Runs in a layout effect so the hidden pre-state (`.js-anim`) is applied
+  // BEFORE the browser paints — no fade-out flash, and if this effect never
+  // runs the rows stay in their visible CSS default (no content loss).
+  useLayoutEffect(() => {
     const el = track.current;
     if (!el) return;
     const rows = el.querySelectorAll('.tl-row');
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+
+    // Reduced motion or no IntersectionObserver → leave rows in their
+    // visible default; never opt into the hidden pre-state.
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce || typeof IntersectionObserver === 'undefined') {
       rows.forEach((r) => r.classList.add('seen'));
       return;
     }
+
+    // Opt in: apply the hidden pre-state, then reveal each row once as it
+    // enters. `.seen` is never removed, so scrolling away and back keeps
+    // rows visible (the requirement: revealed → stays revealed).
+    el.classList.add('js-anim');
     const io = new IntersectionObserver(
-      (entries) => entries.forEach((e) => e.isIntersecting && e.target.classList.add('seen')),
+      (entries) => entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add('seen');
+          io.unobserve(e.target);
+        }
+      }),
       { threshold: 0.12, rootMargin: '0px 0px -6% 0px' }
     );
     rows.forEach((r) => io.observe(r));
@@ -295,7 +309,7 @@ export default function Experience() {
                 className={`tl-row ${isLeft ? 'left' : 'right'}${isActive ? ' is-active' : ''}${isLit ? ' is-lit' : ''}`}
               >
                 <span className="tl-node" aria-hidden="true" />
-                <Card exp={exp} index={i} isActive={isActive} onToggle={handleToggle} />
+                <Card exp={exp} index={i} onToggle={handleToggle} />
               </div>
             );
           })}

@@ -76,7 +76,9 @@ function ProjectCard({ p }) {
         </p>
 
         <div className="mt-5">
-          <div className="flex flex-wrap gap-1.5 mb-4">
+          {/* Inert tech tags — never navigate (parity with the homepage card). */}
+          <div className="flex flex-wrap gap-1.5 mb-4 cursor-default"
+            onClick={(e) => e.stopPropagation()}>
             {p.tags.map(t => (
               <span key={t} className="font-body text-xs px-2.5 py-1"
                 style={{ background:'rgba(255,255,255,0.04)', color:'rgba(255,255,255,0.36)',

@@ -59,8 +59,10 @@ export default function Navbar() {
         <span className="max-w-[70vw] shrink min-w-0 cursor-pointer whitespace-nowrap font-title text-lg tracking-[.18em] text-gold sm:text-2xl sm:tracking-[.3em]"
           onClick={() => navigateToSection('home')}>ANISHA.</span>
 
-        {/* desktop */}
-        <ul className="hidden md:flex items-center gap-8">
+        {/* desktop — full horizontal nav only once there's room for all
+            links + the logo (~1060px). Below xl we use the hamburger so the
+            links never overlap the logo at tablet / small-laptop widths. */}
+        <ul className="hidden xl:flex items-center gap-8">
           {links.map(link => link.label === 'Projects' ? (
             <li key={link.label}>
               <button onClick={() => go(link)}
@@ -80,13 +82,13 @@ export default function Navbar() {
         </ul>
 
         {/* hamburger */}
-        <button className="ml-4 shrink-0 text-gold md:hidden" onClick={() => setOpen(!open)}>
+        <button className="ml-4 shrink-0 text-gold xl:hidden" onClick={() => setOpen(!open)}>
           {open ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
       {open && (
-        <div className="flex w-full max-w-full flex-col gap-5 overflow-x-hidden border-t border-gold/10 bg-black/95 px-5 py-6 sm:px-6 md:hidden">
+        <div className="flex w-full max-w-full flex-col gap-5 overflow-x-hidden border-t border-gold/10 bg-black/95 px-5 py-6 sm:px-6 xl:hidden">
           {links.map(link => (
             <button key={link.label} onClick={() => go(link)}
               className="font-body text-sm tracking-widest uppercase text-gray-300 hover:text-gold text-left transition-colors">

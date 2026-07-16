@@ -95,14 +95,24 @@
   position: relative;
   padding-left: 3.2rem;
   margin-bottom: 2.2rem;
-  opacity: 0;
-  transform: translateY(44px) scale(.9);
+  /* Default = VISIBLE. If JS never runs (disabled / errored / no IO
+     support) the entire work history is still readable — never a blank
+     section. The hidden pre-state below is opted into by JS only. */
+  opacity: 1;
+  transform: none;
   transform-origin: center top;
   transition: opacity 1.1s ease, transform 1.2s var(--ease);
   will-change: transform, opacity;
 }
 
-.tl-row.seen {
+/* Hidden pre-state — applied ONLY once JS adds `.js-anim` to the track
+   (see Experience.jsx). Rows animate back to visible when `.seen` lands. */
+.tl-track.js-anim .tl-row {
+  opacity: 0;
+  transform: translateY(44px) scale(.9);
+}
+
+.tl-track.js-anim .tl-row.seen {
   opacity: 1;
   transform: none;
 }
@@ -112,13 +122,13 @@
     padding-left: 0;
     margin-bottom: 2.6rem;
   }
-  .tl-row.left {
+  .tl-track.js-anim .tl-row.left {
     transform: translate(-32px, 44px) scale(.9);
   }
-  .tl-row.right {
+  .tl-track.js-anim .tl-row.right {
     transform: translate(32px, 44px) scale(.9);
   }
-  .tl-row.seen {
+  .tl-track.js-anim .tl-row.seen {
     transform: none;
   }
   .tl-row.left .tl-card {
@@ -140,8 +150,9 @@
   border-radius: 50%;
   background: #0c0c0c;
   border: 2px solid rgba(201, 168, 76, .45);
-  opacity: 0;
-  transform: translate(-50%, -50%) scale(0);
+  /* Default = VISIBLE (see .tl-row rationale). Hidden pre-state under .js-anim. */
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
   transition: transform .5s cubic-bezier(.34, 1.56, .64, 1) .16s,
               opacity .35s ease .16s,
               background .5s ease,
@@ -157,9 +168,9 @@
   }
 }
 
-.tl-row.seen .tl-node {
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
+.tl-track.js-anim .tl-row:not(.seen) .tl-node {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0);
 }
 
 .tl-row.is-lit .tl-node {
@@ -215,7 +226,7 @@
   background: linear-gradient(to left, var(--gold-lite), rgba(201, 168, 76, .2));
 }
 
-.tl-row:not(.seen) .tl-card::before {
+.tl-track.js-anim .tl-row:not(.seen) .tl-card::before {
   width: 0;
 }
 
@@ -235,13 +246,12 @@
               padding 0.6s var(--ease);
 }
 
-/* every non-active card stays collapsed + slightly dimmed */
-.tl-row:not(.is-active) .tl-card {
-  opacity: .6;
-}
-
+/* Every card renders fully readable at opacity 1 — no dim, ever. The active
+   state is purely additive decoration (border / glow / role colour / node);
+   no card is ever less readable than another. Muted header text colours are
+   kept exactly as authored on the text elements, not multiplied by a card
+   opacity. */
 .tl-row:not(.is-active) .tl-card:hover {
-  opacity: .82;
   --lift: -2px;
   border-color: rgba(201, 168, 76, .24);
 }
@@ -322,14 +332,13 @@
   margin: 0;
 }
 
-/* ── reveal: real layout height via grid 0fr → 1fr (crisp text) ── */
+/* ── reveal: bodies are ALWAYS open ──
+   Every card shows its tags + bullets regardless of active state. The active
+   state is decoration, not disclosure — so no card's content is ever hidden
+   or collapsed. Content becomes readable with the row's entrance fade and
+   stays readable thereafter. */
 .tl-reveal {
   display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.6s var(--ease);
-}
-
-.tl-row.is-active .tl-reveal {
   grid-template-rows: 1fr;
 }
 
@@ -338,17 +347,9 @@
   min-height: 0;
 }
 
-/* inner content fades / slides in slightly AFTER the height opens */
 .tl-reveal-content {
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.4s ease, transform 0.4s var(--ease);
-}
-
-.tl-row.is-active .tl-reveal-content {
   opacity: 1;
   transform: none;
-  transition-delay: 0.15s;
 }
 
 .tl-tags {
