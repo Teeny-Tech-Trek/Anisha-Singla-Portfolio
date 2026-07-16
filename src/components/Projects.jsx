@@ -11,6 +11,20 @@ gsap.registerPlugin(ScrollTrigger);
 function ProjectCard({ p, featured = false }) {
   const cardRef = useRef(null);
 
+  // A project with a live URL opens that URL on card click; other cards browse
+  // to the all-projects page (the featured card only browses if it has no live URL).
+  const liveClickable = !!p.links?.live;
+  const clickable = liveClickable || !featured;
+
+  const handleCardClick = (e) => {
+    if (e.target.closest('a') || e.target.closest('button')) return;
+    if (liveClickable) {
+      window.open(p.links.live, '_blank', 'noopener,noreferrer');
+    } else if (!featured) {
+      navigateTo(ROUTES.PROJECTS);
+    }
+  };
+
   const handleEnter = () => {
     gsap.to(cardRef.current, {
       y: featured ? -4 : -7, duration: .35, ease: 'power2.out',
@@ -36,16 +50,11 @@ function ProjectCard({ p, featured = false }) {
         borderTop: `2px solid ${featured ? '#C9A84C' : 'rgba(201,168,76,0.3)'}`,
         transition: 'box-shadow .35s ease',
         height: '100%',
-        cursor: featured ? 'default' : 'pointer',
+        cursor: clickable ? 'pointer' : 'default',
       }}
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
-      onClick={!featured ? (e) => {
-        if (e.target.closest('a') || e.target.closest('button')) {
-          return;
-        }
-        navigateTo(ROUTES.PROJECTS);
-      } : undefined}
+      onClick={clickable ? handleCardClick : undefined}
     >
       <div className="absolute inset-0 pointer-events-none" style={{ background: p.gradient, opacity: .6 }} />
 
@@ -70,29 +79,18 @@ function ProjectCard({ p, featured = false }) {
         </div>
 
         {/* Title */}
-        <h3 className="font-title mb-3 text-white transition-colors duration-200"
-          onClick={p.links?.caseStudy ? (e) => {
-            e.stopPropagation();
-            navigateTo(p.links.caseStudy);
-          } : undefined}
+        <h3 className="font-title mb-3 text-white"
           style={{
             fontFamily: "'Bebas Neue', sans-serif",
             fontSize: featured ? 'clamp(2rem,3.5vw,2.8rem)' : '1.75rem',
             letterSpacing: '.04em', lineHeight: 1,
-            cursor: p.links?.caseStudy ? 'pointer' : 'default',
           }}
-          onMouseEnter={p.links?.caseStudy ? (e) => e.currentTarget.style.color = '#C9A84C' : undefined}
-          onMouseLeave={p.links?.caseStudy ? (e) => e.currentTarget.style.color = '#fff' : undefined}
         >
           {p.title}
         </h3>
 
         {/* Desc */}
-        <p className="font-body text-sm leading-relaxed flex-1 transition-colors duration-200"
-          onClick={p.links?.caseStudy ? (e) => {
-            e.stopPropagation();
-            navigateTo(p.links.caseStudy);
-          } : undefined}
+        <p className="font-body text-sm leading-relaxed flex-1"
           style={{
             color: 'rgba(255,255,255,0.48)',
             fontWeight: 300,
@@ -100,10 +98,7 @@ function ProjectCard({ p, featured = false }) {
             WebkitLineClamp: featured ? 'unset' : 2,
             WebkitBoxOrient: 'vertical',
             overflow: featured ? 'visible' : 'hidden',
-            cursor: p.links?.caseStudy ? 'pointer' : 'default',
           }}
-          onMouseEnter={p.links?.caseStudy ? (e) => e.currentTarget.style.color = 'rgba(255,255,255,0.75)' : undefined}
-          onMouseLeave={p.links?.caseStudy ? (e) => e.currentTarget.style.color = 'rgba(255,255,255,0.48)' : undefined}
         >
           {p.description}
         </p>
@@ -228,7 +223,7 @@ export default function Projects() {
         </div>
 
         {/* View All */}
-        {/* {projects.length > 5 && (
+        {projects.length > 5 && (
           <div className="view-all-btn mt-14 flex justify-center">
             <button onClick={() => navigateTo(ROUTES.PROJECTS)}
               className="font-body flex items-center gap-3 transition-all duration-300"
@@ -245,7 +240,7 @@ export default function Projects() {
               </svg>
             </button>
           </div>
-        )} */}
+        )}
       </div>
     </section>
   );

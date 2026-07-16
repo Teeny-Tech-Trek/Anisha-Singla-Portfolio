@@ -2,13 +2,19 @@ import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { projects, statusStyle } from '../data/projectsData';
 import ProjectLinks from './ProjectLinks';
-import { navigateTo } from '../routes';
 
 const ALL = 'All';
 const categories = [ALL, ...Array.from(new Set(projects.map(p => p.category)))];
 
 function ProjectCard({ p }) {
   const cardRef = useRef(null);
+
+  // Clicking a card that has a live URL opens the live site directly.
+  const liveClickable = !!p.links?.live;
+  const handleCardClick = (e) => {
+    if (e.target.closest('a') || e.target.closest('button')) return;
+    if (liveClickable) window.open(p.links.live, '_blank', 'noopener,noreferrer');
+  };
 
   const handleEnter = () => {
     gsap.to(cardRef.current, { y: -6, duration: .3, ease: 'power2.out',
@@ -25,8 +31,10 @@ function ProjectCard({ p }) {
   return (
     <div ref={cardRef} className="relative overflow-hidden"
       style={{ background:'#0d0d0d', border:'1px solid rgba(255,255,255,0.07)',
-        borderTop:'2px solid rgba(201,168,76,0.35)', transition:'box-shadow .3s ease', height:'100%' }}
-      onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
+        borderTop:'2px solid rgba(201,168,76,0.35)', transition:'box-shadow .3s ease', height:'100%',
+        cursor: liveClickable ? 'pointer' : 'default' }}
+      onMouseEnter={handleEnter} onMouseLeave={handleLeave}
+      onClick={liveClickable ? handleCardClick : undefined}>
 
       <div className="absolute inset-0 pointer-events-none" style={{ background: p.gradient, opacity: .55 }}/>
 
@@ -47,30 +55,14 @@ function ProjectCard({ p }) {
           </span>
         </div>
 
-        <h3 className="font-title mb-3 text-white transition-colors duration-200"
-          onClick={p.links?.caseStudy ? (e) => {
-            e.stopPropagation();
-            navigateTo(p.links.caseStudy);
-          } : undefined}
-          style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:'1.75rem', letterSpacing:'.04em', lineHeight:1,
-            cursor: p.links?.caseStudy ? 'pointer' : 'default',
-          }}
-          onMouseEnter={p.links?.caseStudy ? (e) => e.currentTarget.style.color = '#C9A84C' : undefined}
-          onMouseLeave={p.links?.caseStudy ? (e) => e.currentTarget.style.color = '#fff' : undefined}
+        <h3 className="font-title mb-3 text-white"
+          style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:'1.75rem', letterSpacing:'.04em', lineHeight:1 }}
         >
           {p.title}
         </h3>
 
-        <p className="font-body text-sm leading-relaxed flex-1 transition-colors duration-200"
-          onClick={p.links?.caseStudy ? (e) => {
-            e.stopPropagation();
-            navigateTo(p.links.caseStudy);
-          } : undefined}
-          style={{ color:'rgba(255,255,255,0.46)', fontWeight:300,
-            cursor: p.links?.caseStudy ? 'pointer' : 'default',
-          }}
-          onMouseEnter={p.links?.caseStudy ? (e) => e.currentTarget.style.color = 'rgba(255,255,255,0.75)' : undefined}
-          onMouseLeave={p.links?.caseStudy ? (e) => e.currentTarget.style.color = 'rgba(255,255,255,0.46)' : undefined}
+        <p className="font-body text-sm leading-relaxed flex-1"
+          style={{ color:'rgba(255,255,255,0.46)', fontWeight:300 }}
         >
           {p.description}
         </p>

@@ -1,7 +1,7 @@
 
 
 import { useEffect, useRef, useState } from 'react';
-import { scrollToSection } from '../routes';
+import { scrollToSection, navigateTo, ROUTES } from '../routes';
 import SocialBar from './SocialBar';
 
 // ── Typewriter hook ──────────────────────────────────────────────
@@ -77,9 +77,9 @@ export default function Hero() {
 
   const LINE1 = 'Hey, there';
   const LINE2 = 'I AM ANISHA\nSINGLA';
-  const LINE3 = 'Applied AI Builder & Strategy Professional';
-  const LINE4 = 'Designing practical AI systems across agentic workflows, RAG, automation, and responsible AI adoption';
-  const LINE5 = 'Founder, Teeny Tech Trek | Applied AI + Project Management | AI Governance |AI Implementation';
+  const LINE3 = 'AI Strategist & Founder · Teeny Tech Trek';
+  const LINE4 = 'AI Implementation & Enablement · Agentic Workflows · RAG Systems · AI Governance';
+  const LINE5 = 'Toronto, Canada · Valid Canadian work permit — no sponsorship required · Open to full-time roles across Canada (hybrid or remote)';
 
   const VIDEO_READY_TEXT_DELAY_MS = 1000;
   const TYPE_SEQUENCE_START_DELAY_MS = 0;
@@ -689,6 +689,23 @@ export default function Hero() {
                   </svg>
                   Resume
                 </a>
+                <button
+                  className="hero-button rounded-lg"
+                  style={{
+                    fontWeight: 700,
+                    color: '#000',
+                    background: '#C9A84C',
+                    border: '1px solid #C9A84C',
+                    cursor: 'pointer', transition: 'all 0.3s ease',
+                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                    gap: '0.5rem',
+                  }}
+                  onClick={() => navigateTo(ROUTES.ABOUT)}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#C9A84C'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = '#C9A84C'; e.currentTarget.style.color = '#000'; }}
+                >
+                  Hire Me →
+                </button>
               </div>
 
               {/* Social links */}

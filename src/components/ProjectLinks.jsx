@@ -1,4 +1,4 @@
-import { FaArrowUpRightFromSquare, FaGithub, FaFileLines } from 'react-icons/fa6';
+import { FaGithub, FaFileLines } from 'react-icons/fa6';
 import { navigateTo } from '../routes';
 
 // Shared base styling for every action button: rounded-lg, thin border, small body
@@ -12,13 +12,13 @@ const BASE =
 export default function ProjectLinks({ project }) {
   const links = project?.links;
 
-  // Render nothing at all when there are no links — never an empty/"#" button.
-  if (!links || (!links.live && !links.code && !links.caseStudy)) {
+  // The live/demo link is intentionally NOT a button — clicking the card itself
+  // opens the live site (see Projects/AllProjects). Only Code + Case study render here.
+  if (!links || (!links.code && !links.caseStudy)) {
     return null;
   }
 
   const title = project?.title || 'project';
-  const liveLabel = project?.requiresAuth ? 'Live' : 'Live demo';
 
   // Stop clicks from bubbling to any parent card handlers.
   const stop = (event) => event.stopPropagation();
@@ -28,20 +28,6 @@ export default function ProjectLinks({ project }) {
       className="mt-4 flex flex-row flex-nowrap items-center gap-1.5 overflow-x-auto scrollbar-none"
       style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '1rem' }}
     >
-      {links.live && (
-        <a
-          href={links.live}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={stop}
-          aria-label={`${title} — ${liveLabel} (opens in new tab)`}
-          className={`${BASE} border-white bg-white text-black hover:bg-[#C9A84C] hover:border-[#C9A84C]`}
-        >
-          <FaArrowUpRightFromSquare size={12} aria-hidden="true" />
-          {liveLabel}
-        </a>
-      )}
-
       {links.code && (
         <a
           href={links.code}

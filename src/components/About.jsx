@@ -5,9 +5,10 @@ import { navigateTo, ROUTES } from '../routes';
 const linkedInHref = socials.find((s) => s.label === 'LinkedIn')?.href;
 
 const stats = [
-  { value:'3+', label:'Years of Experience', sub:'AI & Tech Industry' },
-  { value:'1', label:'Company Founded',     sub:'Teeny Tech Trek' },
-  { value:'2',  label:'Postgraduate Degrees',sub:'AI & Project Management' },
+  { value:'10+', label:'Client AI Deployments', sub:'Real estate, immigration, education' },
+  { value:'100%', label:'On-Time Delivery',      sub:'Across every engagement' },
+  { value:'4+',  label:'Years in Tech & Delivery', sub:'AI & project management' },
+  { value:'CA',  label:'Work-Permit Holder',     sub:'Authorized to work in Canada' },
 ];
 
 export default function About() {
@@ -32,10 +33,13 @@ export default function About() {
           {/* Left text */}
           <div ref={leftRef} className="flex flex-col items-start">
             <p className="stagger font-body text-lg leading-relaxed mb-5" style={{color:'rgba(255,255,255,0.68)',fontWeight:300}}>
-              I'm <span className="text-gold font-semibold">Anisha Singla</span>, an Applied AI and Project Management professional who turns AI ideas into practical systems that solve real business problems. I studied Applied Artificial Intelligence Solutions and Project Management at George Brown College in Toronto and hold a valid Canadian work permit, so I'm authorized to work in Canada.
+              I'm <span className="text-gold font-semibold">Anisha Singla</span>, an Applied AI and Project Management professional who takes AI from idea to production — RAG chatbots, AI agents, workflow automation, and governance-ready systems that hold up with real users and real data.
             </p>
             <p className="stagger font-body text-lg leading-relaxed mb-5" style={{color:'rgba(255,255,255,0.5)',fontWeight:300}}>
-              I founded <span className="text-gold font-semibold">Teeny Tech Trek</span>, an applied-AI studio, to work at the intersection of building and strategy. There I've designed and shipped AI assistants, chatbots, workflow automation, and business-facing prototypes for lean teams, which taught me that the hard part isn't an impressive demo, but turning it into something reliable that fits real users, real data, and real operational limits.
+              As Founder of <span className="text-gold font-semibold">Teeny Tech Trek</span>, an applied-AI studio, I've delivered production-grade AI systems for 10+ clients across real estate, immigration, and education — owning everything from requirements and solution architecture to LLM engineering, delivery, and stakeholder management, with 100% on-time delivery. I also lead automation R&D in manufacturing, bringing AI and process automation into a traditional precision-engineering business.
+            </p>
+            <p className="stagger font-body text-lg leading-relaxed mb-5" style={{color:'rgba(255,255,255,0.5)',fontWeight:300}}>
+              I studied Applied AI Solutions and Project Management at George Brown College in Toronto, and I hold a valid Canadian work permit — I'm authorized to work in Canada without sponsorship.
             </p>
             
             <button

@@ -101,12 +101,14 @@ const workItems = [
 
 const timeline = [
   { era: 'Early Career', text: 'My career began in computer engineering and frontend development, where I learned the importance of building solutions that work reliably for real users.' },
+  { era: 'Manufacturing & Digital Transformation', text: 'Before and after my time in Toronto, I worked with Appu International, a precision-engineering manufacturer \u2014 first implementing its earliest digital systems (raising adoption from 10% to 40% in three months), and later returning to lead international business development and automation R&D. Bringing AI and automation into a traditional factory taught me that adoption, training, and change management matter as much as the technology.' },
   { era: 'Toronto', text: 'After moving to Toronto, I completed postgraduate programs in Applied AI Solutions and Project Management at George Brown College \u2014 understanding both how AI systems are built and how they should be planned, communicated, and delivered.' },
   { era: 'AI Club & startGBC', text: 'I served as Vice President and later President of the AI Club, organizing workshops for a community interested in practical AI, and worked with startGBC helping early-stage founders validate ideas and think through go-to-market plans.' },
   { era: '2024 \u2014 Teeny Tech Trek', text: 'I founded Teeny Tech Trek to combine AI implementation with business strategy \u2014 gaining experience in client discovery, requirement gathering, solution architecture, and end-to-end delivery.' },
 ];
 
 const roles = [
+  'AI Business Analyst / Business Analyst (AI Implementation & Enablement)',
   'AI Product or Program Manager',
   'Applied AI Consultant',
   'Forward-Deployed AI Engineer',
@@ -198,7 +200,7 @@ export default function AboutDetail() {
 
             <div className="flex flex-col gap-6">
               <p className="font-body text-base md:text-lg leading-relaxed" style={{ color: 'rgba(255,255,255,0.85)', fontWeight: 300 }}>
-                I'm <span className="font-semibold text-white">Anisha Singla</span>, an Applied AI and Project Management professional who turns business challenges into practical AI solutions, including RAG assistants, agentic workflows, automations, and governance-ready systems.
+                I'm <span className="font-semibold text-white">Anisha Singla</span>, an Applied AI and Project Management professional working at the intersection of AI implementation, business analysis, and delivery. I turn business problems into production AI systems &mdash; RAG assistants, agentic workflows, automations, and governance-ready deployments &mdash; and I've done it for 10+ clients across real estate, immigration, and education, plus automation R&amp;D inside a traditional manufacturing business.
               </p>
               <p className="font-body text-sm md:text-base leading-relaxed" style={{ color: 'rgba(255,255,255,0.65)', fontWeight: 300 }}>
                 I hold postgraduate credentials in Applied AI Solutions and Project Management from George Brown College in Toronto. I'm also the founder of Teeny Tech Trek, where I manage AI projects from initial discovery and solution design through implementation and delivery.
@@ -236,10 +238,11 @@ export default function AboutDetail() {
             <div className="p-7 md:border-r" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
               <h3 className="font-body text-xs tracking-[.2em] uppercase font-semibold text-white/90 mb-4">Background</h3>
               <ul className="list-none p-0 m-0 flex flex-col gap-3 text-[.8rem] text-white/60 leading-snug">
-                <li className="flex gap-2.5"><GoldCheck /><span><strong className="text-white/85 font-medium">Founder, Teeny Tech Trek</strong> &mdash; Applied AI studio</span></li>
-                <li className="flex gap-2.5"><GoldCheck /><span>Postgraduate credentials in AI &amp; PM</span></li>
+                <li className="flex gap-2.5"><GoldCheck /><span><strong className="text-white/85 font-medium">Founder &amp; AI Strategist, Teeny Tech Trek</strong> &mdash; 10+ client AI deployments, 100% on-time delivery</span></li>
+                <li className="flex gap-2.5"><GoldCheck /><span>Automation R&amp;D Lead in manufacturing &mdash; 5 process automations, Industry 4.0 pilots</span></li>
+                <li className="flex gap-2.5"><GoldCheck /><span>Postgraduate credentials in Applied AI Solutions &amp; Project Management (George Brown College, Toronto)</span></li>
                 <li className="flex gap-2.5"><GoldCheck /><span>B.Tech in Computer Engineering</span></li>
-                <li className="flex gap-2.5"><GoldCheck /><span>Authorized to work in Canada (work permit)</span></li>
+                <li className="flex gap-2.5"><GoldCheck /><span>Authorized to work in Canada &mdash; valid work permit, no sponsorship required</span></li>
               </ul>
             </div>
 
@@ -325,6 +328,9 @@ export default function AboutDetail() {
             </div>
             <p>
               I hold a valid Canadian work permit and do not require sponsorship to begin working. I'm open to opportunities across Canada, including hybrid and remote roles.
+            </p>
+            <p>
+              I'm currently based between Toronto and India while completing current client commitments, and I'm available to begin working in Canada.
             </p>
 
             {/* CTA bar */}

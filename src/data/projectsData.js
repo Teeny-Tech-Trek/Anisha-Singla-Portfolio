@@ -189,7 +189,7 @@ export const projects = [
 ];
 
 export const statusStyle = {
-  Live: { bg: 'rgba(80,220,120,0.15)', color: '#4dde8a', border: 'rgba(80,220,120,0.4)' },
+  // Live: { bg: 'rgba(80,220,120,0.15)', color: '#4dde8a', border: 'rgba(80,220,120,0.4)' },
   Beta: { bg: 'rgba(255,180,50,0.15)', color: '#ffb432', border: 'rgba(255,180,50,0.4)' },
   Completed: { bg: 'rgba(120,160,255,0.15)', color: '#7898ff', border: 'rgba(120,160,255,0.4)' },
   'In Progress': { bg: 'rgba(201,168,76,0.15)', color: '#C9A84C', border: 'rgba(201,168,76,0.4)' },
