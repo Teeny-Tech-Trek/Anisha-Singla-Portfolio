@@ -14,6 +14,7 @@ import Footer from '../components/Footer';
 import AllCaseStudies from '../components/AllCaseStudies';
 import CaseStudyDetail from '../components/CaseStudyDetail';
 import AboutDetail from '../components/AboutDetail';
+import NotFound from '../components/NotFound';
 import { ROUTES, consumePendingSection, getCurrentPath, navigateTo, navigateToSection, scrollToSection } from './index';
 
 function HomeRoute() {
@@ -71,6 +72,10 @@ export default function AppRoutes() {
     return () => window.removeEventListener('popstate', handleRouteChange);
   }, []);
 
+  if (pathname === ROUTES.HOME) {
+    return <HomeRoute key={pathname} />;
+  }
+
   if (pathname === ROUTES.CASE_STUDIES) {
     return <AllCaseStudies />;
   }
@@ -88,5 +93,5 @@ export default function AppRoutes() {
     return <AllProjects onBack={() => navigateToSection('projects')} />;
   }
 
-  return <HomeRoute key={pathname} />;
+  return <NotFound />;
 }
