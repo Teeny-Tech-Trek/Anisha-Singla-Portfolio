@@ -466,7 +466,7 @@ export default function Hero() {
         @media (max-width: 768px) {
           .hero-content {
             align-items: flex-end;
-            padding: 6.25rem 0 2rem;
+            padding: 5.5rem 0 1.5rem;
           }
           .hero-inner {
             padding: 0 1rem;
@@ -492,8 +492,8 @@ export default function Hero() {
           .hero-copy {
             width: 100%;
             max-width: none;
-            align-items: center;
-            text-align: center;
+            align-items: flex-start;
+            text-align: left;
             margin-left: 0;
           }
           .hero-copy > * {
@@ -506,32 +506,44 @@ export default function Hero() {
           .hero-badge-row,
           .hero-actions,
           .hero-link-row {
-            justify-content: center;
+            justify-content: flex-start;
           }
           .hero-stats {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            justify-items: center;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            justify-items: start;
+            column-gap: 0.6rem;
+            row-gap: 0;
+          }
+          .hero-stat {
+            text-align: left;
+            min-width: 0;
+          }
+          .hero-stat-label {
+            max-width: none;
           }
           .hero-tagline {
             max-width: 30rem;
-            margin-left: auto;
+            margin-left: 0;
             margin-right: auto;
             min-height: 0;
           }
           .hero-actions {
             flex-direction: column;
-            align-items: center;
+            align-items: flex-start;
+            margin-top: 1.25rem;
           }
           .hero-button {
             width: min(100%, 20rem);
           }
           .hero-link-row {
             flex-direction: column;
+            align-items: flex-start;
             gap: 0.65rem;
+            margin-top: 1rem;
           }
           .hero-link {
-            text-align: center;
+            text-align: left;
           }
         }
         @media (max-width: 480px) {
@@ -561,10 +573,11 @@ export default function Hero() {
             font-size: 0.94rem;
             line-height: 1.55;
             max-width: 21rem;
+            margin-top: 1rem;
           }
           .hero-actions {
             gap: 0.75rem;
-            margin-top: 1.5rem;
+            margin-top: 1.1rem;
           }
           .hero-button {
             padding: 0.8rem 1rem;
@@ -574,15 +587,17 @@ export default function Hero() {
             letter-spacing: 0.14em;
           }
           .hero-stats {
-            gap: 1.1rem;
+            column-gap: 0.4rem;
+            row-gap: 0;
             margin-top: 1.5rem;
             padding-top: 1.1rem;
           }
           .hero-stat-value {
-            font-size: clamp(1.3rem, 7vw, 1.7rem);
+            font-size: clamp(1.1rem, 6vw, 1.7rem);
           }
           .hero-stat-label {
-            font-size: 0.56rem;
+            font-size: 0.52rem;
+            line-height: 1.3;
           }
         }
         @media (max-height: 760px) and (min-width: 769px) {

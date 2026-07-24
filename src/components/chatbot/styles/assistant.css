@@ -214,6 +214,13 @@
 .assistant-launcher:hover { transform: translateY(-3px); background: rgba(201, 168, 76, 0.12); }
 .assistant-launcher:focus-visible { outline: 2px solid #C9A84C; outline-offset: 3px; }
 
+/* Smaller + tucked further into the corner on phones, where it was landing
+   directly on top of stacked CTA buttons / the stats row at the bottom of
+   the Hero. */
+@media (max-width: 640px) {
+  .assistant-launcher { width: 44px; height: 44px; right: 12px; bottom: 12px; }
+}
+
 /* ---- Mobile fullscreen panel (< 1024px) ---- */
 .assistant-mobile {
   position: fixed; inset: 0; z-index: 4000;
