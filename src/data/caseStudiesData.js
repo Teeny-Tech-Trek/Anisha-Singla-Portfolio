@@ -594,7 +594,8 @@ export const caseStudies = [
       "An image classifier reaching 91%+ validation accuracy by reusing Xception's ImageNet features instead of training 132 layers from scratch. A disciplined two-phase schedule — freeze the base, then fine-tune gently — delivers a strong result on only 3,670 images.",
     tags: ['Transfer Learning', 'Computer Vision', 'Fine-Tuning', 'TensorFlow'],
     year: '',
-    pdfUrl: '/case-studies/transfer-learning-image-classification.pdf',
+    // TODO: source and attach the actual PDF for this case study
+    pdfUrl: null,
     gradient: 'linear-gradient(135deg, rgba(100,220,180,0.06) 0%, transparent 60%)',
     detail: {
       headline: 'Transfer Learning for Image Classification',
@@ -740,7 +741,8 @@ export const caseStudies = [
       'A character-level recurrent neural network — an embedding layer, a single GRU, and a softmax head, no transformers or pretrained weights — trained on the complete works of Shakespeare to generate original Elizabethan prose and demonstrate how temperature trades coherence against creativity.',
     tags: ['Language Modeling', 'GRU / RNN', 'Temperature Sampling', 'TensorFlow'],
     year: '',
-    pdfUrl: '/case-studies/shakegen-character-level-language-model.pdf',
+    // TODO: source and attach the actual PDF for this case study
+    pdfUrl: null,
     gradient: 'linear-gradient(135deg, rgba(220,150,255,0.05) 0%, transparent 60%)',
     detail: {
       headline: 'Character-Level Language Modeling from Scratch',
@@ -874,7 +876,8 @@ export const caseStudies = [
       "An internal enablement framework translating Anthropic's AI Fluency course — Delegation, Description, Discernment, Diligence — into shipping practice for chatbots, agents, and SLM fine-tunes: delegation-aware project plans, three-part briefs, a 5-check release pass, and pre-launch and in-production diligence.",
     tags: ['AI Fluency', 'Delegation', 'Discernment', 'Responsible Shipping'],
     year: '',
-    pdfUrl: '/case-studies/4d-framework-ai-fluency.pdf',
+    // TODO: source and attach the actual PDF for this case study
+    pdfUrl: null,
     gradient: 'linear-gradient(135deg, rgba(80,140,255,0.06) 0%, transparent 60%)',
     detail: {
       headline: 'The 4D Framework',

@@ -94,22 +94,30 @@ export const awardsData = [
     title: "Dean's List",
     items: [
       {
-        name: 'A1_Dean_letter_101411015',
+        // Confirmed via LinkedIn (Honors-Awards section): Applied AI term 1
+        name: "Dean's Honour List — Fall 2022 Term (Applied AI)",
+        alt: "Dean's List certificate",
         pdfUrl: '/Certificates/A1_Dean_letter_101411015.pdf',
         imageUrl: '/Certificates-Photos/A1_Dean_Letter.png',
       },
       {
-        name: 'A2_Dean_letter_101411015',
+        // Confirmed via LinkedIn (Honors-Awards section): Applied AI term 2
+        name: "Dean's Honour List — Winter 2023 Term (Applied AI)",
+        alt: "Dean's List certificate",
         pdfUrl: '/Certificates/A2_Dean_letter_101411015.pdf',
         imageUrl: '/Certificates-Photos/A2_Dean_Letter.png',
       },
       {
-        name: 'PM1_Dean_letter_101411015',
+        // Confirmed via LinkedIn (Honors-Awards section): Project Management term 1
+        name: "Dean's Honour List — Fall 2023 Term (Project Management)",
+        alt: "Dean's List certificate",
         pdfUrl: '/Certificates/P1_Dean_letter_101411015.pdf',
         imageUrl: '/Certificates-Photos/P1_Dean_letter_2023.png',
       },
       {
-        name: 'PM2_Dean_letter_101411015',
+        // Confirmed via LinkedIn (Honors-Awards section): Project Management term 2
+        name: "Dean's Honour List — Winter 2024 Term (Project Management)",
+        alt: "Dean's List certificate",
         pdfUrl: '/Certificates/P2_Dean_letter_101411015.pdf',
         imageUrl: '/Certificates-Photos/P2_Dean_letter_2024.png',
       },

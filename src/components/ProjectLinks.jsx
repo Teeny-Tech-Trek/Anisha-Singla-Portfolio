@@ -4,7 +4,7 @@ import { navigateTo } from '../routes';
 // Shared base styling for every action button: rounded-lg, thin border, small body
 // text, and a keyboard-accessible gold focus ring.
 const BASE =
-  'inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 font-body text-xs ' +
+  'inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 min-h-[44px] font-body text-xs ' +
   'tracking-wide transition-colors duration-200 cursor-pointer ' +
   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A84C] ' +
   'focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d0d0d] whitespace-nowrap';

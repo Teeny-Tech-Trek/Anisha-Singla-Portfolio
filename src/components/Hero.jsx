@@ -1,7 +1,7 @@
 
 
 import { useEffect, useRef, useState } from 'react';
-import { scrollToSection, navigateTo, ROUTES } from '../routes';
+import { scrollToSection } from '../routes';
 import SocialBar from './SocialBar';
 
 // ── Typewriter hook ──────────────────────────────────────────────
@@ -63,6 +63,13 @@ function useTypewriter(text, { enabled = true, startDelay = 1000, duration = 100
   };
 }
 
+const HERO_STATS = [
+  { value: '3',    label: 'AI products in production' },
+  { value: '10',   label: 'clients delivered' },
+  { value: '3',    label: 'verticals served' },
+  { value: '100%', label: 'on-time delivery' },
+];
+
 // ── Blinking cursor ──────────────────────────────────────────────
 function Cursor() {
   const [blink, setBlink] = useState(true);
@@ -76,10 +83,9 @@ function Cursor() {
 export default function Hero() {
 
   const LINE1 = 'Hey, there';
-  const LINE2 = 'I AM ANISHA\nSINGLA';
-  const LINE3 = 'AI Strategist & Founder · Teeny Tech Trek';
-  const LINE4 = 'AI Implementation & Enablement · Agentic Workflows · RAG Systems · AI Governance';
-  const LINE5 = 'Toronto, Canada · Valid Canadian work permit — no sponsorship required · Open to full-time roles across Canada (hybrid or remote)';
+  const LINE2 = 'Anisha\nSingla';
+  const LINE3 = 'AI Product Manager and Business Analyst';
+  const LINE4 = 'I turn AI pilots into production systems. Three AI products shipped, ten clients delivered, and no demos that died on the way to launch.';
 
   const VIDEO_READY_TEXT_DELAY_MS = 1000;
   const TYPE_SEQUENCE_START_DELAY_MS = 0;
@@ -161,8 +167,10 @@ export default function Hero() {
   }, []);
 
   // Once the hero text has fully typed in, freeze the video on its current frame.
-  // Then, after the remaining intro animations (buttons + credibility line) settle,
-  // auto-scroll to the next section — but only if the user is still on the hero.
+  // Then, after the remaining intro animations settle, auto-scroll just enough to
+  // reveal the Availability Banner — but only if the user is still on the hero.
+  // Must NOT target 'about' or anything further down: that would carry the
+  // viewport past the Availability Banner and Proof Bar in one jump.
   useEffect(() => {
     if (!startTyping || !tw4.done) {
       return undefined;
@@ -186,7 +194,7 @@ export default function Hero() {
 
       if (isViewingHero) {
         hasAutoScrolledRef.current = true;
-        scrollToSection('about');
+        scrollToSection('availability');
       }
     }, 1100);
 
@@ -196,11 +204,17 @@ export default function Hero() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600&family=Bebas+Neue&family=DM+Sans:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;600;700&display=swap');
 
         .hero-shell {
           position: relative;
-          min-height: 100svh;
+          /* Reserve exactly as much room below the fold as the Availability
+             Banner actually needs (--availability-banner-h is set by
+             AvailabilityBanner.jsx from its real measured height — it wraps
+             to very different line counts on mobile vs desktop, so a fixed
+             px guess doesn't work at every viewport). 220px is only the
+             pre-measurement fallback for the first paint. */
+          min-height: calc(100svh - var(--availability-banner-h, 220px) - 12px);
           width: 100%;
           max-width: 100%;
           overflow: hidden;
@@ -252,7 +266,7 @@ export default function Hero() {
           max-width: 100%;
           display: flex;
           align-items: center;
-          min-height: 100svh;
+          min-height: calc(100svh - var(--availability-banner-h, 220px) - 12px);
           padding: clamp(5rem, 11vh, 7rem) 0 clamp(2.5rem, 7vh, 4rem);
           box-sizing: border-box;
         }
@@ -277,8 +291,9 @@ export default function Hero() {
           max-width: 100%;
         }
         .hero-eyebrow {
-          font-family: 'Dancing Script', cursive;
-          font-size: clamp(2.2rem, 4.2vw, 4rem);
+          font-family: 'DM Sans', sans-serif;
+          font-style: italic;
+          font-size: clamp(1.2rem, 2vw, 1.8rem);
           font-weight: 500;
           color: rgba(255,255,255,0.93);
           line-height: 1;
@@ -295,11 +310,11 @@ export default function Hero() {
           letter-spacing: 0.025em;
           margin-top: 0.2rem;
           margin-bottom: 0;
-          min-height: 1.9em;
+          // min-height: 1.9em;
         }
         .hero-badge-row {
-          margin-top: 1rem;
-          min-height: 2.6rem;
+          // margin-top: 1rem;
+          // min-height: 2.6rem;
           display: flex;
           align-items: center;
           justify-content: flex-end;
@@ -326,7 +341,7 @@ export default function Hero() {
           color: rgba(255,255,255,0.52);
           margin-top: 1.4rem;
           max-width: 24rem;
-          line-height: 1.65;
+          // line-height: 1.65;
           min-height: 3.4em;
         }
         .hero-actions {
@@ -348,6 +363,36 @@ export default function Hero() {
           font-size: clamp(0.68rem, 0.85vw, 0.72rem);
           letter-spacing: 0.2em;
           text-transform: uppercase;
+        }
+        .hero-stats {
+          display: flex;
+          gap: 1.6rem;
+          margin-top: 2rem;
+          padding-top: 1.4rem;
+          border-top: 1px solid rgba(255,255,255,0.1);
+          justify-content: flex-end;
+          width: 100%;
+          flex-wrap: wrap;
+        }
+        .hero-stat {
+          text-align: center;
+          min-width: 3.75rem;
+        }
+        .hero-stat-value {
+          font-family: 'Bebas Neue', sans-serif;
+          font-size: clamp(1.5rem, 2.2vw, 2.1rem);
+          color: #C9A84C;
+          line-height: 1;
+          text-shadow: 0 0 14px rgba(201,168,76,0.35);
+        }
+        .hero-stat-label {
+          font-family: 'DM Sans', sans-serif;
+          font-size: 0.62rem;
+          letter-spacing: 0.03em;
+          color: rgba(255,255,255,0.5);
+          margin: 0.35rem 0 0;
+          line-height: 1.25;
+          max-width: 6rem;
         }
         .hero-link-row {
           display: flex;
@@ -463,6 +508,11 @@ export default function Hero() {
           .hero-link-row {
             justify-content: center;
           }
+          .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            justify-items: center;
+          }
           .hero-tagline {
             max-width: 30rem;
             margin-left: auto;
@@ -522,6 +572,17 @@ export default function Hero() {
           .hero-link {
             font-size: 0.58rem;
             letter-spacing: 0.14em;
+          }
+          .hero-stats {
+            gap: 1.1rem;
+            margin-top: 1.5rem;
+            padding-top: 1.1rem;
+          }
+          .hero-stat-value {
+            font-size: clamp(1.3rem, 7vw, 1.7rem);
+          }
+          .hero-stat-label {
+            font-size: 0.56rem;
           }
         }
         @media (max-height: 760px) and (min-width: 769px) {
@@ -615,10 +676,10 @@ export default function Hero() {
               {/* LINE 3 — badge */}
               <div className="hero-badge-row">
                 {tw3.displayed.length > 0 && (
-                  <span className="hero-badge">
+                  <h2 className="hero-badge">
                     {tw3.displayed}
                     {!tw3.done && <Cursor />}
-                  </span>
+                  </h2>
                 )}
               </div>
 
@@ -626,25 +687,6 @@ export default function Hero() {
               <p className="hero-tagline">
                 {tw4.displayed}
                 {!tw4.done && tw4.displayed.length > 0 && <Cursor />}
-              </p>
-
-              {/* LINE 5 — credibility line (fades in after the tagline finishes) */}
-              <p
-                className="hero-credibility"
-                style={{
-                  marginTop: '0.9rem',
-                  maxWidth: '34rem',
-                  fontFamily: "'JetBrains Mono', 'DM Sans', monospace",
-                  fontSize: 'clamp(0.62rem, 1.4vw, 0.72rem)',
-                  letterSpacing: '0.05em',
-                  lineHeight: 1.7,
-                  color: 'rgba(201,168,76,0.85)',
-                  opacity: tw4.done ? 1 : 0,
-                  transform: tw4.done ? 'translateY(0)' : 'translateY(8px)',
-                  transition: 'opacity 0.7s ease 0.15s, transform 0.7s ease 0.15s',
-                }}
-              >
-                {LINE5}
               </p>
 
               {/* CTAs */}
@@ -665,7 +707,7 @@ export default function Hero() {
                   }}
                   onClick={() => scrollToSection('projects')}
                 >
-                  View Projects
+                  See the work
                 </button>
                 <a
                   className="hero-button rounded-lg"
@@ -700,12 +742,29 @@ export default function Hero() {
                     display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                     gap: '0.5rem',
                   }}
-                  onClick={() => navigateTo(ROUTES.ABOUT)}
+                  onClick={() => { window.open('https://mail.google.com/mail/?view=cm&fs=1&to=anishasingla23@gmail.com', '_blank', 'noopener,noreferrer'); }}
                   onMouseEnter={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#C9A84C'; }}
                   onMouseLeave={(e) => { e.currentTarget.style.background = '#C9A84C'; e.currentTarget.style.color = '#000'; }}
                 >
-                  Hire Me →
+                  Get in touch
                 </button>
+              </div>
+
+              {/* Proof stats */}
+              <div
+                className="hero-stats"
+                style={{
+                  opacity: showBtns ? 1 : 0,
+                  transform: showBtns ? 'translateY(0)' : 'translateY(16px)',
+                  transition: 'opacity 0.7s ease 0.1s, transform 0.7s ease 0.1s',
+                }}
+              >
+                {HERO_STATS.map(s => (
+                  <div key={s.label} className="hero-stat">
+                    <div className="hero-stat-value">{s.value}</div>
+                    <p className="hero-stat-label">{s.label}</p>
+                  </div>
+                ))}
               </div>
 
               {/* Social links */}
@@ -721,13 +780,6 @@ export default function Hero() {
             </div>
           </div>
         </div>
-
-        {/* Bottom gold line */}
-        <div style={{
-          position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 10,
-          height: '1px',
-          background: 'linear-gradient(to right, transparent, rgba(201,168,76,0.5), transparent)',
-        }} />
       </section>
     </>
   );

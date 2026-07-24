@@ -81,7 +81,7 @@ function ProjectCard({ p }) {
           </div>
           <div className="flex items-center justify-between"
             style={{ borderTop:'1px solid rgba(255,255,255,0.06)', paddingTop:'1rem' }}>
-            <span className="font-body text-xs tracking-widest" style={{ color:'rgba(255,255,255,0.22)' }}>
+            <span className="font-body text-xs tracking-widest" style={{ color:'rgba(255,255,255,0.46)' }}>
               {p.year}
             </span>
           </div>
@@ -164,7 +164,7 @@ export default function AllProjects({ onBack }) {
                 letterSpacing:'.05em', lineHeight:1, color:'#fff' }}>
               All Projects
             </h1>
-            <p className="ap-heading font-body text-sm" style={{ color:'rgba(255,255,255,0.35)', fontWeight:300 }}>
+            <p className="ap-heading font-body text-sm" style={{ color:'rgba(255,255,255,0.46)', fontWeight:300 }}>
               {projects.length} projects total
             </p>
           </div>
@@ -196,7 +196,7 @@ export default function AllProjects({ onBack }) {
         </div>
 
         {/* Count */}
-        <p className="font-body text-xs tracking-widest uppercase mb-6" style={{ color:'rgba(255,255,255,0.25)' }}>
+        <p className="font-body text-xs tracking-widest uppercase mb-6" style={{ color:'rgba(255,255,255,0.46)' }}>
           Showing {filtered.length} project{filtered.length !== 1 ? 's' : ''}
           {activeFilter !== ALL && ` in ${activeFilter}`}
         </p>
@@ -217,7 +217,7 @@ export default function AllProjects({ onBack }) {
               style={{ fontFamily:"'Bebas Neue',sans-serif", letterSpacing:'.1em', color:'#C9A84C' }}>
               No Projects Found
             </p>
-            <p className="font-body text-sm" style={{ color:'rgba(255,255,255,0.35)' }}>
+            <p className="font-body text-sm" style={{ color:'rgba(255,255,255,0.46)' }}>
               Try selecting a different category.
             </p>
           </div>

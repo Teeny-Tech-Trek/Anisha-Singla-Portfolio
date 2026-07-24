@@ -181,8 +181,8 @@ function DesktopOS({ children, time, openPanel }) {
         display: 'flex', alignItems: 'center', padding: '0 14px', gap: 16, zIndex: 100,
       }}>
         <span style={{ color: '#C9A84C', fontSize: 9, fontWeight: 700, letterSpacing: '0.12em' }}>◆ PORTFOLIO OS</span>
-        <span style={{ color: 'rgba(255,255,255,0.22)', fontSize: 8.5 }}>Certifications</span>
-        <span style={{ color: 'rgba(255,255,255,0.22)', fontSize: 8.5 }}>Awards</span>
+        <span style={{ color: 'rgba(255,255,255,0.46)', fontSize: 8.5 }}>Certifications</span>
+        <span style={{ color: 'rgba(255,255,255,0.46)', fontSize: 8.5 }}>Awards</span>
         <div style={{ flex: 1 }}/>
         {openPanel && (
           <span style={{ color: '#C9A84C', fontSize: 8, opacity: 0.75, letterSpacing: '0.1em' }}>
@@ -205,11 +205,11 @@ function DesktopOS({ children, time, openPanel }) {
         display: 'flex', alignItems: 'center', padding: '0 14px', gap: 6, zIndex: 100,
       }}>
         <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#C9A84C', boxShadow: '0 0 5px #C9A84C' }}/>
-        <span style={{ color: 'rgba(255,255,255,0.22)', fontSize: 7.5, letterSpacing: '0.12em' }}>
+        <span style={{ color: 'rgba(255,255,255,0.46)', fontSize: 7.5, letterSpacing: '0.12em' }}>
           CLICK ANY ICON · PREVIEW CERTIFICATE · OPEN DOCUMENT
         </span>
         <div style={{ flex: 1 }}/>
-        <span style={{ color: 'rgba(255,255,255,0.18)', fontSize: 7.5 }}>11 ITEMS</span>
+        <span style={{ color: 'rgba(255,255,255,0.46)', fontSize: 7.5 }}>11 ITEMS</span>
       </div>
     </div>
   );
@@ -240,7 +240,7 @@ function MobileOSCard({ children, time, openPanel }) {
         display: 'flex', alignItems: 'center', padding: '0 14px', gap: 12, height: 36, position: 'relative',
       }}>
         <span style={{ color: '#C9A84C', fontSize: 11, fontWeight: 700, letterSpacing: '0.12em' }}>◆ PORTFOLIO OS</span>
-        {openPanel && <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: 10 }}>{openPanel.toUpperCase()}</span>}
+        {openPanel && <span style={{ color: 'rgba(255,255,255,0.46)', fontSize: 10 }}>{openPanel.toUpperCase()}</span>}
         <div style={{ flex: 1 }}/>
         <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: 10 }}>{time}</span>
       </div>
@@ -253,9 +253,9 @@ function MobileOSCard({ children, time, openPanel }) {
         display: 'flex', alignItems: 'center', padding: '0 14px', gap: 6, height: 32, position: 'relative',
       }}>
         <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#C9A84C', boxShadow: '0 0 5px #C9A84C' }}/>
-        <span style={{ color: 'rgba(255,255,255,0.22)', fontSize: 9, letterSpacing: '0.08em' }}>TAP ANY ICON · PREVIEW CERTIFICATE</span>
+        <span style={{ color: 'rgba(255,255,255,0.46)', fontSize: 9, letterSpacing: '0.08em' }}>TAP ANY ICON · PREVIEW CERTIFICATE</span>
         <div style={{ flex: 1 }}/>
-        <span style={{ color: 'rgba(255,255,255,0.18)', fontSize: 9 }}>11 ITEMS</span>
+        <span style={{ color: 'rgba(255,255,255,0.46)', fontSize: 9 }}>11 ITEMS</span>
       </div>
     </div>
   );
@@ -441,7 +441,7 @@ function PdfThumb({ pdfUrl, thumbW = 200, thumbH = 130 }) {
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
             <polyline points="14 2 14 8 20 8"/>
           </svg>
-          <span style={{ fontSize: 8, color: 'rgba(0,0,0,0.3)' }}>PDF</span>
+          <span style={{ fontSize: 8, color: 'rgba(0,0,0,0.55)' }}>PDF</span>
         </div>
       )}
       <canvas ref={ref} style={{ display: state === 'done' ? 'block' : 'none' }}/>
@@ -520,16 +520,16 @@ function PdfCard({ item, index, color, onSelect, totalItems }) {
       <CertificateThumb
         imageUrl={hasPreview ? item.imageUrl : null}
         pdfUrl={hasPreview ? item.pdfUrl : null}
-        alt={item.name}
+        alt={item.alt || item.name}
         thumbH={thumbH}
       />
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 6 }}>
-        <span style={{ fontSize: 7.5, color: 'rgba(255,255,255,0.2)', fontFamily: 'monospace', marginTop: 1, flexShrink: 0 }}>
+        <span style={{ fontSize: 7.5, color: 'rgba(255,255,255,0.46)', fontFamily: 'monospace', marginTop: 1, flexShrink: 0 }}>
           {String(index + 1).padStart(2, '0')}
         </span>
         <span style={{
           fontSize: 10.5, fontWeight: 600, flex: 1,
-          color: hasPdf ? (hov ? '#fff' : 'rgba(255,255,255,0.85)') : 'rgba(255,255,255,0.28)',
+          color: hasPdf ? (hov ? '#fff' : 'rgba(255,255,255,0.85)') : 'rgba(255,255,255,0.46)',
           lineHeight: 1.35, letterSpacing: '0.01em',
           fontFamily: "'SF Mono',monospace",
           transition: 'color 0.15s',
@@ -555,7 +555,7 @@ function PdfCard({ item, index, color, onSelect, totalItems }) {
               </svg>
             </div>
             <span style={{
-              fontSize: 8, color: hov ? color : 'rgba(255,255,255,0.35)',
+              fontSize: 8, color: hov ? color : 'rgba(255,255,255,0.46)',
               letterSpacing: '0.1em', fontWeight: 700, flex: 1, transition: 'color 0.15s',
             }}>
               OPEN CERTIFICATE
@@ -567,7 +567,7 @@ function PdfCard({ item, index, color, onSelect, totalItems }) {
             </svg>
           </>
         ) : (
-          <span style={{ fontSize: 7.5, color: 'rgba(255,255,255,0.2)', letterSpacing: '0.12em' }}>COMING SOON</span>
+          <span style={{ fontSize: 7.5, color: 'rgba(255,255,255,0.46)', letterSpacing: '0.12em' }}>COMING SOON</span>
         )}
       </div>
     </button>
@@ -645,7 +645,7 @@ function PdfListPanel({ folder, onSelectPdf, onClose, isMobile }) {
           {folder.items.length === 0 ? (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: 10 }}>
               <span style={{ fontSize: 30, opacity: 0.18 }}>📄</span>
-              <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.22)', letterSpacing: '0.12em', textAlign: 'center' }}>
+              <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.46)', letterSpacing: '0.12em', textAlign: 'center' }}>
                 NO CERTIFICATES ATTACHED YET
               </span>
             </div>
@@ -657,7 +657,7 @@ function PdfListPanel({ folder, onSelectPdf, onClose, isMobile }) {
             </div>
           )}
         </div>
-        <div style={{ padding: '6px 14px', borderTop: '1px solid rgba(255,255,255,0.05)', fontSize: 7.5, color: 'rgba(255,255,255,0.18)', letterSpacing: '0.1em', flexShrink: 0 }}>
+        <div style={{ padding: '6px 14px', borderTop: '1px solid rgba(255,255,255,0.05)', fontSize: 7.5, color: 'rgba(255,255,255,0.46)', letterSpacing: '0.1em', flexShrink: 0 }}>
           {folder.items.length} ITEM{folder.items.length !== 1 ? 'S' : ''} · CLICK CARD TO OPEN CERTIFICATE
         </div>
       </div>
@@ -922,7 +922,7 @@ export default function Certifications() {
 
               <p style={{
                 textAlign: 'center', marginTop: 14,
-                fontSize: 9.5, color: 'rgba(255,255,255,0.15)',
+                fontSize: 9.5, color: 'rgba(255,255,255,0.46)',
                 letterSpacing: '0.14em', fontFamily: "'SF Mono',monospace",
               }}>
                 ↑ TAP ANY ICON → PREVIEW CERTIFICATE → OPEN DOCUMENT
@@ -955,7 +955,7 @@ export default function Certifications() {
 
               <p style={{
                 textAlign: 'center', marginTop: 14,
-                fontSize: 9.5, color: 'rgba(255,255,255,0.15)',
+                fontSize: 9.5, color: 'rgba(255,255,255,0.46)',
                 letterSpacing: '0.14em', fontFamily: "'SF Mono',monospace",
               }}>
                 ↑ CLICK ANY ICON → PREVIEW CERTIFICATE → OPEN DOCUMENT

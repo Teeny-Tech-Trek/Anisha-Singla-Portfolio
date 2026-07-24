@@ -90,7 +90,7 @@ function ProjectCard({ p, featured = false }) {
         </h3>
 
         {/* Desc */}
-        <p className="font-body text-sm leading-relaxed flex-1"
+        <p className="font-body text-base leading-relaxed flex-1"
           style={{
             color: 'rgba(255,255,255,0.48)',
             fontWeight: 300,
@@ -122,7 +122,7 @@ function ProjectCard({ p, featured = false }) {
           </div>
           <div className="flex items-center justify-between"
             style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '1rem' }}>
-            <span className="font-body text-xs tracking-widest" style={{ color: 'rgba(255,255,255,0.22)' }}>
+            <span className="font-body text-xs tracking-widest" style={{ color: 'rgba(255,255,255,0.46)' }}>
               {p.year}
             </span>
           </div>

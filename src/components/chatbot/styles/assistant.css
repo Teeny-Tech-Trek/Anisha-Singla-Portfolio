@@ -154,7 +154,7 @@
 .pa-citations { margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(255, 255, 255, 0.08); }
 .pa-citations-label {
   margin: 0 0 2px; font-size: 9px; letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.35); text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.46); text-transform: uppercase;
   font-family: 'JetBrains Mono', monospace;
 }
 .pa-citations ul { margin: 0; padding-left: 14px; }

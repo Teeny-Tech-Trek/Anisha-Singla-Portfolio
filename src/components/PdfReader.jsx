@@ -148,7 +148,7 @@ function TopBar({
           minWidth: 46, textAlign: 'center',
         }}>
           {pageNum || '—'}
-          <span style={{ color: 'rgba(255,255,255,0.22)', fontWeight: 400 }}> / {numPages || '—'}</span>
+          <span style={{ color: 'rgba(255,255,255,0.46)', fontWeight: 400 }}> / {numPages || '—'}</span>
         </span>
         <CtrlBtn onClick={onNext} disabled={pageNum >= numPages} title="Next (→)"><IcoNext /></CtrlBtn>
       </div>
@@ -343,7 +343,7 @@ function NoPdfOverlay({ study, onClose }) {
         }}>
           Coming Soon
         </p>
-        <p style={{ fontFamily: 'sans-serif', fontSize: 13, color: 'rgba(255,255,255,0.28)', margin: 0 }}>
+        <p style={{ fontFamily: 'sans-serif', fontSize: 13, color: 'rgba(255,255,255,0.46)', margin: 0 }}>
           This PDF has not been attached yet.
         </p>
       </div>
@@ -546,7 +546,7 @@ export default function PdfReader({ study, onClose }) {
             <span style={{
               fontFamily: 'sans-serif', fontSize: 10,
               letterSpacing: '.22em', textTransform: 'uppercase',
-              color: 'rgba(255,255,255,0.28)',
+              color: 'rgba(255,255,255,0.46)',
             }}>
               Loading PDF…
             </span>
@@ -561,11 +561,11 @@ export default function PdfReader({ study, onClose }) {
           }}>
             <p style={{
               fontFamily: "'Bebas Neue', sans-serif", fontSize: '2rem',
-              letterSpacing: '.1em', color: 'rgba(255,255,255,0.3)', margin: 0,
+              letterSpacing: '.1em', color: 'rgba(255,255,255,0.35)', margin: 0,
             }}>
               Failed to Load
             </p>
-            <p style={{ fontFamily: 'sans-serif', fontSize: 13, color: 'rgba(255,255,255,0.28)', margin: 0 }}>
+            <p style={{ fontFamily: 'sans-serif', fontSize: 13, color: 'rgba(255,255,255,0.46)', margin: 0 }}>
               Could not load the PDF.
             </p>
           </div>

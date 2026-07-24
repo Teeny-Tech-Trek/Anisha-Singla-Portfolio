@@ -18,7 +18,7 @@ const API_BASE_URL = (
 const CHAT_URL = `${API_BASE_URL}/api/chat`;
 const STREAM_CHAT_URL = `${API_BASE_URL}/api/chat/stream`;
 const REQUEST_TIMEOUT_MS = 30_000;
-const VISITOR_EMAIL = "visitor@example.com";
+const VISITOR_EMAIL = "anonymous@visitor.internal";
 const FALLBACK_ERROR_MESSAGE = "Sorry, something went wrong. Please try again.";
 
 // ============= LOGGING =============

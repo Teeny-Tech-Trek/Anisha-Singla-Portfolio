@@ -1,7 +1,7 @@
 import { socials } from '../data/socials';
 
 export default function SocialBar({ size = 'md', className = '' }) {
-  const box = size === 'md' ? 'w-10 h-10 text-[18px]' : 'w-9 h-9 text-[16px]';
+  const box = size === 'md' ? 'w-11 h-11 text-[18px]' : 'w-11 h-11 text-[16px]';
 
   return (
     <div className={`flex items-center gap-3 ${className}`}>

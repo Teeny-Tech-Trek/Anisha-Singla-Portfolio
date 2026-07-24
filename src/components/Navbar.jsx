@@ -11,7 +11,7 @@ const links = [
   { label: 'Education', type: 'section', target: 'education' },
   { label: 'Skills', type: 'section', target: 'skills' },
   { label: 'Volunteer', type: 'section', target: 'volunteer' },
-  // { label: 'Contact', type: 'section', target: 'contact' },
+  { label: 'Contact', type: 'section', target: 'contact' },
   { label: 'Projects', type: 'section', target: 'projects' },
 ];
 
@@ -66,24 +66,31 @@ export default function Navbar() {
           {links.map(link => link.label === 'Projects' ? (
             <li key={link.label}>
               <button onClick={() => go(link)}
-                className="font-body text-xs rounded-lg tracking-widest uppercase border border-gold text-gold px-5 py-2 transition-all duration-300 hover:bg-gold hover:text-black">
+                className="font-body text-xs rounded-lg tracking-widest uppercase border border-gold text-gold px-5 py-[14px] transition-all duration-300 hover:bg-gold hover:text-black">
                 Projects
               </button>
             </li>
           ) : (
             <li key={link.label}>
               <button onClick={() => go(link)}
-                className="font-body text-xs tracking-widest uppercase text-gray-400 hover:text-gold transition-colors relative group">
-                {link.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-px bg-gold transition-all duration-300 group-hover:w-full" />
+                className="group inline-flex min-h-[44px] items-center font-body text-xs tracking-widest uppercase text-gray-400 hover:text-gold transition-colors">
+                <span className="relative">
+                  {link.label}
+                  <span className="absolute -bottom-1 left-0 w-0 h-px bg-gold transition-all duration-300 group-hover:w-full" />
+                </span>
               </button>
             </li>
           ))}
         </ul>
 
         {/* hamburger */}
-        <button className="ml-4 shrink-0 text-gold xl:hidden" onClick={() => setOpen(!open)}>
-          {open ? <X size={24} /> : <Menu size={24} />}
+        <button
+          className="ml-4 shrink-0 text-gold xl:hidden flex items-center justify-center min-w-[44px] min-h-[44px]"
+          onClick={() => setOpen(!open)}
+          aria-label={open ? 'Close menu' : 'Open menu'}
+          aria-expanded={open}
+        >
+          {open ? <X size={24} aria-hidden="true" /> : <Menu size={24} aria-hidden="true" />}
         </button>
       </div>
 

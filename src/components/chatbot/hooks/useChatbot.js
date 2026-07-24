@@ -9,7 +9,7 @@ import {
   logInfo,
 } from "../api/chatbotApi";
 
-const VISITOR_EMAIL = "visitor@example.com";
+const VISITOR_EMAIL = "anonymous@visitor.internal";
 
 const createMessage = (role, content, citations = []) => ({
   id: `${role}-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,

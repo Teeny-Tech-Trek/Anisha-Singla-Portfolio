@@ -1,13 +1,17 @@
 import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
+import AvailabilityBanner from '../components/AvailabilityBanner';
 import Projects from '../components/Projects';
 import AllProjects from '../components/AllProjects';
 import About from '../components/About';
+import SelectedWork from '../components/SelectedWork';
+import Suite from '../components/Suite';
 import Services from '../components/Services';
 import Experience from '../components/Experience';
 import Education from '../components/Education';
 import Certifications from '../components/Certifications';
+import WritingSpeaking from '../components/WritingSpeaking';
 import Volunteer from '../components/Volunteer';
 import Contact from '../components/Contact';
 import Footer from '../components/Footer';
@@ -15,6 +19,7 @@ import AllCaseStudies from '../components/AllCaseStudies';
 import CaseStudyDetail from '../components/CaseStudyDetail';
 import AboutDetail from '../components/AboutDetail';
 import { ROUTES, consumePendingSection, getCurrentPath, navigateTo, navigateToSection, scrollToSection } from './index';
+import Testimonial from '../components/Testimonial';
 
 function HomeRoute() {
   useEffect(() => {
@@ -48,14 +53,19 @@ function HomeRoute() {
     <div className="bg-black min-h-screen w-full max-w-full overflow-x-hidden">
       <Navbar />
       <Hero />
+      <AvailabilityBanner />
       <About />
+      {/* <SelectedWork /> */}
+      {/* <Suite /> */}
       <Services />
       <Experience />
       <Projects />
       <Education />
       <Certifications />
+      <WritingSpeaking />
       <Volunteer />
       {/* <Contact /> */}
+      {/* <Testimonial /> */}
       <Footer />
     </div>
   );

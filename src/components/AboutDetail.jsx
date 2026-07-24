@@ -339,14 +339,14 @@ export default function AboutDetail() {
                 href="/resume.pdf"
                 download="Anisha-Singla-Resume.pdf"
                 className="btn-gold"
-                style={{ padding: '.8rem 2rem', fontSize: '.7rem' }}
+                style={{ padding: '1rem 2rem', fontSize: '.7rem' }}
               >
                 View Resume
               </a>
               <button
                 onClick={() => navigateToSection('projects')}
                 className="btn-outline"
-                style={{ padding: '.8rem 2rem', fontSize: '.7rem' }}
+                style={{ padding: '1rem 2rem', fontSize: '.7rem' }}
               >
                 View Projects
               </button>

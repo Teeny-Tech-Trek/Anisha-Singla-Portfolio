@@ -11,7 +11,7 @@ const links = [
   { label: 'Skills', type: 'section', target: 'skills' },
   { label: 'Volunteer', type: 'section', target: 'volunteer' },
   // { label: 'Case Studies', type: 'route', target: ROUTES.CASE_STUDIES },
-  // { label: 'Contact', type: 'section', target: 'contact' },
+  { label: 'Contact', type: 'section', target: 'contact' },
 ];
 
 export default function Footer() {

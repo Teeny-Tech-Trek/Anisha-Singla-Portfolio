@@ -33,19 +33,22 @@ export default function About() {
           {/* Left text */}
           <div ref={leftRef} className="flex flex-col items-start">
             <p className="stagger font-body text-lg leading-relaxed mb-5" style={{color:'rgba(255,255,255,0.68)',fontWeight:300}}>
-              I'm <span className="text-gold font-semibold">Anisha Singla</span>, an Applied AI and Project Management professional who takes AI from idea to production — RAG chatbots, AI agents, workflow automation, and governance-ready systems that hold up with real users and real data.
+              I build AI systems that survive contact with production.
             </p>
             <p className="stagger font-body text-lg leading-relaxed mb-5" style={{color:'rgba(255,255,255,0.5)',fontWeight:300}}>
-              As Founder of <span className="text-gold font-semibold">Teeny Tech Trek</span>, an applied-AI studio, I've delivered production-grade AI systems for 10+ clients across real estate, immigration, and education — owning everything from requirements and solution architecture to LLM engineering, delivery, and stakeholder management, with 100% on-time delivery. I also lead automation R&D in manufacturing, bringing AI and process automation into a traditional precision-engineering business.
+              As founder of <span className="text-gold font-semibold">Teeny Tech Trek</span>, I have spent the last two years turning AI pilots into working systems for real businesses. Production RAG chatbots, AI agents and workflow automations for ten clients across Real Estate, Immigration and Education, with 100 percent on-time delivery and automations that save clients more than twenty hours of manual work every week.
             </p>
             <p className="stagger font-body text-lg leading-relaxed mb-5" style={{color:'rgba(255,255,255,0.5)',fontWeight:300}}>
-              I studied Applied AI Solutions and Project Management at George Brown College in Toronto, and I hold a valid Canadian work permit — I'm authorized to work in Canada without sponsorship.
+              I built all of this while holding a full-time role in business development and automation R&D at a precision engineering manufacturer. Running both at once taught me prioritisation, stakeholder management and delivery discipline that no single role could have.
             </p>
-            
+            <p className="stagger font-body text-lg leading-relaxed mb-5" style={{color:'rgba(255,255,255,0.5)',fontWeight:300}}>
+              I studied Applied AI Solutions Development and Project Management at George Brown College in Toronto, earning Dean's Honour List standing in all four terms. In September 2026 I am going back.
+            </p>
+
             <button
               onClick={() => navigateTo(ROUTES.ABOUT)}
               className="stagger btn-gold mt-4"
-              style={{ padding: '.85rem 2.2rem' }}
+              style={{ padding: '1rem 2.2rem' }}
             >
               More About Me
             </button>

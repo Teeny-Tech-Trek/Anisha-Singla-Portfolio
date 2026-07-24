@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Dancing+Script:wght@400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -87,7 +87,7 @@ body::after {
   letter-spacing: .2em;
   text-transform: uppercase;
   color: #000;
-  padding: .85rem 2.2rem;
+  padding: 1rem 2.2rem;
   border: none;
   cursor: pointer;
   display: inline-block;
@@ -161,4 +161,14 @@ body::after {
   * {
     max-width: 100%;
   }
+}
+
+/* Visible focus outlines for keyboard accessibility */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid #C9A84C !important;
+  outline-offset: 3px !important;
 }
