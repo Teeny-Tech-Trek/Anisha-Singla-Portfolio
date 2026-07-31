@@ -16,7 +16,6 @@ const rawBase = (
   import.meta.env.VITE_API_BASE_URL || "https://api.nettwin.techtrekkers.ai"
 ).replace(/\/$/, "");
 const API_BASE_URL = rawBase.replace(/\/api$/, "");
-const API_BASE_URL = rawBase.replace(/\/api$/, "");
 const CHAT_URL = `${API_BASE_URL}/api/chat`;
 const STREAM_CHAT_URL = `${API_BASE_URL}/api/chat/stream`;
 const REQUEST_TIMEOUT_MS = 30_000;
