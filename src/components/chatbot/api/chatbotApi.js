@@ -1,11 +1,11 @@
 // ============================================================================
 // NetTwin chat API helper — the single, reusable place the chat call lives.
 //
-//   POST {VITE_API_BASE_URL}/api/chat
-//   Content-Type: application/json
-//   { twinId, userEmail, sessionId, messages: [{ role:"user", content }] }
-//   -> 200 { success:true, reply, citations:[], sourceChunks:[] }
-//   -> err { success:false, error:"<CODE>", message:"<text>" }   (4xx/5xx)
+//   POST {VITE_API_BASE_URL}/api/chat
+//   Content-Type: application/json
+//   { twinId, userEmail, sessionId, messages: [{ role:"user", content }] }
+//   -> 200 { success:true, reply, citations:[], sourceChunks:[] }
+//   -> err { success:false, error:"<CODE>", message:"<text>" }   (4xx/5xx)
 //
 // The backend keeps conversation history keyed on sessionId, so each request
 // only needs to send the latest user message. Non-streaming (the stream
@@ -15,6 +15,7 @@
 const rawBase = (
   import.meta.env.VITE_API_BASE_URL || "https://api.nettwin.techtrekkers.ai"
 ).replace(/\/$/, "");
+const API_BASE_URL = rawBase.replace(/\/api$/, "");
 const API_BASE_URL = rawBase.replace(/\/api$/, "");
 const CHAT_URL = `${API_BASE_URL}/api/chat`;
 const STREAM_CHAT_URL = `${API_BASE_URL}/api/chat/stream`;
@@ -30,10 +31,10 @@ function logInfo(message, data) {
 }
 
 function logError(message, error) {
-  console.error(`${LOG_PREFIX} ❌ ${message}`, error ?? "");
+  console.error(`${LOG_PREFIX} :x: ${message}`, error ?? "");
 }
 
-logInfo("🚀 Chatbot API initialized", { chatUrl: CHAT_URL });
+logInfo(":rocket: Chatbot API initialized", { chatUrl: CHAT_URL });
 
 // ============= TWIN ID =============
 // twinId is a 24-hex Mongo id. Priority: the /chatbot/<id> URL path (so a
@@ -134,7 +135,7 @@ export async function sendChatMessage({
 
   try {
     const body = { twinId, userEmail, sessionId, messages };
-    logInfo("📤 POST /api/chat", { twinId, sessionId, messageCount: messages?.length });
+    logInfo(":outbox_tray: POST /api/chat", { twinId, sessionId, messageCount: messages?.length });
 
     const response = await fetch(CHAT_URL, {
       method: "POST",
@@ -195,7 +196,7 @@ export async function streamChatMessage({
 } = {}) {
   const body = { twinId, userEmail, sessionId, messages, session_id: sessionId };
   const requestId = `req-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
-  logInfo("📡 POST /api/chat/stream", { twinId, sessionId, messageCount: messages?.length, requestId });
+  logInfo(":satellite_antenna: POST /api/chat/stream", { twinId, sessionId, messageCount: messages?.length, requestId });
 
   let resp;
   try {
