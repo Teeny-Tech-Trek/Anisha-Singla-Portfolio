@@ -1,7 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import { useChatbotContext } from "../ChatbotProvider";
 
-const CHIPS = ["AI projects", "Tech stack", "Experience", "Contact"];
+// Each chip label maps to the actual question sent to the chatbot.
+// This way clicking "AI projects" sends a proper, specific question that
+// gets a sharp 2-3 sentence response, not just the label as a query.
+const CHIP_QUESTIONS = {
+  "AI projects":  "What are your most exciting AI projects you've built?",
+  "Tech stack":   "What's your core tech stack and what do you build best with?",
+  "Experience":   "Give me a quick snapshot of your professional experience.",
+  "Contact":      "How can I get in touch with you?",
+};
+const CHIPS = Object.keys(CHIP_QUESTIONS);
 
 // Render obviously "code-ish" assistant replies in mono/green to match the OS aesthetic.
 function looksLikeCode(text) {
@@ -68,9 +77,10 @@ export default function ChatShell({ onExit, mobile = false }) {
     sendMessage(next); // existing handler
   };
 
-  const pickChip = (text) => {
+  const pickChip = (label) => {
     if (isStreaming) return;
-    sendMessage(text); // existing handler — no new send path
+    // API receives the full question; UI bubble shows just the short chip label
+    sendMessage(CHIP_QUESTIONS[label] || label, label);
   };
 
   return (

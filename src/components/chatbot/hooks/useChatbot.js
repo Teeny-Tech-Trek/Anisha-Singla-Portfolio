@@ -43,6 +43,40 @@ export function useChatbot() {
   const twinIdRef = useRef(getTwinId());
   const sessionIdRef = useRef(getChatSessionId(twinIdRef.current));
 
+  // ── Typewriter queue ────────────────────────────────────────────────────
+  // Split tokens into individual words and queue them for smooth 20ms rendering
+  const typewriterQueue = useRef([]);
+  const typewriterTimer = useRef(null);
+  const TYPEWRITER_MS = 20;
+
+  const startTypewriter = (targetId) => {
+    if (typewriterTimer.current !== null) return;
+
+    const tick = () => {
+      if (typewriterQueue.current.length === 0) {
+        typewriterTimer.current = null;
+        return;
+      }
+      const word = typewriterQueue.current.shift();
+      setMessages((current) =>
+        current.map((msg) =>
+          msg.id === targetId ? { ...msg, content: (msg.content || "") + word } : msg
+        )
+      );
+      typewriterTimer.current = setTimeout(tick, TYPEWRITER_MS);
+    };
+
+    typewriterTimer.current = setTimeout(tick, TYPEWRITER_MS);
+  };
+
+  const stopTypewriter = () => {
+    if (typewriterTimer.current !== null) {
+      clearTimeout(typewriterTimer.current);
+      typewriterTimer.current = null;
+    }
+    typewriterQueue.current = [];
+  };
+
   logInfo("Hook initialized", { twinId: twinIdRef.current, sessionId: sessionIdRef.current });
 
   const scrollToBottom = () => {
@@ -58,6 +92,7 @@ export function useChatbot() {
 
   useEffect(() => {
     return () => {
+      stopTypewriter();
       abortControllerRef.current?.abort();
     };
   }, []);
@@ -66,8 +101,12 @@ export function useChatbot() {
   const closeChat = () => setIsOpen(false);
   const toggleChat = () => setIsOpen((current) => !current);
 
-  const sendMessage = async (input) => {
+  // sendMessage(input)              — normal typed message
+  // sendMessage(query, displayText) — chip: query goes to API, displayText shown in bubble
+  const sendMessage = async (input, displayText) => {
     const trimmedMessage = input.trim();
+    // What shows in the user's bubble — either the display override or the raw input
+    const bubbleText = (displayText || trimmedMessage).trim();
 
     if (!trimmedMessage || isStreaming) {
       return;
@@ -78,7 +117,7 @@ export function useChatbot() {
     const controller = new AbortController();
     abortControllerRef.current = controller;
 
-    const userMessage = createMessage("user", trimmedMessage);
+    const userMessage = createMessage("user", bubbleText);
     const assistantMessage = createMessage("assistant", "");
 
     setError("");
@@ -101,19 +140,18 @@ export function useChatbot() {
       let finalReply = "";
       let finalCitations = [];
 
+      stopTypewriter();
       for await (const event of stream) {
         if (controller.signal.aborted) break;
 
         if (!event.done) {
-          // Token chunk — append to the bubble in real time
+          // Token chunk — split into words and queue for smooth 20ms typing
           gotAny = true;
-          setMessages((current) =>
-            current.map((msg) =>
-              msg.id === assistantMessage.id
-                ? { ...msg, content: msg.content + event.text }
-                : msg
-            )
-          );
+          const words = event.text.match(/\S+\s*/g) || [event.text];
+          for (const word of words) {
+            typewriterQueue.current.push(word);
+          }
+          startTypewriter(assistantMessage.id);
         } else {
           // Done frame — set canonical full reply
           finalReply = event.reply || "";
@@ -122,6 +160,14 @@ export function useChatbot() {
       }
 
       if (finalReply) {
+        // Wait for typewriter queue to finish draining
+        await new Promise((resolve) => {
+          const wait = () => {
+            if (typewriterQueue.current.length === 0 && typewriterTimer.current === null) resolve();
+            else setTimeout(wait, 16);
+          };
+          wait();
+        });
         setMessages((current) =>
           current.map((msg) =>
             msg.id === assistantMessage.id
@@ -131,6 +177,7 @@ export function useChatbot() {
         );
       } else if (!gotAny) {
         // Nothing streamed — fall through to non-streaming fallback below.
+        stopTypewriter();
         throw Object.assign(new Error("no_tokens"), { streamedAny: false });
       }
 
@@ -177,9 +224,21 @@ export function useChatbot() {
       }
     } finally {
       if (!controller.signal.aborted) {
-        abortControllerRef.current = null;
-        streamingBubbleIdRef.current = null;
-        setIsStreaming(false);
+        const waitAndCleanup = async () => {
+          if (typewriterQueue.current.length > 0 || typewriterTimer.current !== null) {
+            await new Promise((resolve) => {
+              const wait = () => {
+                if (typewriterQueue.current.length === 0 && typewriterTimer.current === null) resolve();
+                else setTimeout(wait, 16);
+              };
+              wait();
+            });
+          }
+          abortControllerRef.current = null;
+          streamingBubbleIdRef.current = null;
+          setIsStreaming(false);
+        };
+        waitAndCleanup();
       }
     }
   };
