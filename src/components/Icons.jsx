@@ -91,6 +91,7 @@ export function AiSecurityIcon({ size = 32 }) {
       src="/cert-icons/ai-governance-course-badge.webp"
       alt=""
       aria-hidden="true"
+      decoding="async"
       style={{
         width: dimension,
         height: dimension,

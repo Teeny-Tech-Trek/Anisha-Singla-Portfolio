@@ -243,10 +243,17 @@ export default function CaseStudyDetail({ slug }) {
   const pageRef = useRef(null);
 
   useEffect(() => {
-    if (studies.length === 0) return;
-    gsap.fromTo(pageRef.current, { opacity: 0 }, { opacity: 1, duration: .5, ease: 'power2.out' });
-    gsap.fromTo('.csd-hero', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .9, ease: 'power3.out', stagger: .1, delay: .15 });
-    gsap.fromTo('.csd-section', { opacity: 0, y: 35 }, { opacity: 1, y: 0, duration: .7, ease: 'power3.out', stagger: .12, delay: .35 });
+    if (studies.length === 0 || !pageRef.current) return undefined;
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(pageRef.current, { opacity: 0 }, { opacity: 1, duration: .5, ease: 'power2.out' });
+      gsap.fromTo('.csd-hero', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .9, ease: 'power3.out', stagger: .1, delay: .15 });
+      gsap.fromTo('.csd-section', { opacity: 0, y: 35 }, { opacity: 1, y: 0, duration: .7, ease: 'power3.out', stagger: .12, delay: .35 });
+    }, pageRef);
+
+    // Kill on every slug change (not just unmount) so switching between
+    // case-study slugs quickly never leaves tweens targeting replaced nodes.
+    return () => ctx.revert();
   }, [slug]);
 
   if (studies.length === 0) {
@@ -262,7 +269,7 @@ export default function CaseStudyDetail({ slug }) {
           position: 'absolute', top: '5%', right: '-5%',
           width: 600, height: 600, borderRadius: '50%',
           background: 'radial-gradient(circle,rgba(201,168,76,0.06) 0%,transparent 70%)',
-          filter: 'blur(70px)',
+          filter: 'blur(70px)', contain: 'paint',
         }} />
       </div>
 

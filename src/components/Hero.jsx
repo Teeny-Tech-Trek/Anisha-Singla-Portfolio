@@ -204,7 +204,7 @@ export default function Hero() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;600;700&display=swap');
+        /* Fonts are loaded once via a <link> in index.html — see index.html. */
 
         .hero-shell {
           position: relative;
@@ -629,7 +629,8 @@ export default function Hero() {
             src={VERCEL_VIDEO_URL}
             muted
             playsInline
-            preload="auto"
+            preload="metadata"
+            fetchPriority="high"
             style={{
               /* ✅ Video ab center mein hai, marginLeft hata diya */
               position: undefined,

@@ -21,7 +21,7 @@ export default function About() {
       <div className="absolute left-0 top-1/2 -translate-y-1/2 pointer-events-none" style={{
         width:'400px',height:'400px',
         background:'radial-gradient(circle,rgba(201,168,76,0.06) 0%,transparent 70%)',
-        filter:'blur(50px)',
+        filter:'blur(50px)', contain:'paint',
       }}/>
 
       <div ref={headRef} className="max-w-7xl mx-auto">

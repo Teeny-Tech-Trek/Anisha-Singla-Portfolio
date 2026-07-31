@@ -3,6 +3,15 @@
   <head>
     <meta charset="UTF-8" />
 
+    <!-- Fonts (Bebas Neue, DM Sans) are now self-hosted via @fontsource and
+         bundled into the built CSS — see src/index.css. No external font
+         origin/preconnect needed anymore. -->
+
+    <!-- Hero background video is fetched from this origin as soon as Hero.jsx
+         mounts (autoplay). Warming the connection now means the TCP/TLS
+         handshake overlaps with app JS parsing instead of starting after. -->
+    <link rel="preconnect" href="https://arbgtqtruugewk5g.public.blob.vercel-storage.com" crossorigin />
+
     <!-- Primary -->
     <title>Anisha Singla - AI Product Manager and Business Analyst | Toronto</title>
 

@@ -474,7 +474,7 @@ export default function Experience() {
           'radial-gradient(1000px 460px at 50% -14%, rgba(201,168,76,0.06), transparent 62%), #000',
       }}
     >
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap');`}</style>
+      {/* Fonts are loaded once via a <link> in index.html — see index.html. */}
 
       <div className="mx-auto max-w-6xl">
         <p
