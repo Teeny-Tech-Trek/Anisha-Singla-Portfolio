@@ -17,6 +17,22 @@ function looksLikeCode(text) {
   return /[{}<>]|=>|;\s|\bfunction\b|```/.test(text || "");
 }
 
+// Helper to render **bold headings** cleanly in assistant bubbles without displaying raw asterisks.
+function renderFormattedContent(text) {
+  if (!text) return null;
+  const parts = text.split(/(\*\*.*?\*\*)/g);
+  return parts.map((part, idx) => {
+    if (part.startsWith("**") && part.endsWith("**") && part.length > 4) {
+      return (
+        <strong key={idx} style={{ color: "#f3c677", fontWeight: 700 }}>
+          {part.slice(2, -2)}
+        </strong>
+      );
+    }
+    return part;
+  });
+}
+
 // "AS" monogram — Anisha Singla's initials in the portfolio's display font.
 function Monogram({ size = 15 }) {
   return (
@@ -118,8 +134,8 @@ export default function ChatShell({ onExit, mobile = false }) {
             <div key={message.id}>
               <div className={`pa-row ${isUser ? "user" : "assistant"}`}>
                 <div className={`pa-bubble ${isUser ? "user" : "assistant"} ${!isUser && looksLikeCode(message.content) ? "mono" : ""}`}>
-                  <p className="pa-text">
-                    {message.content}
+                  <p className="pa-text" style={{ whiteSpace: "pre-wrap" }}>
+                    {isUser ? message.content : renderFormattedContent(message.content)}
                     {/* Streaming cursor — blinks while tokens are flowing */}
                     {isThisBubbleStreaming && (
                       <span
