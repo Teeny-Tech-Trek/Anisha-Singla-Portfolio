@@ -1,9 +1,32 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useEffectEvent, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { getReplayScrollTrigger } from '../hooks/useGsap';
 
 gsap.registerPlugin(ScrollTrigger);
+
+// Marks `ref.current` with `data-offscreen` as it enters/leaves the viewport
+// (+200px margin) so decorative CSS keyframe loops (.ai-anim/.bd-anim/.mle-anim)
+// can be paused via CSS instead of animating forever off-screen.
+function useOffscreenPause(ref, onVisibilityChange) {
+  const notifyVisibility = useEffectEvent((visible) => onVisibilityChange?.(visible));
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return undefined;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        el.dataset.offscreen = entry.isIntersecting ? 'false' : 'true';
+        notifyVisibility(entry.isIntersecting);
+      },
+      { rootMargin: '200px 0px' }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [ref]);
+}
 
 // ─── VisualAI — LLM Token Pipeline ───────────────────────────────────────────
 
@@ -558,8 +581,36 @@ const VisualDT = () => {
       rafRef.current = requestAnimationFrame(draw);
     };
 
-    rafRef.current = requestAnimationFrame(draw);
-    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+    const startLoop = () => {
+      if (rafRef.current) return; // already running
+      rafRef.current = requestAnimationFrame(draw);
+    };
+    const stopLoop = () => {
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
+    };
+
+    // Only burn CPU/GPU on this canvas while it's actually on-screen —
+    // pause the draw loop entirely once it scrolls out of view.
+    const observer = typeof IntersectionObserver !== 'undefined'
+      ? new IntersectionObserver(
+          ([entry]) => (entry.isIntersecting ? startLoop() : stopLoop()),
+          { rootMargin: '200px 0px' }
+        )
+      : null;
+
+    if (observer) {
+      observer.observe(canvas);
+    } else {
+      startLoop();
+    }
+
+    return () => {
+      stopLoop();
+      observer?.disconnect();
+    };
   }, []);
 
   return (
@@ -730,6 +781,8 @@ function ServiceSimple({ s, i, Visual, ratio = '360/280' }) {
   const secRef  = useRef(null);
   const textRef = useRef(null);
 
+  useOffscreenPause(secRef);
+
   useEffect(() => {
     const ctx = gsap.context(() => {
       const st = getReplayScrollTrigger(secRef.current, { start: 'top 78%' });
@@ -785,6 +838,8 @@ function ServiceBD({ s, i }) {
   const svgRef  = useRef(null);   // wraps the outer visRef div
   const visRef  = useRef(null);   // ref passed into VisualBD's <svg>
 
+  useOffscreenPause(secRef);
+
   useEffect(() => {
     const ctx = gsap.context(() => {
       const st = getReplayScrollTrigger(secRef.current, { start: 'top 78%' });
@@ -809,9 +864,45 @@ function ServiceBD({ s, i }) {
     if (!secRef.current || !visRef.current) return;
     const svg = visRef.current;
 
+    // The continuous dot pulse (repeat:-1) is intentionally kept OUTSIDE the
+    // gsap.context()/timeline below: it's only ever started via startPulse(),
+    // which always kills any previous pulse tweens first — so replaying the
+    // entrance timeline (scroll away + back) can never stack duplicate
+    // infinite tweens on the same dots, and the pulse is fully stopped
+    // whenever the section is off-screen instead of running forever.
+    let pulseTweens = [];
+    const killPulse = () => {
+      pulseTweens.forEach((tween) => tween.kill());
+      pulseTweens = [];
+    };
+    const startPulse = () => {
+      killPulse();
+      svg.querySelectorAll('.bd-dot').forEach((dot, dotIndex) => {
+        pulseTweens.push(
+          gsap.to(dot, {
+            attr: { r: 6.5 },
+            repeat: -1,
+            yoyo: true,
+            duration: 1.8,
+            ease: 'sine.inOut',
+            delay: dotIndex * 0.28,
+            overwrite: true,
+          })
+        );
+      });
+    };
+
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
-        scrollTrigger: getReplayScrollTrigger(secRef.current, { start: 'top 78%' }),
+        // onLeave/onLeaveBack ride along on the same ScrollTrigger that
+        // drives the entrance timeline (toggleActions handles the timeline
+        // itself; these two callbacks are independent side effects GSAP
+        // fires alongside it) — one ScrollTrigger instead of two.
+        scrollTrigger: getReplayScrollTrigger(secRef.current, {
+          start: 'top 78%',
+          onLeave: killPulse,
+          onLeaveBack: killPulse,
+        }),
       });
 
       // 1. Connection lines draw in (stroke-dashoffset trick)
@@ -834,18 +925,15 @@ function ServiceBD({ s, i }) {
         duration: 0.5, stagger: 0.12, ease: 'power2.out',
       }, 1.2)
 
-      // 4. Continuous dot pulse after intro finishes
-      .add(() => {
-        svg.querySelectorAll('.bd-dot').forEach((dot, i) => {
-          gsap.to(dot, {
-            attr: { r: 6.5 }, repeat: -1, yoyo: true,
-            duration: 1.8, ease: 'sine.inOut', delay: i * 0.28,
-          });
-        });
-      }, 2.0);
+      // 4. Continuous dot pulse after intro finishes — starts the
+      // (always-killed-first) pulse tweens defined above.
+      .add(startPulse, 2.0);
     }, svg);
 
-    return () => ctx.revert();
+    return () => {
+      killPulse();
+      ctx.revert();
+    };
   }, [s.flip]);
 
   return <SectionShell secRef={secRef} textRef={textRef} visRef={svgRef} s={s} i={i}
@@ -857,6 +945,8 @@ function ServicePM({ s, i }) {
   const textRef = useRef(null);
   const svgRef  = useRef(null);
   const visRef  = useRef(null);
+
+  useOffscreenPause(secRef);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -875,33 +965,61 @@ function ServicePM({ s, i }) {
     if (!secRef.current || !svgRef.current) return;
     const svg = svgRef.current;
     gsap.set(svg.querySelectorAll('.pm-row'), { x: -20 });
+
+    // Infinite (repeat:-1) tweens live outside gsap.context()'s synchronous
+    // tracking on purpose: startPulse() always kills any prior pulse tweens
+    // before creating new ones, so replays never accumulate duplicates, and
+    // the dedicated ScrollTrigger below stops them the instant the section
+    // is off-screen instead of letting them run for the page's entire life.
+    let pulseTweens = [];
+    const killPulse = () => {
+      pulseTweens.forEach((tween) => tween.kill());
+      pulseTweens = [];
+    };
+    const startPulse = () => {
+      killPulse();
+      const activeRect = svg.querySelectorAll('.pm-row')[2]?.querySelector('rect');
+      if (activeRect) {
+        pulseTweens.push(gsap.to(activeRect, {
+          attr: { fill: '#e0be5a' }, repeat: -1, yoyo: true,
+          duration: 2.6, ease: 'sine.inOut', delay: 2.2, overwrite: true,
+        }));
+      }
+      pulseTweens.push(gsap.to(svg.querySelector('.pm-review-glow'), {
+        attr: { rx: 100, ry: 22 }, repeat: -1, yoyo: true,
+        duration: 2.4, ease: 'sine.inOut', delay: 2.0, overwrite: true,
+      }));
+      pulseTweens.push(gsap.to(svg.querySelector('.pm-launch-glow'), {
+        attr: { rx: 85, ry: 20 }, repeat: -1, yoyo: true,
+        duration: 2.8, ease: 'sine.inOut', delay: 2.4, overwrite: true,
+      }));
+    };
+
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
-        scrollTrigger: getReplayScrollTrigger(secRef.current, { start: 'top 78%' }),
+        // onEnter/onEnterBack/onLeave/onLeaveBack ride along on the same
+        // ScrollTrigger that drives the entrance timeline instead of a
+        // second dedicated instance — GSAP calls these independently of
+        // (and in addition to) the toggleActions-driven timeline control.
+        scrollTrigger: getReplayScrollTrigger(secRef.current, {
+          start: 'top 78%',
+          onEnter: startPulse,
+          onEnterBack: startPulse,
+          onLeave: killPulse,
+          onLeaveBack: killPulse,
+        }),
       });
       tl.to(svg.querySelectorAll('.pm-row'), { opacity: 1, x: 0, duration: 1.0, stagger: 0.22, ease: 'power2.out' })
         .to(svg.querySelector('.pm-now'),         { attr: { strokeOpacity: 0.50 }, duration: 1.0 }, 1.2)
         .to(svg.querySelector('.pm-now-label'),   { opacity: 0.75, duration: 0.8 }, 1.4)
         .to(svg.querySelector('.pm-review-glow'), { opacity: 1, duration: 1.0 }, 1.6)
         .to(svg.querySelector('.pm-launch-glow'), { opacity: 1, duration: 1.0 }, 1.8);
-
-      const activeRect = svg.querySelectorAll('.pm-row')[2]?.querySelector('rect');
-      if (activeRect) {
-        gsap.to(activeRect, {
-          attr: { fill: '#e0be5a' }, repeat: -1, yoyo: true,
-          duration: 2.6, ease: 'sine.inOut', delay: 2.2,
-        });
-      }
-      gsap.to(svg.querySelector('.pm-review-glow'), {
-        attr: { rx: 100, ry: 22 }, repeat: -1, yoyo: true,
-        duration: 2.4, ease: 'sine.inOut', delay: 2.0,
-      });
-      gsap.to(svg.querySelector('.pm-launch-glow'), {
-        attr: { rx: 85, ry: 20 }, repeat: -1, yoyo: true,
-        duration: 2.8, ease: 'sine.inOut', delay: 2.4,
-      });
     }, svg);
-    return () => ctx.revert();
+
+    return () => {
+      killPulse();
+      ctx.revert();
+    };
   }, [s.flip]);
 
   return <SectionShell secRef={secRef} textRef={textRef} visRef={visRef} s={s} i={i}
@@ -1045,6 +1163,18 @@ export default function Services() {
       })}
 
       <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)', paddingBottom: '4rem' }}/>
+
+      {/* Pause the decorative infinite CSS keyframe loops inside each visual
+          (VisualAI/VisualBD/VisualMLE) once their section scrolls out of
+          view — see useOffscreenPause(). Purely a perf optimization, the
+          animations resume exactly where the browser paused them. */}
+      <style>{`
+        .svc-section[data-offscreen="true"] .ai-anim,
+        .svc-section[data-offscreen="true"] .bd-anim,
+        .svc-section[data-offscreen="true"] .mle-anim {
+          animation-play-state: paused;
+        }
+      `}</style>
     </section>
   );
 }

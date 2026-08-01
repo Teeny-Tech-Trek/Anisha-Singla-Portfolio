@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   FALLBACK_ERROR_MESSAGE,
   getChatSessionId,
@@ -92,7 +92,13 @@ export function useChatbot() {
     typewriterQueue.current = [];
   };
 
-  logInfo("Hook initialized", { twinId: twinIdRef.current, sessionId: sessionIdRef.current });
+  // Was a bare call in the hook body, which re-ran (with object
+  // serialization) on every render — including the ~50/sec re-renders that
+  // happen while a reply is streaming in via the typewriter below. Mount-only
+  // now that it's in an effect.
+  useEffect(() => {
+    logInfo("Hook initialized", { twinId: twinIdRef.current, sessionId: sessionIdRef.current });
+  }, []);
 
   const scrollToBottom = (smooth = true) => {
     if (!viewportRef.current) return;
@@ -117,9 +123,11 @@ export function useChatbot() {
     };
   }, []);
 
-  const openChat = () => setIsOpen(true);
-  const closeChat = () => setIsOpen(false);
-  const toggleChat = () => setIsOpen((current) => !current);
+  // Stable identities so consumers holding onto these (AssistantLayout,
+  // PhoneFrame, ChatShell) don't see a "changed" prop on every render.
+  const openChat = useCallback(() => setIsOpen(true), []);
+  const closeChat = useCallback(() => setIsOpen(false), []);
+  const toggleChat = useCallback(() => setIsOpen((current) => !current), []);
 
   // sendMessage(input)              — normal typed message
   // sendMessage(query, displayText) — chip: query goes to API, displayText shown in bubble

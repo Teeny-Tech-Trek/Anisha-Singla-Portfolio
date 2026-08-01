@@ -11,7 +11,7 @@ const links = [
   { label: 'Education', type: 'section', target: 'education' },
   { label: 'Skills', type: 'section', target: 'skills' },
   { label: 'Volunteer', type: 'section', target: 'volunteer' },
-  { label: 'Contact', type: 'section', target: 'contact' },
+  // { label: 'Contact', type: 'section', target: 'contact' },
   { label: 'Projects', type: 'section', target: 'projects' },
 ];
 
@@ -22,16 +22,40 @@ export default function Navbar() {
 
   // GSAP entrance
   useEffect(() => {
-    gsap.fromTo(navRef.current,
+    const tween = gsap.fromTo(navRef.current,
       { y: -80, opacity: 0 },
       { y: 0, opacity: 1, duration: 1, ease: 'power3.out', delay: 0.2 }
     );
+    return () => tween.kill();
   }, []);
 
+  // rAF-throttled scroll listener: native `scroll` can fire faster than the
+  // display refresh rate, so we coalesce to at most one check per frame and
+  // only touch state (triggering a re-render) when the threshold actually
+  // flips, instead of on every scroll event.
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', fn);
-    return () => window.removeEventListener('scroll', fn);
+    const scrolledRef = { current: false };
+    let frameId = 0;
+
+    const checkScroll = () => {
+      frameId = 0;
+      const isScrolled = window.scrollY > 50;
+      if (isScrolled !== scrolledRef.current) {
+        scrolledRef.current = isScrolled;
+        setScrolled(isScrolled);
+      }
+    };
+
+    const onScroll = () => {
+      if (frameId) return;
+      frameId = window.requestAnimationFrame(checkScroll);
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (frameId) window.cancelAnimationFrame(frameId);
+    };
   }, []);
 
   const go = (link) => {

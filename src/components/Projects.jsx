@@ -181,8 +181,8 @@ export default function Projects() {
   return (
     <section id="projects" ref={sectionRef} className="py-28 px-6 md:px-14 relative" style={{ background: '#000' }}>
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div style={{ position: 'absolute', top: '8%', right: '-8%', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(201,168,76,0.05) 0%,transparent 70%)', filter: 'blur(60px)' }} />
-        <div style={{ position: 'absolute', bottom: '8%', left: '-8%', width: '400px', height: '400px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(100,150,255,0.04) 0%,transparent 70%)', filter: 'blur(60px)' }} />
+        <div style={{ position: 'absolute', top: '8%', right: '-8%', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(201,168,76,0.05) 0%,transparent 70%)', filter: 'blur(60px)', contain: 'paint' }} />
+        <div style={{ position: 'absolute', bottom: '8%', left: '-8%', width: '400px', height: '400px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(100,150,255,0.04) 0%,transparent 70%)', filter: 'blur(60px)', contain: 'paint' }} />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">

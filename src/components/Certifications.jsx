@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, memo } from 'react';
 import { createPortal } from 'react-dom';
 import * as pdfjsLib from 'pdfjs-dist';
 import workerSrc from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
@@ -264,7 +264,7 @@ function MobileOSCard({ children, time, openPanel }) {
 /* ─────────────────────────────────────────────
    ICON TILE
 ───────────────────────────────────────────── */
-function IconTile({ folder, onClick, isActive, mobile, ariaLabel }) {
+const IconTile = memo(function IconTile({ folder, onClick, isActive, mobile, ariaLabel }) {
   const [hov, setHov] = useState(false);
   const color  = FOLDER_COLORS[folder.id] || '#C9A84C';
   const active = isActive || hov;
@@ -368,7 +368,7 @@ function IconTile({ folder, onClick, isActive, mobile, ariaLabel }) {
       </span>
     </button>
   );
-}
+});
 
 /* ─────────────────────────────────────────────
    PDF THUMBNAIL
@@ -464,7 +464,7 @@ function CertificateThumb({ imageUrl, pdfUrl, alt, thumbW = 200, thumbH = 130 })
         justifyContent: 'center', flexShrink: 0,
       }}>
         <img
-          src={imageUrl} alt={alt} loading="lazy"
+          src={imageUrl} alt={alt} loading="lazy" decoding="async"
           onError={() => setImageError(true)}
           style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', display: 'block' }}
         />
@@ -490,7 +490,7 @@ function CertificateThumb({ imageUrl, pdfUrl, alt, thumbW = 200, thumbH = 130 })
 /* ─────────────────────────────────────────────
    PDF CARD
 ───────────────────────────────────────────── */
-function PdfCard({ item, index, color, onSelect, totalItems }) {
+const PdfCard = memo(function PdfCard({ item, index, color, onSelect, totalItems }) {
   const [hov, setHov] = useState(false);
   const hasPdf = !!item.pdfUrl;
   const hasPreview = !!(item.imageUrl || item.pdfUrl);
@@ -572,7 +572,7 @@ function PdfCard({ item, index, color, onSelect, totalItems }) {
       </div>
     </button>
   );
-}
+});
 
 /* ─────────────────────────────────────────────
    PDF LIST PANEL
@@ -676,7 +676,7 @@ const TABS = [
   { id: 'awards',         label: 'Awards' },
 ];
 
-function TabBar({ activeTab, onChange, mobile }) {
+const TabBar = memo(function TabBar({ activeTab, onChange, mobile }) {
   const refs = useRef([]);
 
   const handleKeyDown = (e) => {
@@ -736,7 +736,7 @@ function TabBar({ activeTab, onChange, mobile }) {
       })}
     </div>
   );
-}
+});
 
 /* Skills tab — terminal / file-tree aesthetic, data-driven, no numeric bars */
 function SkillsTerminal() {
@@ -850,26 +850,28 @@ export default function Certifications() {
     return () => clearInterval(id);
   }, []);
 
-  function openFolder(folder) {
+  // Stable identities (useCallback) so the memoized IconTile/PdfCard list
+  // items below don't re-render every 10s just because the clock ticked.
+  const openFolder = useCallback((folder) => {
     setActiveFolder(prev => prev?.id === folder.id ? null : folder);
-  }
+  }, []);
 
-  function changeTab(tab) {
+  const changeTab = useCallback((tab) => {
     setActiveTab(tab);
     setActiveFolder(null); // close any open certificate panel when switching tabs
-  }
+  }, []);
 
-  function openPdf(item) {
+  const openPdf = useCallback((item) => {
     setActivePdf({
       category: activeFolder?.label || '',
       title: item.name,
       pdfUrl: item.pdfUrl,
       autoRotate: item.autoRotate,
     });
-  }
+  }, [activeFolder]);
 
   // Certifications open their PDF directly in the same viewer the Case Studies use.
-  function openCertificate(folder) {
+  const openCertificate = useCallback((folder) => {
     const item = folder.items?.[0];
     if (!item?.pdfUrl) return; // no PDF attached → open action disabled
     setActivePdf({
@@ -878,7 +880,7 @@ export default function Certifications() {
       pdfUrl: item.pdfUrl,
       autoRotate: item.autoRotate,
     });
-  }
+  }, []);
 
   const certs  = FOLDERS.filter(f => f.category === 'cert');
   const awards = FOLDERS.filter(f => f.category === 'award');

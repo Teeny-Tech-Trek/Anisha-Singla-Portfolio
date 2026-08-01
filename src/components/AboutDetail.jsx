@@ -121,9 +121,12 @@ export default function AboutDetail() {
   const pageRef = useRef(null);
 
   useEffect(() => {
-    gsap.fromTo(pageRef.current, { opacity: 0 }, { opacity: 1, duration: .5, ease: 'power2.out' });
-    gsap.fromTo('.abt-hero', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .9, ease: 'power3.out', stagger: .1, delay: 0.15 });
-    gsap.fromTo('.abt-section', { opacity: 0, y: 35 }, { opacity: 1, y: 0, duration: .7, ease: 'power3.out', stagger: 0.1, delay: 0.3 });
+    const ctx = gsap.context(() => {
+      gsap.fromTo(pageRef.current, { opacity: 0 }, { opacity: 1, duration: .5, ease: 'power2.out' });
+      gsap.fromTo('.abt-hero', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .9, ease: 'power3.out', stagger: .1, delay: 0.15 });
+      gsap.fromTo('.abt-section', { opacity: 0, y: 35 }, { opacity: 1, y: 0, duration: .7, ease: 'power3.out', stagger: 0.1, delay: 0.3 });
+    }, pageRef);
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -135,13 +138,13 @@ export default function AboutDetail() {
           position: 'absolute', top: '10%', left: '-5%',
           width: 500, height: 500, borderRadius: '50%',
           background: 'radial-gradient(circle,rgba(201,168,76,0.05) 0%,transparent 70%)',
-          filter: 'blur(80px)',
+          filter: 'blur(80px)', contain: 'paint',
         }} />
         <div style={{
           position: 'absolute', bottom: '10%', right: '-5%',
           width: 500, height: 500, borderRadius: '50%',
           background: 'radial-gradient(circle,rgba(100,150,255,0.04) 0%,transparent 70%)',
-          filter: 'blur(80px)',
+          filter: 'blur(80px)', contain: 'paint',
         }} />
       </div>
 

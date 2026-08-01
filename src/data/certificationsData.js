@@ -11,21 +11,21 @@ export const certificationsData = [
     name: 'Securiti AI Security',
     issuer: 'Securiti',
     pdfUrl: '/Certificates/AI-Security-and-Governance.pdf',
-    imageUrl: '/Certificates-Photos/ai-security-governance.png',
+    imageUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/Certification-Photos/ai-security-governance.webp',
   },
   {
     id: 'python',
     name: 'Python',
     issuer: 'IBM',
     pdfUrl: '/Certificates/Python.pdf',
-    imageUrl: '/Certificates-Photos/python.png',
+    imageUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/Certification-Photos/python.webp',
   },
   {
     id: 'design-thinking',
     name: 'Design Thinking Practitioner',
     issuer: 'IBM',
     pdfUrl: '/Certificates/Design-Thinking-Practitioner.pdf',
-    imageUrl: '/Certificates-Photos/design-thinking.png',
+    imageUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/Certification-Photos/design-thinking.webp',
   },
   // Referenced in detail inside the "4D Framework" case study
   // (caseStudiesData.js) but wasn't listed as a formal credential here.

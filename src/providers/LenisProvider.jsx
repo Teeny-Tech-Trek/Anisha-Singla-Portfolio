@@ -1,5 +1,5 @@
 import { useLayoutEffect } from 'react';
-import Lenis from '../vendor/lenis';
+import Lenis from '@studio-freight/lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { replaySectionScrollAnimations } from '../hooks/useGsap';
@@ -32,14 +32,25 @@ export default function LenisProvider({ children }) {
     setLenisInstance(lenis);
     lenis.on('scroll', handleLenisScroll);
 
-    let animationFrameId = 0;
     let initialHashFrameId = 0;
     let cancelSectionReplay = () => {};
 
+    // Drive Lenis off GSAP's own ticker instead of a separate
+    // requestAnimationFrame loop — GSAP is already running one every frame
+    // for every tween/ScrollTrigger on the page, so piggy-backing on it
+    // means there's exactly one rAF driving both scroll and animation,
+    // never two competing loops. gsap.ticker's `time` is elapsed seconds;
+    // Lenis expects a millisecond timestamp, hence `* 1000`.
     const raf = (time) => {
-      lenis.raf(time);
-      animationFrameId = window.requestAnimationFrame(raf);
+      lenis.raf(time * 1000);
     };
+
+    gsap.ticker.add(raf);
+    // Recommended when driving Lenis via gsap.ticker: disable GSAP's own
+    // lag-smoothing compensation so a stalled tab (background tab, heavy
+    // task) doesn't cause GSAP to "catch up" with a large time jump that
+    // fights Lenis's own smoothing.
+    gsap.ticker.lagSmoothing(0);
 
     const handleAnchorClick = (event) => {
       const anchor = event.target.closest?.('a[href^="#"]');
@@ -87,7 +98,6 @@ export default function LenisProvider({ children }) {
       cancelSectionReplay = replaySectionScrollAnimations(sectionId);
     };
 
-    animationFrameId = window.requestAnimationFrame(raf);
     document.addEventListener('click', handleAnchorClick);
     window.addEventListener('hashchange', handleHashChange);
     window.addEventListener(SECTION_SCROLL_EVENT, handleSectionScroll);
@@ -99,10 +109,6 @@ export default function LenisProvider({ children }) {
     });
 
     return () => {
-      if (animationFrameId) {
-        window.cancelAnimationFrame(animationFrameId);
-      }
-
       if (initialHashFrameId) {
         window.cancelAnimationFrame(initialHashFrameId);
       }
@@ -110,6 +116,7 @@ export default function LenisProvider({ children }) {
       document.removeEventListener('click', handleAnchorClick);
       window.removeEventListener('hashchange', handleHashChange);
       window.removeEventListener(SECTION_SCROLL_EVENT, handleSectionScroll);
+      gsap.ticker.remove(raf);
       lenis.off('scroll', handleLenisScroll);
       cancelSectionReplay();
       clearLenisInstance(lenis);

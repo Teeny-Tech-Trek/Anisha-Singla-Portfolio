@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { caseStudies } from '../data/caseStudiesData';
 import { navigateTo, ROUTES } from '../routes';
 
 // ─── Study Row ────────────────────────────────────────────────────────────────
-function StudyRow({ study, onClick }) {
+const StudyRow = memo(function StudyRow({ study, onClick }) {
   const rowRef = useRef(null);
   const [hovered, setHovered] = useState(false);
 
@@ -159,7 +159,7 @@ function StudyRow({ study, onClick }) {
       </div>
     </div>
   );
-}
+});
 
 // ─── All Case Studies Page ────────────────────────────────────────────────────
 const ALL = 'All';
@@ -168,25 +168,36 @@ const categories = [ALL, ...Array.from(new Set(caseStudies.map(s => s.category))
 export default function AllCaseStudies() {
   const [activeFilter, setActiveFilter] = useState(ALL);
   const pageRef = useRef(null);
+  const listRef = useRef(null);
 
   const handleBack = () => navigateTo(ROUTES.HOME);
 
-  const filtered = activeFilter === ALL
-    ? caseStudies
-    : caseStudies.filter(s => s.category === activeFilter);
+  // Memoized so the row-entrance effect below only re-fires when the filter
+  // actually changes, not on every unrelated re-render of this component.
+  const filtered = useMemo(
+    () => (activeFilter === ALL ? caseStudies : caseStudies.filter(s => s.category === activeFilter)),
+    [activeFilter]
+  );
 
   useEffect(() => {
-    gsap.fromTo(pageRef.current, { opacity: 0 }, { opacity: 1, duration: .5, ease: 'power2.out' });
-    gsap.fromTo('.acs-heading', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .9, ease: 'power3.out', stagger: .1, delay: .15 });
-    gsap.fromTo('.acs-filter',  { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .6, ease: 'power2.out', stagger: .06, delay: .35 });
+    const ctx = gsap.context(() => {
+      gsap.fromTo(pageRef.current, { opacity: 0 }, { opacity: 1, duration: .5, ease: 'power2.out' });
+      gsap.fromTo('.acs-heading', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .9, ease: 'power3.out', stagger: .1, delay: .15 });
+      gsap.fromTo('.acs-filter',  { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .6, ease: 'power2.out', stagger: .06, delay: .35 });
+    }, pageRef);
+    return () => ctx.revert();
   }, []);
 
   useEffect(() => {
-    const rows = document.querySelectorAll('.acs-row');
-    gsap.fromTo(rows,
-      { opacity: 0, y: 35 },
-      { opacity: 1, y: 0, duration: .7, ease: 'power3.out', stagger: .08 }
-    );
+    if (!listRef.current) return undefined;
+    const ctx = gsap.context(() => {
+      const rows = listRef.current.querySelectorAll('.acs-row');
+      gsap.fromTo(rows,
+        { opacity: 0, y: 35 },
+        { opacity: 1, y: 0, duration: .7, ease: 'power3.out', stagger: .08 }
+      );
+    }, listRef);
+    return () => ctx.revert();
   }, [filtered]);
 
   return (
@@ -199,7 +210,7 @@ export default function AllCaseStudies() {
             position: 'absolute', top: '5%', right: '-5%',
             width: 600, height: 600, borderRadius: '50%',
             background: 'radial-gradient(circle,rgba(201,168,76,0.06) 0%,transparent 70%)',
-            filter: 'blur(70px)',
+            filter: 'blur(70px)', contain: 'paint',
           }} />
         </div>
 
@@ -283,7 +294,7 @@ export default function AllCaseStudies() {
           <div style={{ height: 1, background: 'rgba(255,255,255,0.1)', marginBottom: 0 }} />
 
           {/* Rows list */}
-          <div>
+          <div ref={listRef}>
             {filtered.map(study => (
               <StudyRow key={study.id} study={study} onClick={() => navigateTo(`${ROUTES.CASE_STUDIES}/${study.slug}`)} />
             ))}

@@ -25,7 +25,13 @@ export default function Footer() {
   };
 
   return (
-    <footer className="py-10 px-6 md:px-14" style={{borderTop:'1px solid rgba(201,168,76,0.15)',background:'#000'}}>
+    <footer className="py-10 px-6 md:px-14" style={{
+      borderTop:'1px solid rgba(201,168,76,0.15)', background:'#000',
+      // Footer has no GSAP/ScrollTrigger tied to it, so it's safe to skip its
+      // rendering work entirely while off-screen — browser un-skips it (and
+      // paints normally) once it's near the viewport.
+      contentVisibility: 'auto', containIntrinsicSize: 'auto 220px',
+    }}>
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
         <span className="font-title text-xl tracking-[.3em] text-gold cursor-pointer"
           style={{fontFamily:"'Bebas Neue',sans-serif"}} onClick={() => go(links[0])}>ANISHA.</span>

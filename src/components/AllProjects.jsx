@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { projects, statusStyle } from '../data/projectsData';
 import ProjectLinks from './ProjectLinks';
@@ -6,7 +6,7 @@ import ProjectLinks from './ProjectLinks';
 const ALL = 'All';
 const categories = [ALL, ...Array.from(new Set(projects.map(p => p.category)))];
 
-function ProjectCard({ p }) {
+const ProjectCard = memo(function ProjectCard({ p }) {
   const cardRef = useRef(null);
 
   // Clicking a card that has a live URL opens the live site directly.
@@ -92,39 +92,48 @@ function ProjectCard({ p }) {
       </div>
     </div>
   );
-}
+});
 
 export default function AllProjects({ onBack }) {
   const [activeFilter, setActiveFilter] = useState(ALL);
   const pageRef  = useRef(null);
   const gridRef  = useRef(null);
 
-  const filtered = activeFilter === ALL
-    ? projects
-    : projects.filter(p => p.category === activeFilter);
+  // Memoized so this effect below only re-fires when the filter actually
+  // changes, not on every unrelated re-render of this component.
+  const filtered = useMemo(
+    () => (activeFilter === ALL ? projects : projects.filter(p => p.category === activeFilter)),
+    [activeFilter]
+  );
 
   // Page entrance
   useEffect(() => {
-    gsap.fromTo(pageRef.current,
-      { opacity: 0 },
-      { opacity: 1, duration: .5, ease: 'power2.out' });
+    const ctx = gsap.context(() => {
+      gsap.fromTo(pageRef.current,
+        { opacity: 0 },
+        { opacity: 1, duration: .5, ease: 'power2.out' });
 
-    gsap.fromTo('.ap-heading',
-      { opacity: 0, y: 40 },
-      { opacity: 1, y: 0, duration: .9, ease: 'power3.out', stagger: .1, delay: .15 });
+      gsap.fromTo('.ap-heading',
+        { opacity: 0, y: 40 },
+        { opacity: 1, y: 0, duration: .9, ease: 'power3.out', stagger: .1, delay: .15 });
 
-    gsap.fromTo('.ap-filter-btn',
-      { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, duration: .6, ease: 'power2.out', stagger: .06, delay: .35 });
+      gsap.fromTo('.ap-filter-btn',
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: .6, ease: 'power2.out', stagger: .06, delay: .35 });
+    }, pageRef);
+    return () => ctx.revert();
   }, []);
 
   // Animate grid on filter change
   useEffect(() => {
-    if (!gridRef.current) return;
-    const cards = gridRef.current.querySelectorAll('.ap-card');
-    gsap.fromTo(cards,
-      { opacity: 0, y: 40, scale: .97 },
-      { opacity: 1, y: 0, scale: 1, duration: .65, ease: 'power3.out', stagger: .07 });
+    if (!gridRef.current) return undefined;
+    const ctx = gsap.context(() => {
+      const cards = gridRef.current.querySelectorAll('.ap-card');
+      gsap.fromTo(cards,
+        { opacity: 0, y: 40, scale: .97 },
+        { opacity: 1, y: 0, scale: 1, duration: .65, ease: 'power3.out', stagger: .07 });
+    }, gridRef);
+    return () => ctx.revert();
   }, [filtered]);
 
   return (
@@ -133,7 +142,7 @@ export default function AllProjects({ onBack }) {
       {/* Ambient glow */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex:0 }}>
         <div style={{ position:'absolute',top:'5%',right:'-5%',width:'600px',height:'600px',borderRadius:'50%',
-          background:'radial-gradient(circle,rgba(201,168,76,0.05) 0%,transparent 70%)',filter:'blur(70px)' }}/>
+          background:'radial-gradient(circle,rgba(201,168,76,0.05) 0%,transparent 70%)',filter:'blur(70px)', contain:'paint' }}/>
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">

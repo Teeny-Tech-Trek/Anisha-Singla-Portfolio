@@ -195,7 +195,14 @@ export default function Education() {
         return rect.top <= window.innerHeight * 0.72 && rect.bottom >= 0;
       };
 
-      const tryReplayOnScroll = () => {
+      // rAF-throttled: coalesces to at most one layout read
+      // (getBoundingClientRect via isSectionReadyToReplay) per frame instead
+      // of one per native scroll event.
+      let replayFrameId = 0;
+
+      const checkReplay = () => {
+        replayFrameId = 0;
+
         if (!isSectionReadyToReplay()) {
           return;
         }
@@ -208,6 +215,11 @@ export default function Education() {
         replayDelayId = window.setTimeout(() => {
           playTimeline(true);
         }, 120);
+      };
+
+      const tryReplayOnScroll = () => {
+        if (replayFrameId) return;
+        replayFrameId = window.requestAnimationFrame(checkReplay);
       };
 
       const handleSectionScroll = (event) => {
@@ -288,6 +300,9 @@ export default function Education() {
         if (replayDelayId) {
           window.clearTimeout(replayDelayId);
         }
+        if (replayFrameId) {
+          window.cancelAnimationFrame(replayFrameId);
+        }
         window.removeEventListener(SECTION_SCROLL_EVENT, handleSectionScroll);
         window.removeEventListener('scroll', tryReplayOnScroll);
         window.removeEventListener('resize', tryReplayOnScroll);
@@ -315,7 +330,7 @@ export default function Education() {
           height: '300px',
           background:
             'radial-gradient(ellipse at center, rgba(201,168,76,0.05) 0%, transparent 70%)',
-          filter: 'blur(50px)',
+          filter: 'blur(50px)', contain: 'paint',
         }}
       />
 
