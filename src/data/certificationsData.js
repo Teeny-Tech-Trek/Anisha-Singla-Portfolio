@@ -10,21 +10,21 @@ export const certificationsData = [
     id: 'ai-security-governance',
     name: 'Securiti AI Security',
     issuer: 'Securiti',
-    pdfUrl: '/Certificates/AI-Security-and-Governance.pdf',
+    pdfUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/PDFs/AI-Security-and-Governance.pdf',
     imageUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/Certification-Photos/ai-security-governance.webp',
   },
   {
     id: 'python',
     name: 'Python',
     issuer: 'IBM',
-    pdfUrl: '/Certificates/Python.pdf',
+    pdfUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/PDFs/Python.pdf',
     imageUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/Certification-Photos/python.webp',
   },
   {
     id: 'design-thinking',
     name: 'Design Thinking Practitioner',
     issuer: 'IBM',
-    pdfUrl: '/Certificates/Design-Thinking-Practitioner.pdf',
+    pdfUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/PDFs/Design-Thinking-Practitioner.pdf',
     imageUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/Certification-Photos/design-thinking.webp',
   },
   // Referenced in detail inside the "4D Framework" case study
@@ -34,7 +34,7 @@ export const certificationsData = [
     id: 'anthropic-ai-fluency',
     name: 'Anthropic AI Fluency',
     issuer: 'Anthropic',
-    pdfUrl: '/Certificates/Certificate of Antropic ai fluency.pdf',
+    pdfUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/PDFs/Certificate%20of%20Antropic%20ai%20fluency.pdf',
   },
 ];
 

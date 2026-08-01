@@ -9,17 +9,17 @@ export const awardsData = [
     items: [
       {
         name: 'Engineers Day 2018',
-        pdfUrl: '/Certificates/Letter of Apperciation Engineers Day 2018.pdf',
+        pdfUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/PDFs/Letter%20of%20Apperciation%20Engineers%20Day%202018.pdf',
         imageUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/Certification-Photos/Letter%20of%20Apperciation%20Engineers%20Day%202018.webp',
       },
       {
         name: 'Class Representative',
-        pdfUrl: '/Certificates/Letter of Apperciiation CR.pdf',
+        pdfUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/PDFs/Letter%20of%20Apperciiation%20CR.pdf',
         imageUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/Certification-Photos/Letter%20of%20Apperciiation%20CR.webp',
       },
       {
         name: 'Tech Fest 2018',
-        pdfUrl: '/Certificates/Letter of apperication Tech Fest 2018.pdf',
+        pdfUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/PDFs/Letter%20of%20apperication%20Tech%20Fest%202018.pdf',
         imageUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/Certification-Photos/Letter%20of%20apperication%20Tech%20Fest%202018.webp',
       },
     ],
@@ -30,18 +30,18 @@ export const awardsData = [
     items: [
       {
         name: 'Engineers Day 2018',
-        pdfUrl: '/Certificates/Certificate of apperication Engineers Day 2018.pdf',
+        pdfUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/PDFs/Certificate%20of%20apperication%20Engineers%20Day%202018.pdf',
         imageUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/Certification-Photos/Certificate%20of%20apperication%20Engineers%20Day%202018.webp',
         autoRotate: 90,
       },
       {
         name: 'Engineers Day 2017',
-        pdfUrl: '/Certificates/Certificate for Coordination Engineers Day 2017.pdf',
+        pdfUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/PDFs/Certificate%20for%20Coordination%20Engineers%20Day%202017.pdf',
         imageUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/Certification-Photos/Certificate%20for%20Coordination%20Engineers%20Day%202017.webp',
       },
       {
         name: 'Tech Fest 2018',
-        pdfUrl: '/Certificates/Certificate for Coordination Tech Fest 2018.pdf',
+        pdfUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/PDFs/Certificate%20for%20Coordination%20Tech%20Fest%202018.pdf',
         imageUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/Certification-Photos/Certificate%20for%20Coordination%20Tech%20Fest%202018.webp',
         autoRotate: 90,
       },
@@ -60,12 +60,12 @@ export const awardsData = [
     items: [
       {
         name: 'IIT Delhi',
-        pdfUrl: '/Certificates/Certificate of Excellence IIT Delhi.pdf',
+        pdfUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/PDFs/Certificate%20of%20Excellence%20IIT%20Delhi.pdf',
         imageUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/Certification-Photos/Certificate%20of%20Excellence%20IIT%20Delhi.webp',
       },
       {
         name: 'Quiz 2018',
-        pdfUrl: '/Certificates/Certificate Of Excellence Quiz 2018.pdf',
+        pdfUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/PDFs/Certificate%20Of%20Excellence%20Quiz%202018.pdf',
         imageUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/Certification-Photos/Certificate%20Of%20Excellence%20Quiz%202018.webp',
         autoRotate: 90,
       },
@@ -77,13 +77,13 @@ export const awardsData = [
     items: [
       {
         name: 'EAC 2017',
-        pdfUrl: '/Certificates/Certificate Of Participation EAC 2017.pdf',
+        pdfUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/PDFs/Certificate%20Of%20Participation%20EAC%202017.pdf',
         imageUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/Certification-Photos/Certificate%20Of%20Participation%20EAC%202017.webp',
         autoRotate: 90,
       },
       {
         name: 'Skit 2019',
-        pdfUrl: '/Certificates/Certificate of Participation Skit 2019.pdf',
+        pdfUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/PDFs/Certificate%20of%20Participation%20Skit%202019.pdf',
         imageUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/Certification-Photos/Certificate%20of%20Participation%20Skit%202019.webp',
         autoRotate: 90,
       },
@@ -97,28 +97,28 @@ export const awardsData = [
         // Confirmed via LinkedIn (Honors-Awards section): Applied AI term 1
         name: "Dean's Honour List — Fall 2022 Term (Applied AI)",
         alt: "Dean's List certificate",
-        pdfUrl: '/Certificates/A1_Dean_letter_101411015.pdf',
+        pdfUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/PDFs/A1_Dean_letter_101411015.pdf',
         imageUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/Certification-Photos/A1_Dean_Letter.webp',
       },
       {
         // Confirmed via LinkedIn (Honors-Awards section): Applied AI term 2
         name: "Dean's Honour List — Winter 2023 Term (Applied AI)",
         alt: "Dean's List certificate",
-        pdfUrl: '/Certificates/A2_Dean_letter_101411015.pdf',
+        pdfUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/PDFs/A2_Dean_letter_101411015.pdf',
         imageUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/Certification-Photos/A2_Dean_Letter.webp',
       },
       {
         // Confirmed via LinkedIn (Honors-Awards section): Project Management term 1
         name: "Dean's Honour List — Fall 2023 Term (Project Management)",
         alt: "Dean's List certificate",
-        pdfUrl: '/Certificates/P1_Dean_letter_101411015.pdf',
+        pdfUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/PDFs/P1_Dean_letter_101411015.pdf',
         imageUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/Certification-Photos/P1_Dean_letter_2023.webp',
       },
       {
         // Confirmed via LinkedIn (Honors-Awards section): Project Management term 2
         name: "Dean's Honour List — Winter 2024 Term (Project Management)",
         alt: "Dean's List certificate",
-        pdfUrl: '/Certificates/P2_Dean_letter_101411015.pdf',
+        pdfUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/PDFs/P2_Dean_letter_101411015.pdf',
         imageUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/Certification-Photos/P2_Dean_letter_2024.webp',
       },
     ],
@@ -129,19 +129,19 @@ export const awardsData = [
     items: [
       {
         name: 'Sports 2013-2014',
-        pdfUrl: '/Certificates/Sports 1 20213-2014.pdf',
+        pdfUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/PDFs/Sports%201%2020213-2014.pdf',
         imageUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/Certification-Photos/Sports%201%2020213-2014.webp',
         autoRotate: 90,
       },
       {
         name: 'Sports 2014-2015 (1)',
-        pdfUrl: '/Certificates/Sports 2 2014-2015.pdf',
+        pdfUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/PDFs/Sports%202%202014-2015.pdf',
         imageUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/Certification-Photos/Sports%202%202014-2015.webp',
         autoRotate: 90,
       },
       {
         name: 'Sports 2014-2015 (2)',
-        pdfUrl: '/Certificates/Sport 3 2014-2015.pdf',
+        pdfUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/PDFs/Sport%203%202014-2015.pdf',
         imageUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/Certification-Photos/Sport%203%202014-2015.webp',
         autoRotate: 90,
       },

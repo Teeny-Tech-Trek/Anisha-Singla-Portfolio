@@ -14,7 +14,7 @@ export const caseStudies = [
       "Turning a slow, manual business process into a production-grade agentic AI system: scoped agents, retrieval-grounded knowledge, fallback logic, human review, and full logging. Built to run every day and be trusted, not just demoed.",
     tags: ['Agentic AI', 'Workflow Automation', 'RAG', 'Guardrails'],
     year: '',
-    pdfUrl: '/case-studies/agentic-workflow-automation-system.pdf',
+    pdfUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/case-studies/agentic-workflow-automation-system.pdf',
     gradient: 'linear-gradient(135deg, rgba(201,168,76,0.07) 0%, transparent 60%)',
     detail: {
       headline: 'From Manual Workflow to Agentic AI System',
@@ -132,7 +132,7 @@ export const caseStudies = [
       "An AI assistant that answers from a business's own documents (services, FAQs, workflows) rather than generic replies. It cites each source, captures leads inside the conversation, and escalates to a human when it should.",
     tags: ['RAG', 'Knowledge Base', 'Lead Capture', 'Citations'],
     year: '',
-    pdfUrl: '/case-studies/rag-business-knowledge-assistant.pdf',
+    pdfUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/case-studies/rag-business-knowledge-assistant.pdf',
     gradient: 'linear-gradient(135deg, rgba(100,150,255,0.06) 0%, transparent 60%)',
     detail: {
       headline: 'Retrieval-Augmented AI Assistant',
@@ -258,7 +258,7 @@ export const caseStudies = [
       "A decision-support product that turns raw property data into market intelligence. A structured data layer stays the source of truth while an AI layer adds natural-language search, RAG over listings and reports, on-demand summaries, and comparable analysis.",
     tags: ['Market Intelligence', 'NL Search', 'RAG', 'Comparables'],
     year: '',
-    pdfUrl: '/case-studies/real-estate-intelligence-dashboard.pdf',
+    pdfUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/case-studies/real-estate-intelligence-dashboard.pdf',
     gradient: 'linear-gradient(135deg, rgba(150,100,255,0.05) 0%, transparent 60%)',
     detail: {
       headline: 'AI-Powered Real Estate Intelligence Dashboard',
@@ -368,7 +368,7 @@ export const caseStudies = [
       "A multi-agent system that turns a single brief into research-backed, citation-grounded blog and social content. Specialized agents research, plan, write, optimize, and finalize in a controlled sequence, with every claim traced to a real source.",
     tags: ['Multi-Agent', 'Content Pipeline', 'RAG', 'Citations'],
     year: '',
-    pdfUrl: '/case-studies/multi-agent-content-intelligence-system.pdf',
+    pdfUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/case-studies/multi-agent-content-intelligence-system.pdf',
     gradient: 'linear-gradient(135deg, rgba(120,220,255,0.06) 0%, transparent 60%)',
     detail: {
       headline: 'Multi-Agent Content Pipeline',
@@ -493,7 +493,7 @@ export const caseStudies = [
       "A practical framework for deploying AI agents safely: risk classification, data-sensitivity mapping, hallucination controls, human-in-the-loop checkpoints, audit logs and fallbacks, plus an evaluation layer that proves behavior before shipping.",
     tags: ['Responsible AI', 'Risk & Guardrails', 'Evaluation', 'Human Oversight'],
     year: '',
-    pdfUrl: '/case-studies/responsible-ai-governance-framework.pdf',
+    pdfUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/case-studies/responsible-ai-governance-framework.pdf',
     gradient: 'linear-gradient(135deg, rgba(201,168,76,0.07) 0%, transparent 60%)',
     detail: {
       headline: 'Responsible AI Framework for Agentic Workflows',
