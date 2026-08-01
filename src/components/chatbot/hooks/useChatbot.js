@@ -25,6 +25,21 @@ const initialMessages = [
   ),
 ];
 
+const PRESET_INSTANT_RESPONSES = {
+  "AI projects": `- **Teeny Tech Trek**: AI consultancy studio delivering custom RAG chatbots and automations for 10 clients. [Read More](/case-studies/responsible-ai-governance-framework+rag-business-knowledge-assistant)\n\n- **Neo-Script**: MCP-native multi-agent content pipeline running in Claude Desktop, Cursor, and Windsurf. [Read More](/case-studies/multi-agent-content-intelligence-system)\n\n- **Nex-Estate**: Always-on AI real estate assistant with built-in CRM cutting 10+ hours/week. [Read More](/case-studies/real-estate-intelligence-dashboard+rag-business-knowledge-assistant)\n\n[Read More](#projects)`,
+
+  "Tech stack": `- **ML Algorithms & AI Models**: Machine Learning Algorithms, Google Gemini 2.5 Flash, Vertex AI, RAG Architectures, Multi-Agent Orchestration.\n\n- **No-Code Automations & Workflows**: n8n workflow automations, RAG pipelines, Vector DBs (Qdrant, FAISS), Zapier, Make.\n\n- **Product & Business Strategy**: AI Product Management, Business Analysis (PRDs/BRDs), AI Strategy, Stakeholder Management, Agile/Scrum.\n\n[Read More](#skills)`,
+
+
+  "Experience": `I founded Teeny Tech Trek, an AI solutions studio, delivering production-grade RAG chatbots and workflow automations to 10 clients with 100% on-time delivery. Concurrently, as Automation R&D Lead at Appu International, I led 5 process automations, reducing manual effort by 10 hours per week. [Read More](#experience)`,
+
+  "Download Resume": `✨ Anisha Singla's official resume has been downloaded to your device! Feel free to review her AI product portfolio, featured case studies, or get in touch directly.`,
+
+
+  "Contact": `You can reach me directly via email at anishasingla23@gmail.com or connect with me on LinkedIn and GitHub. I'm open to AI Product Manager, Business Analyst, and AI implementation roles! [Read More](#contact)`,
+};
+
+
 export function useChatbot() {
   const [messages, setMessages] = useState(initialMessages);
   const [isOpen, setIsOpen] = useState(false);
@@ -79,16 +94,21 @@ export function useChatbot() {
 
   logInfo("Hook initialized", { twinId: twinIdRef.current, sessionId: sessionIdRef.current });
 
-  const scrollToBottom = () => {
-    if (!viewportRef.current) {
-      return;
-    }
-    viewportRef.current.scrollTop = viewportRef.current.scrollHeight;
+  const scrollToBottom = (smooth = true) => {
+    if (!viewportRef.current) return;
+    requestAnimationFrame(() => {
+      if (!viewportRef.current) return;
+      viewportRef.current.scrollTo({
+        top: viewportRef.current.scrollHeight,
+        behavior: smooth ? "smooth" : "auto",
+      });
+    });
   };
 
   useEffect(() => {
-    scrollToBottom();
+    scrollToBottom(true);
   }, [messages, isStreaming]);
+
 
   useEffect(() => {
     return () => {
@@ -112,6 +132,19 @@ export function useChatbot() {
       return;
     }
 
+    // Zero-latency instant path for preset chips
+    const instantText = PRESET_INSTANT_RESPONSES[displayText] || PRESET_INSTANT_RESPONSES[trimmedMessage];
+    if (instantText) {
+      setIsOpen(true);
+      setError("");
+      setIsStreaming(false);
+      const userMsg = createMessage("user", bubbleText);
+      const assistantMsg = createMessage("assistant", instantText);
+      setMessages((current) => [...current, userMsg, assistantMsg]);
+      scrollToBottom(true);
+      return;
+    }
+
     // Abort any previous in-flight request.
     abortControllerRef.current?.abort();
     const controller = new AbortController();
@@ -125,6 +158,7 @@ export function useChatbot() {
     setIsStreaming(true);
     streamingBubbleIdRef.current = assistantMessage.id;
     setMessages((current) => [...current, userMessage, assistantMessage]);
+
 
     try {
       // ── Streaming path ──────────────────────────────────────────────────── //

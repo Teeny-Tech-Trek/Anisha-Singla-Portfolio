@@ -1,14 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import { useChatbotContext } from "../ChatbotProvider";
+import { navigateTo, navigateToSection } from "../../../routes";
 
 // Each chip label maps to the actual question sent to the chatbot.
 // This way clicking "AI projects" sends a proper, specific question that
 // gets a sharp 2-3 sentence response, not just the label as a query.
 const CHIP_QUESTIONS = {
-  "AI projects":  "What are your most exciting AI projects you've built?",
-  "Tech stack":   "What's your core tech stack and what do you build best with?",
-  "Experience":   "Give me a quick snapshot of your professional experience.",
-  "Contact":      "How can I get in touch with you?",
+  "AI projects":      "What are your most exciting AI projects you've built?",
+  "Tech stack":       "What's your core tech stack and what do you build best with?",
+  "Experience":       "Give me a quick snapshot of your professional experience.",
+  "Download Resume":  "Download Resume",
+  "Contact":          "How can I get in touch with you?",
 };
 const CHIPS = Object.keys(CHIP_QUESTIONS);
 
@@ -17,11 +19,106 @@ function looksLikeCode(text) {
   return /[{}<>]|=>|;\s|\bfunction\b|```/.test(text || "");
 }
 
-// Helper to render **bold headings** cleanly in assistant bubbles without displaying raw asterisks.
-function renderFormattedContent(text) {
+// Helper to extract section links like [Show More](#experience) and determine section routing.
+function parseMessageContent(text) {
+  if (!text) return { cleanText: "", actionSection: null, buttonLabel: "Show More" };
+
+  let actionSection = null;
+  let buttonLabel = "Show More";
+  const regex = /\[([^\]]+)\]\(#([a-zA-Z0-9_-]+)\)/g;
+
+  const cleanText = text.replace(regex, (match, label, sectionId) => {
+    actionSection = sectionId;
+    buttonLabel = label || "Show More";
+    return "";
+  }).trim();
+
+  // Smart fallback section detection if LLM didn't output explicit markdown link
+  if (!actionSection) {
+    const lower = text.toLowerCase();
+    if (
+      lower.includes("resume") || lower.includes("cv") || lower.includes("download resume") ||
+      lower.includes("provide me your resume") || lower.includes("give me your resume")
+    ) {
+      actionSection = "download_resume";
+      buttonLabel = "Download Resume ⬇️";
+    } else if (
+      lower.includes("yourself") || lower.includes("who is anisha") || lower.includes("about me") ||
+      lower.includes("who are you") || lower.includes("tell me about") || lower.includes("background") ||
+      lower.includes("profile") || lower.includes("summary")
+    ) {
+      actionSection = "about";
+    } else if (
+      lower.includes("experience") || lower.includes("work history") || lower.includes("career") ||
+      lower.includes("appu international") || lower.includes("role") || lower.includes("job") ||
+      lower.includes("employment")
+    ) {
+      actionSection = "experience";
+    } else if (
+      lower.includes("education") || lower.includes("degree") || lower.includes("college") ||
+      lower.includes("george brown") || lower.includes("jhanjeri") || lower.includes("qualification") ||
+      lower.includes("b.tech") || lower.includes("academic") || lower.includes("university")
+    ) {
+      actionSection = "education";
+    } else if (
+      lower.includes("project") || lower.includes("projects") || lower.includes("nex-estate") ||
+      lower.includes("neo-script") || lower.includes("built") || lower.includes("app") ||
+      lower.includes("products") || lower.includes("case study")
+    ) {
+      actionSection = "projects";
+    } else if (
+      lower.includes("skill") || lower.includes("skills") || lower.includes("tech stack") ||
+      lower.includes("tool") || lower.includes("python") || lower.includes("fastapi") ||
+      lower.includes("react") || lower.includes("gemini") || lower.includes("rag") ||
+      lower.includes("agile") || lower.includes("product management")
+    ) {
+      actionSection = "skills";
+    } else if (
+      lower.includes("contact") || lower.includes("email") || lower.includes("reach out") ||
+      lower.includes("touch") || lower.includes("connect") || lower.includes("hire") ||
+      lower.includes("phone") || lower.includes("location")
+    ) {
+      actionSection = "contact";
+    }
+  }
+
+  return { cleanText, actionSection, buttonLabel };
+}
+
+
+// Helper to render **bold headings** & inline [Read More](#section) links cleanly at text end.
+function renderFormattedContent(text, actionSection) {
   if (!text) return null;
-  const parts = text.split(/(\*\*.*?\*\*)/g);
+
+  let contentToRender = text;
+
+  // For non-bullet sections (about, experience, education, general), flatten any accidental bullet formatting into a single smooth paragraph
+  if (actionSection && actionSection !== "projects" && actionSection !== "skills") {
+    contentToRender = contentToRender
+      .replace(/^-\s*\*\*[^*]+\*\*:\s*/gm, "")
+      .replace(/^-\s*/gm, "")
+      .replace(/\n+/g, " ")
+      .trim();
+  }
+
+  // If there's an action section and text doesn't already end with a markdown link, append inline Read More link
+  if (actionSection && actionSection !== "download_resume" && !/\[[^\]]+\]\([^)]+\)\s*$/.test(contentToRender.trim())) {
+    if (actionSection === "contact") {
+      contentToRender += " [Read More](#home)";
+    } else {
+      contentToRender += ` [Read More](#${actionSection})`;
+    }
+  }
+
+
+  // Tokenize by **bold** and [label](url)
+  const tokenRegex = /(\*\*.*?\*\*|\[[^\]]+\]\([^)]+\))/g;
+  const parts = contentToRender.split(tokenRegex);
+
   return parts.map((part, idx) => {
+    if (!part) return null;
+
+    // Handle **bold**
     if (part.startsWith("**") && part.endsWith("**") && part.length > 4) {
       return (
         <strong key={idx} style={{ color: "#f3c677", fontWeight: 700 }}>
@@ -29,9 +126,54 @@ function renderFormattedContent(text) {
         </strong>
       );
     }
+
+    // Handle [Label](URL)
+    const linkMatch = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+    if (linkMatch) {
+      const [, label, url] = linkMatch;
+      return (
+        <a
+          key={idx}
+          href={url}
+          onClick={(e) => {
+            e.preventDefault();
+            if (url === "#download_resume") {
+              const link = document.createElement("a");
+              link.href = "/resume.pdf";
+              link.download = "Anisha_Singla_Resume.pdf";
+              link.target = "_blank";
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+            } else if (url === "#contact") {
+              navigateToSection("home");
+            } else if (url.startsWith("#")) {
+              navigateToSection(url.slice(1));
+            } else {
+              navigateTo(url);
+            }
+          }}
+          style={{
+            color: "#E4C976",
+            textDecoration: "underline",
+            fontWeight: 600,
+            cursor: "pointer",
+            marginLeft: "4px",
+            fontSize: "0.82rem",
+          }}
+        >
+          {label.includes("➔") || label.includes("⬇️") ? label : `${label} ➔`}
+        </a>
+      );
+    }
+
     return part;
   });
 }
+
+
+
+
 
 // "AS" monogram — Anisha Singla's initials in the portfolio's display font.
 function Monogram({ size = 15 }) {
@@ -93,11 +235,26 @@ export default function ChatShell({ onExit, mobile = false }) {
     sendMessage(next); // existing handler
   };
 
+  const handleDownloadResume = () => {
+    const link = document.createElement("a");
+    link.href = "/resume.pdf";
+    link.download = "Anisha_Singla_Resume.pdf";
+    link.target = "_blank";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const pickChip = (label) => {
     if (isStreaming) return;
-    // API receives the full question; UI bubble shows just the short chip label
+    if (label === "Download Resume") {
+      handleDownloadResume();
+      sendMessage("Can I download your resume?", "Download Resume");
+      return;
+    }
     sendMessage(CHIP_QUESTIONS[label] || label, label);
   };
+
 
   return (
     <section className="pa-chat" role="dialog" aria-label="Portfolio assistant" aria-modal={mobile ? "true" : undefined}>
@@ -130,12 +287,13 @@ export default function ChatShell({ onExit, mobile = false }) {
             isStreaming &&
             streamingBubbleIdRef?.current === message.id;
           const hasCitations = !isUser && Array.isArray(message.citations) && message.citations.length > 0;
+          const parsed = !isUser ? parseMessageContent(message.content) : null;
           return (
             <div key={message.id}>
               <div className={`pa-row ${isUser ? "user" : "assistant"}`}>
                 <div className={`pa-bubble ${isUser ? "user" : "assistant"} ${!isUser && looksLikeCode(message.content) ? "mono" : ""}`}>
                   <p className="pa-text" style={{ whiteSpace: "pre-wrap" }}>
-                    {isUser ? message.content : renderFormattedContent(message.content)}
+                    {isUser ? message.content : renderFormattedContent(parsed.cleanText, parsed.actionSection)}
                     {/* Streaming cursor — blinks while tokens are flowing */}
                     {isThisBubbleStreaming && (
                       <span
@@ -164,6 +322,8 @@ export default function ChatShell({ onExit, mobile = false }) {
                       </ul>
                     </div>
                   )}
+
+
                 </div>
               </div>
 

@@ -3,7 +3,7 @@
 // No numeric proficiency — keep it qualitative.
 
 export const skillsData = [
-  { id: 'ai-ml',      folder: 'ai-ml',      skills: ['RAG', 'FAISS', 'Neo4j', 'Qdrant', 'spaCy', 'Claude', 'Gemini', 'Machine Learning'] },
+  { id: 'ai-ml',      folder: 'ai-ml',      skills: ['ML Algorithms', 'Machine Learning', 'RAG', 'FAISS', 'Neo4j', 'Qdrant', 'Gemini', 'Claude'] },
   { id: 'languages',  folder: 'languages',  skills: ['Python', 'C / C++', 'TypeScript', 'PHP'] },
   { id: 'frontend',   folder: 'frontend',   skills: ['React', 'Tailwind', 'Vite', 'React Router'] },
   { id: 'backend',    folder: 'backend',    skills: ['FastAPI', 'Node.js', 'MongoDB', 'Redis'] },
