@@ -119,6 +119,7 @@ const roles = [
 
 export default function AboutDetail() {
   const pageRef = useRef(null);
+  const videoRef = useRef(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -127,6 +128,36 @@ export default function AboutDetail() {
       gsap.fromTo('.abt-section', { opacity: 0, y: 35 }, { opacity: 1, y: 0, duration: .7, ease: 'power3.out', stagger: 0.1, delay: 0.3 });
     }, pageRef);
     return () => ctx.revert();
+  }, []);
+
+  // Autoplay with sound on mount. Browsers (Chrome/Safari/Firefox) block
+  // unmuted autoplay unless the visitor already has a high "media
+  // engagement" score for this site, so a first-time visitor's browser will
+  // likely refuse the unmuted play() below — in that case we fall back to a
+  // muted autoplay so the video still plays instead of sitting frozen, and
+  // the visitor can turn sound on via the native controls.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    let cancelled = false;
+
+    const start = async () => {
+      video.muted = false;
+      try {
+        await video.play();
+      } catch {
+        if (cancelled) return;
+        video.muted = true;
+        video.play().catch(() => {});
+      }
+    };
+
+    start();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (
@@ -166,13 +197,13 @@ export default function AboutDetail() {
             >
               <div className="aspect-[9/16] w-full relative">
                 <video
+                  ref={videoRef}
                   className="w-full h-full object-cover"
-                  src="https://player.vimeo.com/external/371433846.sd.mp4?s=236da2f3c054ba208d8c30fe33fcfd3f118de0d0&profile_id=139&oauth2_token_id=57447761"
-                  autoPlay
+                  src="https://arbgtqtruugewk5g.public.blob.vercel-storage.com/AboutUsVideo/AboutMe.mp4"
                   loop
-                  muted
                   playsInline
                   controls
+                  preload="auto"
                 />
               </div>
               {/* corner accent */}
