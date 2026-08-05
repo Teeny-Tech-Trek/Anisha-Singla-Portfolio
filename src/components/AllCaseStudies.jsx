@@ -2,6 +2,8 @@ import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { caseStudies } from '../data/caseStudiesData';
 import { navigateTo, ROUTES } from '../routes';
+import { useSeo } from '../hooks/useSeo';
+import { SEO } from '../seo/seoConfig';
 
 // ─── Study Row ────────────────────────────────────────────────────────────────
 const StudyRow = memo(function StudyRow({ study, onClick }) {
@@ -166,6 +168,8 @@ const ALL = 'All';
 const categories = [ALL, ...Array.from(new Set(caseStudies.map(s => s.category)))];
 
 export default function AllCaseStudies() {
+  useSeo(SEO.caseStudies);
+
   const [activeFilter, setActiveFilter] = useState(ALL);
   const pageRef = useRef(null);
   const listRef = useRef(null);
@@ -294,6 +298,7 @@ export default function AllCaseStudies() {
           <div style={{ height: 1, background: 'rgba(255,255,255,0.1)', marginBottom: 0 }} />
 
           {/* Rows list */}
+          <h2 className="sr-only">Case study list</h2>
           <div ref={listRef}>
             {filtered.map(study => (
               <StudyRow key={study.id} study={study} onClick={() => navigateTo(`${ROUTES.CASE_STUDIES}/${study.slug}`)} />

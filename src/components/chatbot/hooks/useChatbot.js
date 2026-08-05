@@ -37,6 +37,22 @@ const PRESET_INSTANT_RESPONSES = {
 
 
   "Contact": `You can reach me directly via email at anishasingla23@gmail.com or connect with me on LinkedIn and GitHub. I'm open to AI Product Manager, Business Analyst, and AI implementation roles! [Read More](#contact)`,
+
+  "🎬 Know Me in 64s": {
+    type: "video",
+    url: "https://arbgtqtruugewk5g.public.blob.vercel-storage.com/AboutUsVideo/AboutMe.mp4",
+    caption: "A quick 64-second intro — who I am and what I build. 🎥",
+  },
+};
+
+// Shown as a follow-up assistant bubble right after the "Know Me in 64s"
+// video takeover is closed, in place of the old behavior of just falling
+// back to the plain chat view.
+const POST_VIDEO_CTA_CONTENT = {
+  type: "post-video-cta",
+  title: "Thanks for watching my intro! 🎬",
+  subtitle: "Would you like to know more about me?",
+  buttonLabel: "Know More About Me",
 };
 
 
@@ -129,6 +145,19 @@ export function useChatbot() {
   const closeChat = useCallback(() => setIsOpen(false), []);
   const toggleChat = useCallback(() => setIsOpen((current) => !current), []);
 
+  // Called by ChatShell right after the video takeover's close (X) button is
+  // clicked: strips the video message out of history entirely (so it can't
+  // reappear as an inline bubble once the takeover overlay is gone) and
+  // appends the "Thanks for watching!" follow-up bubble in its place. The
+  // video only comes back if the user explicitly reopens the intro preset.
+  const closeIntroVideo = useCallback(() => {
+    setMessages((current) => [
+      ...current.filter((msg) => !(msg.content && typeof msg.content === "object" && msg.content.type === "video")),
+      createMessage("assistant", POST_VIDEO_CTA_CONTENT),
+    ]);
+    scrollToBottom(true);
+  }, []);
+
   // sendMessage(input)              — normal typed message
   // sendMessage(query, displayText) — chip: query goes to API, displayText shown in bubble
   const sendMessage = async (input, displayText) => {
@@ -140,14 +169,15 @@ export function useChatbot() {
       return;
     }
 
-    // Zero-latency instant path for preset chips
-    const instantText = PRESET_INSTANT_RESPONSES[displayText] || PRESET_INSTANT_RESPONSES[trimmedMessage];
-    if (instantText) {
+    // Zero-latency instant path for preset chips. Content may be plain
+    // markdown text or a structured object (e.g. { type: "video", ... }).
+    const instantContent = PRESET_INSTANT_RESPONSES[displayText] || PRESET_INSTANT_RESPONSES[trimmedMessage];
+    if (instantContent) {
       setIsOpen(true);
       setError("");
       setIsStreaming(false);
       const userMsg = createMessage("user", bubbleText);
-      const assistantMsg = createMessage("assistant", instantText);
+      const assistantMsg = createMessage("assistant", instantContent);
       setMessages((current) => [...current, userMsg, assistantMsg]);
       scrollToBottom(true);
       return;
@@ -290,6 +320,7 @@ export function useChatbot() {
     error,
     isOpen,
     isStreaming,
+    closeIntroVideo,
     messages,
     openChat,
     scrollToBottom,

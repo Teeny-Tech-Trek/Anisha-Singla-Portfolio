@@ -2,8 +2,12 @@ import React from 'react';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import { navigateTo, ROUTES } from '../routes';
+import { useSeo } from '../hooks/useSeo';
+import { SEO } from '../seo/seoConfig';
 
 export default function NotFound() {
+  useSeo(SEO.notFound);
+
   return (
     <div className="bg-black min-h-screen w-full max-w-full overflow-x-hidden flex flex-col justify-between">
       <Navbar />

@@ -2,6 +2,8 @@ import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { navigateTo, navigateToSection, ROUTES } from '../routes';
 import { socials } from '../data/socials';
+import { useSeo } from '../hooks/useSeo';
+import { SEO } from '../seo/seoConfig';
 
 const GOLD = '#C9A84C';
 const GOLD_SOFT = 'rgba(201,168,76,0.35)';
@@ -43,9 +45,9 @@ function SectionEyebrow({ index, label }) {
         {index}
       </span>
       <span className="h-[1px] w-8" style={{ background: GOLD_SOFT }} />
-      <p className="font-body text-xs tracking-[.25em] uppercase font-semibold text-white/70">
+      <h2 className="font-body text-xs tracking-[.25em] uppercase font-semibold text-white/70 m-0">
         {label}
-      </p>
+      </h2>
     </div>
   );
 }
@@ -118,6 +120,8 @@ const roles = [
 ];
 
 export default function AboutDetail() {
+  useSeo(SEO.about);
+
   const pageRef = useRef(null);
   const videoRef = useRef(null);
 

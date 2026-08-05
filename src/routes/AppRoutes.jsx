@@ -12,6 +12,8 @@ import Volunteer from '../components/Volunteer';
 import Footer from '../components/Footer';
 import NotFound from '../components/NotFound';
 import { ROUTES, consumePendingSection, getCurrentPath, navigateTo, navigateToSection, scrollToSection } from './index';
+import { useSeo } from '../hooks/useSeo';
+import { SEO } from '../seo/seoConfig';
 
 // Code-split: none of these are needed for the first paint of the home page.
 // - Certifications pulls in pdfjs-dist (a large PDF-rendering library) just
@@ -47,6 +49,8 @@ function CertificationsFallback() {
 }
 
 function HomeRoute() {
+  useSeo(SEO.home);
+
   useEffect(() => {
     const pendingSection = consumePendingSection();
 

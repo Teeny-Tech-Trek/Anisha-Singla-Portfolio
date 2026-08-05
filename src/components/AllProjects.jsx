@@ -2,6 +2,8 @@ import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { projects, statusStyle } from '../data/projectsData';
 import ProjectLinks from './ProjectLinks';
+import { useSeo } from '../hooks/useSeo';
+import { SEO } from '../seo/seoConfig';
 
 const ALL = 'All';
 const categories = [ALL, ...Array.from(new Set(projects.map(p => p.category)))];
@@ -95,6 +97,8 @@ const ProjectCard = memo(function ProjectCard({ p }) {
 });
 
 export default function AllProjects({ onBack }) {
+  useSeo(SEO.projects);
+
   const [activeFilter, setActiveFilter] = useState(ALL);
   const pageRef  = useRef(null);
   const gridRef  = useRef(null);
@@ -211,6 +215,7 @@ export default function AllProjects({ onBack }) {
         </p>
 
         {/* Grid */}
+        <h2 className="sr-only">Project list</h2>
         <div ref={gridRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {filtered.map(p => (
             <div key={p.id} className="ap-card">

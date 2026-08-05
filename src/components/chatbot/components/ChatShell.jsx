@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useChatbotContext } from "../ChatbotProvider";
-import { navigateTo, navigateToSection } from "../../../routes";
+import { navigateTo, navigateToSection, ROUTES } from "../../../routes";
 
 // Each chip label maps to the actual question sent to the chatbot.
 // This way clicking "AI projects" sends a proper, specific question that
@@ -11,8 +11,13 @@ const CHIP_QUESTIONS = {
   "Experience":       "Give me a quick snapshot of your professional experience.",
   "Download Resume":  "Download Resume",
   "Contact":          "How can I get in touch with you?",
+  "🎬 Know Me in 64s": "Tell me about yourself in 64 seconds.",
 };
 const CHIPS = Object.keys(CHIP_QUESTIONS);
+
+// This preset takes over the whole chat content area instead of rendering
+// as a normal small bubble — see `videoTakeoverActive` below.
+const VIDEO_TAKEOVER_LABEL = "🎬 Know Me in 64s";
 
 // Render obviously "code-ish" assistant replies in mono/green to match the OS aesthetic.
 function looksLikeCode(text) {
@@ -205,20 +210,185 @@ function HomeGlyphSmall() {
   return <span style={{ width: 13, height: 13, border: "1.5px solid currentColor", borderRadius: 3, display: "block" }} />;
 }
 
+// Renders a preset response of type "video" — used by "🎬 Know Me in 64s".
+// Shows a caption, a buffering skeleton while the video loads, and a text
+// fallback (with a direct link) if the video fails to load.
+function VideoMessage({ url, caption }) {
+  const [status, setStatus] = useState("loading");
+
+  return (
+    <>
+      {caption && (
+        <p className="pa-text" style={{ whiteSpace: "pre-wrap", marginBottom: 8 }}>
+          {caption}
+        </p>
+      )}
+      {status === "error" ? (
+        <p className="pa-text" style={{ whiteSpace: "pre-wrap" }}>
+          Couldn&apos;t load the video —{" "}
+          <a
+            href={url}
+            target="_blank"
+            rel="noreferrer"
+            style={{ color: "#E4C976", textDecoration: "underline", fontWeight: 600 }}
+          >
+            Watch it here
+          </a>{" "}
+          instead.
+        </p>
+      ) : (
+        <div className="pa-video-wrap">
+          {status === "loading" && (
+            <div className="pa-video-skeleton" aria-label="Video loading">
+              <span className="pa-video-spinner" />
+            </div>
+          )}
+          <video
+            src={url}
+            controls
+            autoPlay
+            playsInline
+            onCanPlay={() => setStatus("ready")}
+            onError={() => setStatus("error")}
+            style={{
+              width: "100%",
+              borderRadius: "12px",
+              marginTop: "8px",
+              display: status === "ready" ? "block" : "none",
+            }}
+          />
+        </div>
+      )}
+    </>
+  );
+}
+
+// Follow-up bubble shown right after the video takeover is closed — a quick
+// "thanks for watching" nudge toward the About page.
+function PostVideoCta({ title, subtitle, buttonLabel }) {
+  return (
+    <div className="pa-post-video">
+      <p className="pa-text" style={{ marginBottom: 4 }}>{title}</p>
+      <p className="pa-text" style={{ marginBottom: 10 }}>{subtitle}</p>
+      <button
+        type="button"
+        className="pa-cta-btn"
+        onClick={() => navigateTo(ROUTES.ABOUT)}
+      >
+        {buttonLabel} <span aria-hidden="true">➔</span>
+      </button>
+    </div>
+  );
+}
+
+// Fullscreen-within-the-widget presentation for the video preset — fills the
+// entire area above the input bar, hiding header/chips/message list while active.
+function VideoTakeover({ url, caption, onClose }) {
+  const [status, setStatus] = useState("loading");
+
+  return (
+    <div className="pa-video-takeover">
+      <button
+        type="button"
+        className="pa-video-takeover-close"
+        onClick={onClose}
+        aria-label="Close video — back to chat"
+      >
+        ✕
+      </button>
+
+      {status === "error" ? (
+        <div className="pa-video-takeover-fallback">
+          <p className="pa-text" style={{ whiteSpace: "pre-wrap" }}>
+            Couldn&apos;t load the video —{" "}
+            <a
+              href={url}
+              target="_blank"
+              rel="noreferrer"
+              style={{ color: "#E4C976", textDecoration: "underline", fontWeight: 600 }}
+            >
+              Watch it here
+            </a>{" "}
+            instead.
+          </p>
+        </div>
+      ) : (
+        <>
+          {status === "loading" && (
+            <div className="pa-video-takeover-skeleton" aria-label="Video loading">
+              <span className="pa-video-spinner" />
+            </div>
+          )}
+          <video
+            src={url}
+            controls
+            autoPlay
+            playsInline
+            onCanPlay={() => setStatus("ready")}
+            onError={() => setStatus("error")}
+            className="pa-video-takeover-el"
+            style={{ display: status === "ready" ? "block" : "none" }}
+          />
+        </>
+      )}
+
+      {caption && (
+        <div className="pa-video-takeover-caption">
+          <p className="pa-text">{caption}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /**
  * In-phone chat UI. Reuses ALL existing chat state/handlers from the context —
  * this is layout + reskin only. `mobile` shows an in-header exit button
  * (on desktop the phone's physical home button is the only exit).
  */
 export default function ChatShell({ onExit, mobile = false }) {
-  const { messages, isStreaming, error, sendMessage, viewportRef, streamingBubbleIdRef } = useChatbotContext();
+  const {
+    messages,
+    isStreaming,
+    error,
+    sendMessage,
+    scrollToBottom,
+    viewportRef,
+    streamingBubbleIdRef,
+    closeIntroVideo,
+  } = useChatbotContext();
   const inputRef = useRef(null);
   const [value, setValue] = useState("");
+  const [videoTakeoverActive, setVideoTakeoverActive] = useState(false);
 
   // Move focus into the input when the assistant opens.
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
+
+  // Restore normal scroll position once takeover closes and the message list remounts.
+  const wasTakeoverActive = useRef(false);
+  useEffect(() => {
+    if (wasTakeoverActive.current && !videoTakeoverActive) {
+      scrollToBottom(false);
+    }
+    wasTakeoverActive.current = videoTakeoverActive;
+  }, [videoTakeoverActive, scrollToBottom]);
+
+  const exitTakeover = () => setVideoTakeoverActive(false);
+
+  // Explicit close (X) click — as opposed to the takeover being interrupted
+  // by the user typing/submitting a new message — ends the video, removes
+  // it from the chat history so it can't reappear as an inline bubble, and
+  // immediately nudges toward the About page with a follow-up bubble.
+  const handleVideoTakeoverClose = () => {
+    setVideoTakeoverActive(false);
+    closeIntroVideo();
+  };
+
+  const activeVideoMessage = videoTakeoverActive
+    ? [...messages].reverse().find((m) => m.content && typeof m.content === "object" && m.content.type === "video")
+    : null;
 
   // The typing indicator shows only before the first token arrives on the
   // currently-streaming bubble (i.e. its content is still empty).
@@ -232,6 +402,7 @@ export default function ChatShell({ onExit, mobile = false }) {
     const next = value.trim();
     if (!next || isStreaming) return;
     setValue("");
+    exitTakeover();
     sendMessage(next); // existing handler
   };
 
@@ -253,6 +424,9 @@ export default function ChatShell({ onExit, mobile = false }) {
       return;
     }
     sendMessage(CHIP_QUESTIONS[label] || label, label);
+    if (label === VIDEO_TAKEOVER_LABEL) {
+      setVideoTakeoverActive(true);
+    }
   };
 
 
@@ -265,51 +439,78 @@ export default function ChatShell({ onExit, mobile = false }) {
           50% { opacity: 0; }
         }
       `}</style>
-      <header className="pa-header">
-        <span className="pa-bot" aria-hidden="true"><Monogram size={15} /></span>
-        <div>
-          <div className="pa-title">Portfolio Assistant</div>
-          <div className="pa-online">● online</div>
-        </div>
-        <div className="pa-header-spacer" />
-        {mobile && (
-          <button type="button" className="pa-header-close" onClick={onExit} aria-label="Home — exit assistant">
-            <HomeGlyphSmall />
-          </button>
-        )}
-      </header>
+      {!videoTakeoverActive && (
+        <header className="pa-header">
+          <span className="pa-bot" aria-hidden="true"><Monogram size={15} /></span>
+          <div>
+            <div className="pa-title">Portfolio Assistant</div>
+            <div className="pa-online">● online</div>
+          </div>
+          <div className="pa-header-spacer" />
+          {mobile && (
+            <button type="button" className="pa-header-close" onClick={onExit} aria-label="Home — exit assistant">
+              <HomeGlyphSmall />
+            </button>
+          )}
+        </header>
+      )}
 
-      <div className="pa-body" ref={viewportRef} aria-live="polite">
-        {messages.map((message, index) => {
+      {videoTakeoverActive && activeVideoMessage ? (
+        <VideoTakeover
+          url={activeVideoMessage.content.url}
+          caption={activeVideoMessage.content.caption}
+          onClose={handleVideoTakeoverClose}
+        />
+      ) : (
+        <div className="pa-body" ref={viewportRef} aria-live="polite">
+          {messages.map((message, index) => {
           const isUser = message.role === "user";
           const isThisBubbleStreaming =
             !isUser &&
             isStreaming &&
             streamingBubbleIdRef?.current === message.id;
           const hasCitations = !isUser && Array.isArray(message.citations) && message.citations.length > 0;
-          const parsed = !isUser ? parseMessageContent(message.content) : null;
+          const isVideoMessage =
+            !isUser && message.content && typeof message.content === "object" && message.content.type === "video";
+          const isPostVideoCta =
+            !isUser && message.content && typeof message.content === "object" && message.content.type === "post-video-cta";
+          const parsed = !isUser && !isVideoMessage && !isPostVideoCta ? parseMessageContent(message.content) : null;
           return (
             <div key={message.id}>
               <div className={`pa-row ${isUser ? "user" : "assistant"}`}>
-                <div className={`pa-bubble ${isUser ? "user" : "assistant"} ${!isUser && looksLikeCode(message.content) ? "mono" : ""}`}>
-                  <p className="pa-text" style={{ whiteSpace: "pre-wrap" }}>
-                    {isUser ? message.content : renderFormattedContent(parsed.cleanText, parsed.actionSection)}
-                    {/* Streaming cursor — blinks while tokens are flowing */}
-                    {isThisBubbleStreaming && (
-                      <span
-                        style={{
-                          display: "inline-block",
-                          width: "2px",
-                          height: "1em",
-                          background: "currentColor",
-                          marginLeft: "2px",
-                          verticalAlign: "middle",
-                          animation: "pa-cursor-blink 0.9s step-end infinite",
-                        }}
-                        aria-hidden="true"
-                      />
-                    )}
-                  </p>
+                <div
+                  className={`pa-bubble ${isUser ? "user" : "assistant"} ${
+                    !isUser && !isVideoMessage && !isPostVideoCta && looksLikeCode(message.content) ? "mono" : ""
+                  } ${isVideoMessage ? "video-bubble" : ""}`}
+                >
+                  {isVideoMessage ? (
+                    <VideoMessage url={message.content.url} caption={message.content.caption} />
+                  ) : isPostVideoCta ? (
+                    <PostVideoCta
+                      title={message.content.title}
+                      subtitle={message.content.subtitle}
+                      buttonLabel={message.content.buttonLabel}
+                    />
+                  ) : (
+                    <p className="pa-text" style={{ whiteSpace: "pre-wrap" }}>
+                      {isUser ? message.content : renderFormattedContent(parsed.cleanText, parsed.actionSection)}
+                      {/* Streaming cursor — blinks while tokens are flowing */}
+                      {isThisBubbleStreaming && (
+                        <span
+                          style={{
+                            display: "inline-block",
+                            width: "2px",
+                            height: "1em",
+                            background: "currentColor",
+                            marginLeft: "2px",
+                            verticalAlign: "middle",
+                            animation: "pa-cursor-blink 0.9s step-end infinite",
+                          }}
+                          aria-hidden="true"
+                        />
+                      )}
+                    </p>
+                  )}
                   {hasCitations && (
                     <div className="pa-citations">
                       <p className="pa-citations-label">Sources</p>
@@ -349,7 +550,8 @@ export default function ChatShell({ onExit, mobile = false }) {
             </div>
           </div>
         )}
-      </div>
+        </div>
+      )}
 
       {error ? <p className="pa-error">{error}</p> : null}
 
@@ -359,7 +561,13 @@ export default function ChatShell({ onExit, mobile = false }) {
           type="text"
           value={value}
           placeholder="Ask anything…"
-          onChange={(event) => setValue(event.target.value)}
+          onChange={(event) => {
+            setValue(event.target.value);
+            if (videoTakeoverActive) exitTakeover();
+          }}
+          onFocus={() => {
+            if (videoTakeoverActive) exitTakeover();
+          }}
           disabled={isStreaming}
           aria-label="Message portfolio assistant"
         />

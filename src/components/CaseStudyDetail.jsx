@@ -2,6 +2,9 @@ import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { getCaseStudyBySlug } from '../data/caseStudiesData';
 import { navigateTo, navigateToSection, ROUTES } from '../routes';
+import { useSeo } from '../hooks/useSeo';
+import { SEO } from '../seo/seoConfig';
+import { getCaseStudySeo } from '../seo/caseStudySeo';
 
 const GOLD = '#C9A84C';
 const TITLE_FONT = "'Bebas Neue', sans-serif";
@@ -242,6 +245,11 @@ export default function CaseStudyDetail({ slug }) {
   const studies = slugs.map(s => getCaseStudyBySlug(s)).filter(Boolean);
   const pageRef = useRef(null);
 
+  // A single-study slug gets its own title/description/canonical/JSON-LD; a
+  // combined-slug URL (not part of the public sitemap) falls back to the
+  // case-studies index metadata rather than describing only one of the studies.
+  useSeo(studies.length === 1 ? getCaseStudySeo(studies[0].slug) : SEO.caseStudies);
+
   useEffect(() => {
     if (studies.length === 0 || !pageRef.current) return undefined;
 
@@ -283,6 +291,11 @@ export default function CaseStudyDetail({ slug }) {
         {studies.map((study, studyIdx) => {
           const { detail } = study;
           let sectionIndex = 0;
+          // Only the first study in a combined-slug URL gets the page's single
+          // H1; subsequent studies are demoted a level so the page never emits
+          // more than one H1, keeping the heading hierarchy valid.
+          const HeadlineTag = studyIdx === 0 ? 'h1' : 'h2';
+          const SubheadlineTag = studyIdx === 0 ? 'h2' : 'h3';
 
           return (
             <div key={study.id} className={studyIdx > 0 ? "mt-24 pt-20" : ""}>
@@ -317,7 +330,7 @@ export default function CaseStudyDetail({ slug }) {
                 </span>
               </div>
 
-              <h1
+              <HeadlineTag
                 className="csd-hero font-title uppercase"
                 style={{
                   fontFamily: TITLE_FONT,
@@ -326,8 +339,8 @@ export default function CaseStudyDetail({ slug }) {
                 }}
               >
                 {detail.headline}
-              </h1>
-              <h2
+              </HeadlineTag>
+              <SubheadlineTag
                 className="csd-hero font-title uppercase mt-2"
                 style={{
                   fontFamily: TITLE_FONT,
@@ -336,7 +349,7 @@ export default function CaseStudyDetail({ slug }) {
                 }}
               >
                 {detail.subheadline}
-              </h2>
+              </SubheadlineTag>
 
               {/* Tags */}
               <div className="csd-hero flex flex-wrap gap-1.5 mt-6">
