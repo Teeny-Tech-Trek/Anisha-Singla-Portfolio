@@ -24,6 +24,12 @@ export default function Footer() {
     navigateToSection(link.target);
   };
 
+  // Same href convention as Navbar.jsx -- route links get their route path,
+  // section links get "/#sectionId". Not used for "Contact": that target id
+  // doesn't exist in the live DOM (Contact.jsx is never mounted), so it stays
+  // a plain button rather than pointing at a fake anchor.
+  const hrefFor = (link) => (link.type === 'route' ? link.target : `/#${link.target}`);
+
   return (
     <footer className="py-10 px-6 md:px-14" style={{
       borderTop:'1px solid rgba(201,168,76,0.15)', background:'#000',
@@ -38,11 +44,19 @@ export default function Footer() {
 
         <div className="flex flex-wrap justify-center gap-6">
           {links.map(l => (
-            <button key={l.label} onClick={() => go(l)}
-              className="font-body text-xs tracking-widest uppercase hover:text-gold transition-colors"
-              style={{color:'rgba(255,255,255,0.6)'}}>
-              {l.label}
-            </button>
+            l.target === 'contact' ? (
+              <button key={l.label} onClick={() => go(l)}
+                className="font-body text-xs tracking-widest uppercase hover:text-gold transition-colors"
+                style={{color:'rgba(255,255,255,0.6)'}}>
+                {l.label}
+              </button>
+            ) : (
+              <a key={l.label} href={hrefFor(l)} onClick={(e) => { e.preventDefault(); go(l); }}
+                className="font-body text-xs tracking-widest uppercase hover:text-gold transition-colors"
+                style={{color:'rgba(255,255,255,0.6)'}}>
+                {l.label}
+              </a>
+            )
           ))}
         </div>
 

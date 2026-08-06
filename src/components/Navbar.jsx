@@ -69,6 +69,14 @@ export default function Navbar() {
     navigateToSection(link.target);
   };
 
+  // Real, followable href per link -- route links point at the route path,
+  // section links point at "/#sectionId" (all section ids live on the home
+  // page). Click handlers still preventDefault() and drive navigation
+  // through go()/navigateTo()/navigateToSection(), so SPA behavior (no full
+  // reload, Lenis-smooth scroll) is unchanged -- this just gives crawlers
+  // and "open in new tab" a real destination to follow.
+  const hrefFor = (link) => (link.type === 'route' ? link.target : `/#${link.target}`);
+
   return (
     <header>
     <nav ref={navRef}
@@ -90,20 +98,20 @@ export default function Navbar() {
         <ul className="hidden xl:flex items-center gap-8">
           {links.map(link => link.label === 'Projects' ? (
             <li key={link.label}>
-              <button onClick={() => go(link)}
+              <a href={hrefFor(link)} onClick={(e) => { e.preventDefault(); go(link); }}
                 className="font-body text-xs rounded-lg tracking-widest uppercase border border-gold text-gold px-5 py-[14px] transition-all duration-300 hover:bg-gold hover:text-black">
                 Projects
-              </button>
+              </a>
             </li>
           ) : (
             <li key={link.label}>
-              <button onClick={() => go(link)}
+              <a href={hrefFor(link)} onClick={(e) => { e.preventDefault(); go(link); }}
                 className="group inline-flex min-h-[44px] items-center font-body text-xs tracking-widest uppercase text-gray-400 hover:text-gold transition-colors">
                 <span className="relative">
                   {link.label}
                   <span className="absolute -bottom-1 left-0 w-0 h-px bg-gold transition-all duration-300 group-hover:w-full" />
                 </span>
-              </button>
+              </a>
             </li>
           ))}
         </ul>
@@ -122,10 +130,10 @@ export default function Navbar() {
       {open && (
         <div className="flex w-full max-w-full flex-col gap-5 overflow-x-hidden border-t border-gold/10 bg-black/95 px-5 py-6 sm:px-6 xl:hidden">
           {links.map(link => (
-            <button key={link.label} onClick={() => go(link)}
+            <a key={link.label} href={hrefFor(link)} onClick={(e) => { e.preventDefault(); go(link); }}
               className="font-body text-sm tracking-widest uppercase text-gray-300 hover:text-gold text-left transition-colors">
               {link.label}
-            </button>
+            </a>
           ))}
         </div>
       )}

@@ -714,17 +714,20 @@ export default function Hero() {
                   transition: 'opacity 0.7s ease, transform 0.7s ease',
                 }}
               >
-                <button
+                <a
                   className="hero-button btn-shimmer  rounded-lg"
+                  href="/#projects"
                   style={{
                     fontWeight: 700,
                     color: '#000',
                     border: 'none', cursor: 'pointer',
+                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                    textDecoration: 'none',
                   }}
-                  onClick={() => scrollToSection('projects')}
+                  onClick={(e) => { e.preventDefault(); scrollToSection('projects'); }}
                 >
                   See the work
-                </button>
+                </a>
                 <a
                   className="hero-button rounded-lg"
                   href="/resume.pdf"

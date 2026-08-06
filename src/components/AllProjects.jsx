@@ -149,7 +149,7 @@ export default function AllProjects({ onBack }) {
           background:'radial-gradient(circle,rgba(201,168,76,0.05) 0%,transparent 70%)',filter:'blur(70px)', contain:'paint' }}/>
       </div>
 
-      <div className="max-w-7xl mx-auto relative z-10">
+      <main className="max-w-7xl mx-auto relative z-10">
 
         {/* Back button */}
         <button
@@ -253,7 +253,7 @@ export default function AllProjects({ onBack }) {
           </button>
         </div>
 
-      </div>
+      </main>
     </div>
   );
 }

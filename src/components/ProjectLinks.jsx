@@ -44,10 +44,12 @@ export default function ProjectLinks({ project }) {
 
       {links.caseStudy && (
         // Internal route — navigated in-app (the custom router's <Link> equivalent),
-        // so NOT target="_blank".
-        <button
-          type="button"
+        // so NOT target="_blank". Real href so crawlers/users get a followable
+        // link; onClick still preventDefault()s and drives the SPA router.
+        <a
+          href={links.caseStudy}
           onClick={(event) => {
+            event.preventDefault();
             stop(event);
             navigateTo(links.caseStudy);
           }}
@@ -56,7 +58,7 @@ export default function ProjectLinks({ project }) {
         >
           <FaFileLines size={12} aria-hidden="true" />
           Case study
-        </button>
+        </a>
       )}
     </div>
   );

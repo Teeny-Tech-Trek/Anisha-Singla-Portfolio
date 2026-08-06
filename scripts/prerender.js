@@ -30,6 +30,7 @@ function injectRouteSeo(baseHtml, meta) {
   html = replaceTagText(html, /(<title>)([\s\S]*?)(<\/title>)/, meta.title);
   html = replaceAttrValue(html, /(<meta name="description" content=")([^"]*)(")/, meta.description);
   html = replaceAttrValue(html, /(<link rel="canonical" href=")([^"]*)(")/, meta.canonical);
+  html = replaceAttrValue(html, /(<meta name="robots" content=")([^"]*)(")/, meta.robots);
 
   html = replaceAttrValue(html, /(<meta property="og:url" content=")([^"]*)(")/, meta.og.url);
   html = replaceAttrValue(html, /(<meta property="og:title" content=")([^"]*)(")/, meta.og.title);

@@ -36,7 +36,7 @@ export default function About() {
               I build AI systems that survive contact with production.
             </p>
             <p className="stagger font-body text-lg leading-relaxed mb-5" style={{color:'rgba(255,255,255,0.5)',fontWeight:300}}>
-              As founder of <span className="text-gold font-semibold">Teeny Tech Trek</span>, I have spent the last two years turning AI pilots into working systems for real businesses. Production RAG chatbots, AI agents and workflow automations for ten clients across Real Estate, Immigration and Education, with 100 percent on-time delivery and automations that save clients more than twenty hours of manual work every week.
+              As founder of <strong className="text-gold font-semibold">Teeny Tech Trek</strong>, I have spent the last two years turning AI pilots into working systems for real businesses. Production RAG chatbots, AI agents and workflow automations for ten clients across Real Estate, Immigration and Education, with 100 percent on-time delivery and automations that save clients more than twenty hours of manual work every week.
             </p>
             <p className="stagger font-body text-lg leading-relaxed mb-5" style={{color:'rgba(255,255,255,0.5)',fontWeight:300}}>
               I built all of this while holding a full-time role in business development and automation R&D at a precision engineering manufacturer. Running both at once taught me prioritisation, stakeholder management and delivery discipline that no single role could have.
@@ -45,13 +45,14 @@ export default function About() {
               I studied Applied AI Solutions Development and Project Management at George Brown College in Toronto, earning Dean's Honour List standing in all four terms. In September 2026 I am going back.
             </p>
 
-            <button
-              onClick={() => navigateTo(ROUTES.ABOUT)}
+            <a
+              href={ROUTES.ABOUT}
+              onClick={(e) => { e.preventDefault(); navigateTo(ROUTES.ABOUT); }}
               className="stagger btn-gold mt-4"
               style={{ padding: '1rem 2.2rem' }}
             >
               More About Me
-            </button>
+            </a>
           </div>
 
           {/* Right stat cards */}

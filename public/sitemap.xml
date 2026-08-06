@@ -2,61 +2,73 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.anishasingla.com/</loc>
-    <lastmod>2026-07-22</lastmod>
+    <lastmod>2026-08-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://www.anishasingla.com/about</loc>
-    <lastmod>2026-07-22</lastmod>
+    <lastmod>2026-08-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.anishasingla.com/projects</loc>
-    <lastmod>2026-07-22</lastmod>
+    <lastmod>2026-08-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.anishasingla.com/case-studies</loc>
-    <lastmod>2026-07-22</lastmod>
+    <lastmod>2026-08-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.anishasingla.com/case-studies/agentic-workflow-automation-system</loc>
-    <lastmod>2026-07-22</lastmod>
+    <lastmod>2026-08-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.anishasingla.com/case-studies/rag-business-knowledge-assistant</loc>
-    <lastmod>2026-07-22</lastmod>
+    <lastmod>2026-08-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.anishasingla.com/case-studies/real-estate-intelligence-dashboard</loc>
-    <lastmod>2026-07-22</lastmod>
+    <lastmod>2026-08-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.anishasingla.com/case-studies/multi-agent-content-intelligence-system</loc>
-    <lastmod>2026-07-22</lastmod>
+    <lastmod>2026-08-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.anishasingla.com/case-studies/responsible-ai-governance-framework</loc>
-    <lastmod>2026-07-22</lastmod>
+    <lastmod>2026-08-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://www.anishasingla.com/case-studies/transfer-learning-image-classification</loc>
-    <lastmod>2026-07-22</lastmod>
+    <lastmod>2026-08-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.anishasingla.com/case-studies/shakegen-character-level-language-model</loc>
+    <lastmod>2026-08-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.anishasingla.com/case-studies/4d-framework-ai-fluency</loc>
+    <lastmod>2026-08-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

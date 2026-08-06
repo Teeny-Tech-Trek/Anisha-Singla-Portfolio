@@ -81,18 +81,20 @@ function HomeRoute() {
   return (
     <div className="bg-black min-h-screen w-full max-w-full overflow-x-hidden">
       <Navbar />
-      <Hero />
-      <AvailabilityBanner />
-      <About />
-      <Services />
-      <Experience />
-      <Projects />
-      <Education />
-      <Suspense fallback={<CertificationsFallback />}>
-        <Certifications />
-      </Suspense>
-      <WritingSpeaking />
-      <Volunteer />
+      <main>
+        <Hero />
+        <AvailabilityBanner />
+        <About />
+        <Services />
+        <Experience />
+        <Projects />
+        <Education />
+        <Suspense fallback={<CertificationsFallback />}>
+          <Certifications />
+        </Suspense>
+        <WritingSpeaking />
+        <Volunteer />
+      </main>
       <Footer />
     </div>
   );

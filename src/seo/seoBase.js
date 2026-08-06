@@ -46,13 +46,40 @@ export function breadcrumbJsonLd(items) {
   };
 }
 
-export function buildMeta({ path, title, description, jsonLd, ogImage = DEFAULT_OG_IMAGE }) {
+export function organizationJsonLd() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Teeny Tech Trek',
+    url: 'https://techtrekkers.ai',
+    founder: { '@type': 'Person', name: PERSON_NAME, url: `${SITE_URL}/` },
+    sameAs: [
+      'https://www.teenytechtrek.com',
+      'https://www.techtrekkers.ai',
+      'https://medium.com/@teenytechtrek',
+    ],
+  };
+}
+
+export function websiteJsonLd() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: PERSON_NAME,
+    url: `${SITE_URL}/`,
+  };
+}
+
+const DEFAULT_ROBOTS = 'index, follow, max-image-preview:large';
+
+export function buildMeta({ path, title, description, jsonLd, ogImage = DEFAULT_OG_IMAGE, robots = DEFAULT_ROBOTS }) {
   const url = `${SITE_URL}${path}`;
   return {
     path,
     title,
     description,
     canonical: url,
+    robots,
     og: { type: 'website', url, title, description, image: ogImage },
     twitter: { card: 'summary_large_image', title, description, image: ogImage },
     jsonLd,

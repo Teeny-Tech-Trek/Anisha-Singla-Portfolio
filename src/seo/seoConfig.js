@@ -5,13 +5,13 @@
 // only needed by the case-study detail page, which is already React.lazy
 // loaded (see src/seo/caseStudySeo.js). Pulling it in here would add it to
 // every route's initial bundle, including the home page.
-import { SITE_URL, buildMeta, personJsonLd, breadcrumbJsonLd } from './seoBase.js';
+import { SITE_URL, buildMeta, personJsonLd, breadcrumbJsonLd, organizationJsonLd, websiteJsonLd } from './seoBase.js';
 
 const HOME = buildMeta({
   path: '/',
   title: 'Anisha Singla - AI Product Manager and Business Analyst | Toronto',
   description: 'AI Product Manager and Business Analyst. Founder of Teeny Tech Trek. I build production RAG systems and AI agents. Relocating to Toronto, September 2026.',
-  jsonLd: [personJsonLd()],
+  jsonLd: [personJsonLd(), organizationJsonLd(), websiteJsonLd()],
 });
 
 const ABOUT = buildMeta({
@@ -40,6 +40,8 @@ const NOT_FOUND = buildMeta({
   title: '404 - Page Not Found | Anisha Singla',
   description: 'The page you are looking for does not exist or has been relocated.',
   jsonLd: [],
+  // 404s shouldn't be indexed -- there's nothing here for Google to rank.
+  robots: 'noindex, follow',
 });
 
 export const SEO = {

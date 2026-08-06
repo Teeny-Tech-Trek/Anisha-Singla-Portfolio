@@ -183,7 +183,7 @@ export default function AboutDetail() {
         }} />
       </div>
 
-      <div className="max-w-6xl mx-auto relative z-10">
+      <main className="max-w-6xl mx-auto relative z-10">
 
         {/* Back button */}
         <div className="abt-hero mb-10">
@@ -448,7 +448,7 @@ export default function AboutDetail() {
           </button>
         </div>
 
-      </div>
+      </main>
     </div>
   );
 }

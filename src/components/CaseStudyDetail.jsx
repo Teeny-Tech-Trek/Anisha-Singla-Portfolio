@@ -73,7 +73,7 @@ function BulletList({ items }) {
             style={{ width: 20, height: 1, background: GOLD, display: 'inline-block' }}
           />
           <p className="font-body text-sm md:text-base leading-relaxed" style={{ color: 'rgba(255,255,255,0.65)', fontWeight: 300, maxWidth: 720 }}>
-            {item.title && <span className="font-semibold" style={{ color: '#fff' }}>{item.title}. </span>}
+            {item.title && <strong className="font-semibold" style={{ color: '#fff' }}>{item.title}. </strong>}
             {item.text}
           </p>
         </li>
@@ -227,7 +227,7 @@ function SectionBlocks({ blocks }) {
 // ─── Not found ────────────────────────────────────────────────────────────────
 function StudyNotFound() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-6 text-center" style={{ background: '#000' }}>
+    <main className="min-h-screen flex flex-col items-center justify-center px-6 text-center" style={{ background: '#000' }}>
       <p className="font-title text-5xl mb-3" style={{ fontFamily: TITLE_FONT, letterSpacing: '.1em', color: GOLD }}>
         Case Study Not Found
       </p>
@@ -235,7 +235,7 @@ function StudyNotFound() {
         The case study you are looking for does not exist or has moved.
       </p>
       <BackButton />
-    </div>
+    </main>
   );
 }
 
@@ -281,7 +281,7 @@ export default function CaseStudyDetail({ slug }) {
         }} />
       </div>
 
-      <div className="max-w-5xl mx-auto relative z-10">
+      <main className="max-w-5xl mx-auto relative z-10">
 
         {/* Back button */}
         <div className="csd-hero mb-10">
@@ -485,7 +485,7 @@ export default function CaseStudyDetail({ slug }) {
           </button>
         </div>
 
-      </div>
+      </main>
     </div>
   );
 }

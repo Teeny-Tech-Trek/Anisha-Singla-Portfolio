@@ -6,7 +6,7 @@ import { useSeo } from '../hooks/useSeo';
 import { SEO } from '../seo/seoConfig';
 
 // ─── Study Row ────────────────────────────────────────────────────────────────
-const StudyRow = memo(function StudyRow({ study, onClick }) {
+const StudyRow = memo(function StudyRow({ study, href, onClick }) {
   const rowRef = useRef(null);
   const [hovered, setHovered] = useState(false);
 
@@ -20,13 +20,14 @@ const StudyRow = memo(function StudyRow({ study, onClick }) {
   };
 
   return (
-    <div
+    <a
       ref={rowRef}
-      className="acs-row relative cursor-pointer"
-      style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}
+      href={href}
+      className="acs-row relative cursor-pointer block"
+      style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', textDecoration: 'none' }}
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
-      onClick={onClick}
+      onClick={(e) => { e.preventDefault(); onClick(); }}
     >
       {/* hover wash */}
       <div
@@ -159,7 +160,7 @@ const StudyRow = memo(function StudyRow({ study, onClick }) {
           </div>
         </div>
       </div>
-    </div>
+    </a>
   );
 });
 
@@ -218,7 +219,7 @@ export default function AllCaseStudies() {
           }} />
         </div>
 
-        <div className="max-w-7xl mx-auto relative z-10">
+        <main className="max-w-7xl mx-auto relative z-10">
 
           {/* Back button */}
           <button
@@ -301,7 +302,12 @@ export default function AllCaseStudies() {
           <h2 className="sr-only">Case study list</h2>
           <div ref={listRef}>
             {filtered.map(study => (
-              <StudyRow key={study.id} study={study} onClick={() => navigateTo(`${ROUTES.CASE_STUDIES}/${study.slug}`)} />
+              <StudyRow
+                key={study.id}
+                study={study}
+                href={`${ROUTES.CASE_STUDIES}/${study.slug}`}
+                onClick={() => navigateTo(`${ROUTES.CASE_STUDIES}/${study.slug}`)}
+              />
             ))}
           </div>
 
@@ -338,7 +344,7 @@ export default function AllCaseStudies() {
             </button>
           </div>
 
-        </div>
+        </main>
       </div>
     </>
   );

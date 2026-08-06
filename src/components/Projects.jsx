@@ -225,12 +225,12 @@ export default function Projects() {
         {/* View All */}
         {projects.length > 5 && (
           <div className="view-all-btn mt-14 flex justify-center">
-            <button onClick={() => navigateTo(ROUTES.PROJECTS)}
+            <a href={ROUTES.PROJECTS} onClick={e => { e.preventDefault(); navigateTo(ROUTES.PROJECTS); }}
               className="font-body flex items-center gap-3 transition-all duration-300"
               style={{
                 fontWeight: 600, fontSize: '.72rem', letterSpacing: '.2em', textTransform: 'uppercase',
                 color: '#C9A84C', padding: '.9rem 3rem', border: '1px solid rgba(201,168,76,0.4)',
-                background: 'transparent', cursor: 'pointer'
+                background: 'transparent', cursor: 'pointer', textDecoration: 'none',
               }}
               onMouseEnter={e => { e.currentTarget.style.background = '#C9A84C'; e.currentTarget.style.color = '#000'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
               onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#C9A84C'; e.currentTarget.style.transform = 'translateY(0)'; }}>
@@ -238,7 +238,7 @@ export default function Projects() {
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
-            </button>
+            </a>
           </div>
         )}
       </div>
