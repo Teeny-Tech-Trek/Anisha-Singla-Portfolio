@@ -64,9 +64,9 @@ function useTypewriter(text, { enabled = true, startDelay = 1000, duration = 100
 }
 
 const HERO_STATS = [
-  { value: '3',    label: 'AI products in production' },
-  { value: '10',   label: 'clients delivered' },
-  { value: '3',    label: 'verticals served' },
+  { value: '3', label: 'AI products in production' },
+  { value: '10', label: 'clients delivered' },
+  { value: '3', label: 'verticals served' },
   { value: '100%', label: 'on-time delivery' },
 ];
 
@@ -84,7 +84,7 @@ export default function Hero() {
 
   const LINE1 = 'Hey, there';
   const LINE2 = 'Anisha\nSingla';
-  const LINE3 = 'AI Product Manager and Business Analyst';
+  const LINE3 = 'AI Strategist & Business Analyst';
   const LINE4 = 'I turn AI pilots into production systems. Three AI products shipped, ten clients delivered, and no demos that died on the way to launch.';
 
   const VIDEO_READY_TEXT_DELAY_MS = 1000;
@@ -121,6 +121,15 @@ export default function Hero() {
     return () => window.clearTimeout(timeoutId);
   }, [isVideoReady, startTyping, VIDEO_READY_TEXT_DELAY_MS]);
 
+  // Safety fallback: if video load is delayed or blocked by the browser,
+  // ensure the hero text starts typing regardless so the page is never blank.
+  useEffect(() => {
+    const fallbackTimer = window.setTimeout(() => {
+      setStartTyping(true);
+    }, 800);
+    return () => window.clearTimeout(fallbackTimer);
+  }, []);
+
   const showBtns = startTyping && tw4.done;
 
   const nameParts = tw2.displayed.split('\n');
@@ -149,7 +158,7 @@ export default function Hero() {
     videoElement.addEventListener('loadeddata', handleLoadedData);
     const playPromise = videoElement.play();
     if (playPromise?.catch) {
-      playPromise.catch(() => {});
+      playPromise.catch(() => { });
     }
 
     if (videoElement.readyState >= 2) {
@@ -627,6 +636,7 @@ export default function Hero() {
             className="hero-video"
             ref={videoRef}
             src={VERCEL_VIDEO_URL}
+
             muted
             playsInline
             preload="metadata"
@@ -761,7 +771,7 @@ export default function Hero() {
                     display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                     gap: '0.5rem',
                   }}
-                  onClick={() => { window.open('https://mail.google.com/mail/?view=cm&fs=1&to=anishasingla23@gmail.com', '_blank', 'noopener,noreferrer'); }}
+                  onClick={() => { window.location.href = 'mailto:anishasingla23@gmail.com'; }}
                   onMouseEnter={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#C9A84C'; }}
                   onMouseLeave={(e) => { e.currentTarget.style.background = '#C9A84C'; e.currentTarget.style.color = '#000'; }}
                 >

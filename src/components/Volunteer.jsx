@@ -4,25 +4,24 @@ const MONO = "'JetBrains Mono','SF Mono',monospace";
 
 const commonThreads = [
   'Leadership', 'Public Speaking', 'Community Building', 'Event Management',
-  'Mentorship', 'Networking', 'Team Coordination', 'Startup Ecosystem',
-  'Volunteering', 'Outreach', 'Workshops', 'Collaboration',
+  'Mentorship', 'Team Coordination', 'Volunteering', 'Workshops', 'Collaboration',
 ];
 
 const groups = [
   {
     category: 'LEADERSHIP',
     items: [
-      { role:'President, AI Club', org:'George Brown College', date:'Oct 2023 – Apr 2024', location:'Toronto, Canada' },
-      { role:'VP, AI Club',        org:'George Brown College', date:'Nov 2022 – Oct 2023', location:'Toronto, Canada' },
-      { role:'Event Manager',      org:'CGC Jhanjeri',         date:'Aug 2018 – Apr 2020', location:'Mohali, India' },
+      { role:'President, AI Club', org:'George Brown Polytechnic', date:'Oct 2023 – Apr 2024', location:'Toronto, Canada' },
+      { role:'VP, AI Club',        org:'George Brown Polytechnic', date:'Nov 2022 – Oct 2023', location:'Toronto, Canada' },
+      { role:'Event Manager',      org:'CGC Jhanjeri',             date:'Aug 2018 – Apr 2020', location:'Mohali, India' },
     ],
   },
   {
     category: 'COMMUNITY',
     items: [
-      { role:'Community Coordinator', org:'Connect Circles: Chandigarh', date:'Mar 2026 – Present', location:'Mohali, India' },
-      { role:'Charter Member',        org:'TiE Chandigarh',              date:'May 2026 – Present', location:'Mohali, India' },
-      { role:'Associate Member',      org:'TiE Chandigarh',              date:'Dec 2025 – Apr 2026', location:'Mohali, India' },
+      { role:'Community Coordinator', org:'Connect Circles: Chandigarh', date:'Mar 2026 – Present', location:'Remote' },
+      { role:'Charter Member',        org:'TiE Chandigarh',              date:'May 2026 – Present', location:'Remote' },
+      { role:'Associate Member',      org:'TiE Chandigarh',              date:'Dec 2025 – Apr 2026', location:'Remote' },
     ],
   },
 ];

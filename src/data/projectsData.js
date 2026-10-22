@@ -20,58 +20,11 @@
  * @property {boolean} [requiresAuth]  Live URL is behind a login wall
  */
 
-// Order matters: the landing page features the first four (TeenyTechTrek, NetTwin,
-// NeoScript, Jigsaw Toxic Comment Classifier); the rest show in the all-projects view.
+// Order matters: the landing page features the first five (NeoScript as the
+// featured full-width card, then Nex-Estate, TTT Website Chatbot, NetTwin,
+// Transfer Learning Image Classifier in the 4-col grid).
+// Teeny Tech Trek company website and ShakeGen appear in the All Projects page only.
 export const projects = [
-  {
-    id: 1,
-    title: 'Teeny Tech Trek',
-    category: 'Company Website',
-    description:
-      'Official website for Teeny Tech Trek — an AI consultancy helping businesses adopt custom AI solutions, chatbots, and automation systems. Built with React 18, TypeScript, and Tailwind CSS, with a mobile-first, SEO-optimized, and accessibility-focused approach.',
-    tags: ['React', 'TypeScript', 'Tailwind CSS', 'Vite', 'React Router'],
-    status: 'Live',
-    links: {
-      live: 'https://www.teenytechtrek.com/',
-      code: 'https://github.com/Teeny-Tech-Trek/ttt_website_frontend',
-      caseStudy: '/case-studies/responsible-ai-governance-framework+rag-business-knowledge-assistant',
-    },
-    year: '2024',
-    featured: true,
-    gradient: 'radial-gradient(ellipse at top left, rgba(201,168,76,0.18) 0%, transparent 65%)',
-  },
-  {
-    id: 7,
-    title: 'Transfer Learning Image Classifier',
-    category: 'Deep Learning',
-    description:
-      'Image classification using Xception (ImageNet pre-trained) on tf_flowers (5 classes) and cars196 (196 classes). Two-phase training — frozen base for head training, then full fine-tune — achieves 91%+ validation accuracy on just 3,670 images with a fraction of the compute cost.',
-    tags: ['Python', 'TensorFlow', 'Xception', 'Keras', 'Transfer Learning', 'Colab'],
-    status: 'Completed',
-    links: {
-      code: 'https://github.com/Anisha-Singla-22/TransferLearning',
-      caseStudy: '/case-studies/transfer-learning-image-classification',
-    },
-    year: '2024',
-    featured: false,
-    gradient: 'radial-gradient(ellipse at top right, rgba(255,200,80,0.09) 0%, transparent 65%)',
-  },
-  {
-    id: 10,
-    title: 'ShakeGen — Shakespeare Text Generator',
-    category: 'Deep Learning · Sequence Modeling',
-    description:
-      'A character-level language model built using GRU networks to generate Shakespearean-style text. Trained on ~1.1M characters from Shakespeare’s works, the model learns sequential patterns and generates text using temperature-controlled sampling, demonstrating core concepts of RNNs, embeddings, and autoregressive generation.',
-    tags: ['Python', 'TensorFlow', 'Keras', 'GRU', 'Deep Learning', 'NLP', 'Jupyter'],
-    status: 'Completed',
-    links: {
-      code: 'https://github.com/Anisha-Singla-22/Shakegen',
-      caseStudy: '/case-studies/shakegen-character-level-language-model',
-    },
-    year: '2023',
-    featured: false,
-    gradient: 'radial-gradient(ellipse at top right, rgba(180,140,255,0.10) 0%, transparent 65%)',
-  },
   {
     id: 4,
     title: 'NeoScript',
@@ -108,38 +61,6 @@ export const projects = [
     gradient: 'radial-gradient(ellipse at bottom left, rgba(180,100,255,0.09) 0%, transparent 65%)',
   },
   {
-    id: 11,
-    title: 'NetTwin',
-    category: 'Network Digital Twin Platform',
-    description:
-      'A network digital-twin platform that builds a live virtual replica of physical network infrastructure — letting teams visualize topology, simulate configuration changes, and stress-test failures safely before rolling them out to production.',
-    tags: ['React', 'TypeScript', 'Node.js', 'WebSockets', 'AWS'],
-    status: 'Live',
-    links: {
-      live: 'https://nettwin.techtrekkers.ai/',
-      code: 'https://github.com/Teeny-Tech-Trek/nettwin-frontend',
-    },
-    requiresAuth: true,
-    year: '2025',
-    featured: false,
-    gradient: 'radial-gradient(ellipse at top right, rgba(120,220,255,0.12) 0%, transparent 65%)',
-  },
-  {
-    id: 8,
-    title: 'Jigsaw Toxic Comment Classifier',
-    category: 'Natural Language Processing',
-    description:
-      'Multi-label text classifier on 159K Wikipedia comments across 6 toxicity categories — built for the Kaggle Jigsaw 2018 challenge. Compares Logistic Regression, Decision Tree, and Random Forest with a TF-IDF pipeline and repeat-word ablation study. Logistic Regression scored 0.96963 on the private leaderboard.',
-    tags: ['Python', 'Sklearn', 'TF-IDF', 'NLTK', 'Kaggle', 'Jupyter'],
-    status: 'Completed',
-    links: {
-      code: 'https://github.com/Anisha-Singla-22/Jigsaw',
-    },
-    year: '2024',
-    featured: false,
-    gradient: 'radial-gradient(ellipse at bottom left, rgba(100,220,200,0.08) 0%, transparent 65%)',
-  },
-  {
     id: 2,
     title: 'TTT Website Chatbot',
     category: 'Artificial Intelligence',
@@ -155,6 +76,89 @@ export const projects = [
     year: '2024',
     featured: false,
     gradient: 'radial-gradient(ellipse at top right, rgba(100,180,255,0.1) 0%, transparent 65%)',
+  },
+  {
+    id: 11,
+    title: 'NetTwin',
+    category: 'Conversational AI Platform',
+    description:
+      "A conversational digital twin for professionals. It turns a resume and website into an always-on assistant that answers visitors' questions and captures and qualifies leads around the clock.",
+    tags: ['React', 'TypeScript', 'Node.js', 'LLM', 'RAG', 'AWS'],
+    status: 'Live',
+    links: {
+      live: 'https://nettwin.techtrekkers.ai/',
+      code: 'https://github.com/Teeny-Tech-Trek/nettwin-frontend',
+      caseStudy: '/case-studies/conversational-digital-twin-platform',
+    },
+    requiresAuth: true,
+    year: '2025',
+    featured: false,
+    gradient: 'radial-gradient(ellipse at top right, rgba(120,220,255,0.12) 0%, transparent 65%)',
+  },
+  {
+    id: 7,
+    title: 'Transfer Learning Image Classifier',
+    category: 'Deep Learning',
+    description:
+      'Image classification using Xception (ImageNet pre-trained) on tf_flowers (5 classes) and cars196 (196 classes). Two-phase training — frozen base for head training, then full fine-tune — achieves 91%+ validation accuracy on just 3,670 images with a fraction of the compute cost.',
+    tags: ['Python', 'TensorFlow', 'Xception', 'Keras', 'Transfer Learning', 'Colab'],
+    status: 'Completed',
+    links: {
+      code: 'https://github.com/Anisha-Singla-22/TransferLearning',
+      caseStudy: '/case-studies/transfer-learning-image-classification',
+    },
+    year: '2024',
+    featured: false,
+    gradient: 'radial-gradient(ellipse at top right, rgba(255,200,80,0.09) 0%, transparent 65%)',
+  },
+  // ── All Projects only (not shown on the homepage) ──────────────────────────
+  {
+    id: 1,
+    title: 'Teeny Tech Trek',
+    category: 'Company Website',
+    description:
+      'Official website for Teeny Tech Trek — an AI consultancy helping businesses adopt custom AI solutions, chatbots, and automation systems. Built with React 18, TypeScript, and Tailwind CSS, with a mobile-first, SEO-optimized, and accessibility-focused approach.',
+    tags: ['React', 'TypeScript', 'Tailwind CSS', 'Vite', 'React Router'],
+    status: 'Live',
+    links: {
+      live: 'https://www.teenytechtrek.com/',
+      code: 'https://github.com/Teeny-Tech-Trek/ttt_website_frontend',
+      caseStudy: '/case-studies/responsible-ai-governance-framework+rag-business-knowledge-assistant',
+    },
+    year: '2024',
+    featured: false,
+    gradient: 'radial-gradient(ellipse at top left, rgba(201,168,76,0.18) 0%, transparent 65%)',
+  },
+  {
+    id: 10,
+    title: 'ShakeGen — Shakespeare Text Generator',
+    category: 'Deep Learning · Sequence Modeling',
+    description:
+      'A character-level language model built using GRU networks to generate Shakespearean-style text. Trained on ~1.1M characters from Shakespeare\'s works, the model learns sequential patterns and generates text using temperature-controlled sampling, demonstrating core concepts of RNNs, embeddings, and autoregressive generation.',
+    tags: ['Python', 'TensorFlow', 'Keras', 'GRU', 'Deep Learning', 'NLP', 'Jupyter'],
+    status: 'Completed',
+    links: {
+      code: 'https://github.com/Anisha-Singla-22/Shakegen',
+      caseStudy: '/case-studies/shakegen-character-level-language-model',
+    },
+    year: '2023',
+    featured: false,
+    gradient: 'radial-gradient(ellipse at top right, rgba(180,140,255,0.10) 0%, transparent 65%)',
+  },
+  {
+    id: 8,
+    title: 'Jigsaw Toxic Comment Classifier',
+    category: 'Natural Language Processing',
+    description:
+      'Multi-label text classifier on 159K Wikipedia comments across 6 toxicity categories — built for the Kaggle Jigsaw 2018 challenge. Compares Logistic Regression, Decision Tree, and Random Forest with a TF-IDF pipeline and repeat-word ablation study. Logistic Regression scored 0.96963 on the private leaderboard.',
+    tags: ['Python', 'Sklearn', 'TF-IDF', 'NLTK', 'Kaggle', 'Jupyter'],
+    status: 'Completed',
+    links: {
+      code: 'https://github.com/Anisha-Singla-22/Jigsaw',
+    },
+    year: '2024',
+    featured: false,
+    gradient: 'radial-gradient(ellipse at bottom left, rgba(100,220,200,0.08) 0%, transparent 65%)',
   },
   {
     id: 5,
@@ -185,7 +189,7 @@ export const projects = [
     year: '2024',
     featured: false,
     gradient: 'radial-gradient(ellipse at bottom right, rgba(255,180,120,0.10) 0%, transparent 65%)',
-  }
+  },
 ];
 
 export const statusStyle = {

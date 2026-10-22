@@ -44,10 +44,7 @@ export default function AvailabilityBanner() {
             letterSpacing: '0.01em',
           }}
         >
-          Relocating to Toronto in September 2026. Valid PGWP with full work
-          authorisation for any Canadian employer, no sponsorship required.
-          Open to AI Product Manager, Business Analyst and AI implementation
-          roles.{' '}
+          Based in Toronto. Valid PGWP with full work authorisation for any Canadian employer, no sponsorship required. Open to AI Strategy, Business Analyst and AI Consulting roles{' '}
           <a
             href="mailto:anishasingla23@gmail.com"
             style={{

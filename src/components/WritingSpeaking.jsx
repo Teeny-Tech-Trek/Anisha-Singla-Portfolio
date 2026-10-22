@@ -35,19 +35,23 @@ function WritingRow({ item }) {
       <div className="flex flex-col justify-center py-4 h-full" style={{ minHeight: '44px' }}>
         {content}
         <div className="mt-3 flex flex-row flex-wrap items-center gap-1.5">
-          {item.urls.map((url, i) => (
-            <a
-              key={url}
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`${item.label} — post ${i + 1} (opens in new tab)`}
-              className={LINK_BUTTON_BASE}
-            >
-              <FaArrowUpRightFromSquare size={11} aria-hidden="true" />
-              Post {i + 1}
-            </a>
-          ))}
+          {item.urls.map((entry, i) => {
+            const url = typeof entry === 'string' ? entry : entry.url;
+            const label = typeof entry === 'string' ? `Post ${i + 1}` : entry.title;
+            return (
+              <a
+                key={url}
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${item.label} — ${label} (opens in new tab)`}
+                className={LINK_BUTTON_BASE}
+              >
+                <FaArrowUpRightFromSquare size={11} aria-hidden="true" />
+                {label}
+              </a>
+            );
+          })}
         </div>
       </div>
     );

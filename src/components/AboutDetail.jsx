@@ -368,7 +368,7 @@ export default function AboutDetail() {
               I hold a valid Canadian work permit and do not require sponsorship to begin working. I'm open to opportunities across Canada, including hybrid and remote roles.
             </p>
             <p>
-              I'm currently based between Toronto and India while completing current client commitments, and I'm available to begin working in Canada.
+              I'm based in Toronto and available to begin working immediately.
             </p>
 
             {/* CTA bar */}

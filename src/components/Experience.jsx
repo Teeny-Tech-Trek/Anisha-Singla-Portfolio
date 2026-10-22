@@ -23,32 +23,32 @@ const NODE_BORDER = 'rgba(201,168,76,0.45)';
 
 const experiences = [
   {
-    role: 'Founder & AI Strategist',
+    role: 'Founder & AI Solutions Consultant',
     company: 'Teeny Tech Trek',
-    period: 'Sep 2024 — Present',
-    location: 'Mohali, India (Hybrid / Remote)',
+    period: 'Sep 2024 — Oct 2026',
+    location: 'Remote',
     badge: 'Founder',
     tags: ['Applied AI', 'Agentic Systems', 'AI Strategy', 'Client Delivery'],
     bullets: [
-      'Founded and scaled an AI solutions studio delivering production-grade RAG chatbots, AI agents, and workflow automation for 10+ clients across real estate, immigration, and education.',
-      'Led end-to-end AI implementation — requirements gathering, solution architecture, LLM/prompt engineering, delivery, and stakeholder management — achieving 100% on-time delivery.',
+      'Founded and led an AI solutions studio delivering production-grade RAG chatbots, AI agents and workflow automation for 10 clients across real estate, immigration and education.',
+      'Led 10 client engagements from first requirement to release, owning scope, delivery and client success, and directing the contractors and developers on each.',
       'Designed agentic workflows and automations (n8n, APIs, LLM orchestration) that cut client manual effort by ~20 hours/week.',
       'Established Responsible AI and governance practices — data privacy, evaluation, guardrails, human-in-the-loop — across every client deployment.',
-      'Managed a team of 5 contractors/developers; owned proposals, pricing, and client success.',
+      'Handed day-to-day leadership to the team lead in October 2026; the studio continues under its team.',
     ],
   },
   {
-    role: 'Business Development Manager – International Clients | Automation R&D Lead',
+    role: 'Project Manager',
     company: 'Appu International',
     period: 'Jun 2024 — Aug 2026',
     location: 'Ludhiana, India (Hybrid)',
     tags: ['International BD', 'Automation R&D', 'Digital Transformation', 'Industry 4.0'],
     bullets: [
-      'Manage end-to-end international client relationships across 3 markets — RFQ, technical quotation, contract negotiation, fulfillment, and after-sales — achieving 90% on-time delivery.',
-      'Head an internal R&D initiative to automate manufacturing and business processes; shipped 5 automations (quotation workflows, order tracking, production reporting, inventory alerts) using n8n and LLM tools, reducing manual effort by 10 hours/week.',
+      'Headed an internal R&D initiative to automate manufacturing and business processes; shipped 5 automations (quotation workflows, order tracking, production reporting, inventory alerts) using n8n and LLM tools, reducing manual effort by 10 hours/week.',
       'Piloted machine-level automation and Industry 4.0 upgrades — sensor-based monitoring and finished-product testing — cutting downtime by 3%.',
-      "Manage Solvoka, the company's international brand for custom precision steel components; grew export/B2B revenue by opening 2 new automotive-aftermarket accounts.",
-      'Serve as internal digital-transformation lead, translating operational pain points into automation requirements across a traditional manufacturing workforce.',
+      'Served as internal digital-transformation lead, translating operational pain points into automation requirements across a traditional manufacturing workforce.',
+      'Managed end-to-end international client relationships across 3 markets — RFQ, technical quotation, contract negotiation, fulfillment, and after-sales — achieving 90% on-time delivery.',
+      "Managed Solvoka, the company's international brand for custom precision steel components; grew export/B2B revenue by opening 2 new automotive-aftermarket accounts.",
     ],
   },
   {
@@ -56,7 +56,7 @@ const experiences = [
     company: 'Tim Hortons',
     period: 'Sep 2022 — Feb 2024',
     location: 'Toronto, Canada',
-    tags: ['Customer Service', 'Teamwork'],
+    tags: ['Customer Relations', 'Teamwork'],
     bullets: [
       'Full-time role while completing two postgraduate programs; developed customer-facing communication and teamwork skills.',
     ],
@@ -117,19 +117,17 @@ function Card({ exp, index, isLeft, onToggle }) {
   const tags = Array.isArray(exp.tags) ? exp.tags : [];
   return (
     <article
-      className={`tl-card relative rounded-[14px] border bg-[#0c0c0c] px-6 py-[1.35rem] ${
-        isLeft ? 'md:mr-[calc(50%+2.2rem)]' : 'md:ml-[calc(50%+2.2rem)]'
-      }`}
+      className={`tl-card relative rounded-[14px] border bg-[#0c0c0c] px-6 py-[1.35rem] ${isLeft ? 'md:mr-[calc(50%+2.2rem)]' : 'md:ml-[calc(50%+2.2rem)]'
+        }`}
       style={{ borderColor: LINE }}
     >
       {/* rail → card connector */}
       <span
         aria-hidden="true"
-        className={`tl-conn absolute top-[2.45rem] h-px w-[1.85rem] -left-[1.85rem] bg-gradient-to-l from-[rgba(201,168,76,0.55)] to-[rgba(201,168,76,0.1)] ${
-          isLeft
-            ? 'md:left-auto md:-right-[2.2rem] md:w-[2.2rem] md:bg-gradient-to-r'
-            : 'md:-left-[2.2rem] md:w-[2.2rem]'
-        }`}
+        className={`tl-conn absolute top-[2.45rem] h-px w-[1.85rem] -left-[1.85rem] bg-gradient-to-l from-[rgba(201,168,76,0.55)] to-[rgba(201,168,76,0.1)] ${isLeft
+          ? 'md:left-auto md:-right-[2.2rem] md:w-[2.2rem] md:bg-gradient-to-r'
+          : 'md:-left-[2.2rem] md:w-[2.2rem]'
+          }`}
       />
 
       {/* active gold sheen */}
@@ -195,17 +193,15 @@ function Card({ exp, index, isLeft, onToggle }) {
               return (
                 <li
                   key={i}
-                  className={`relative pl-[1.15rem] text-[0.83rem] font-light leading-[1.6] ${FONT_BODY} ${
-                    note ? 'italic text-white/40' : 'text-white/[0.65]'
-                  }`}
+                  className={`relative pl-[1.15rem] text-[0.83rem] font-light leading-[1.6] ${FONT_BODY} ${note ? 'italic text-white/40' : 'text-white/[0.65]'
+                    }`}
                 >
                   <span
                     aria-hidden="true"
-                    className={`absolute left-0 top-[0.55em] h-[5px] w-[5px] rotate-45 ${
-                      note
-                        ? 'border border-white/35 bg-transparent'
-                        : 'bg-[#C9A84C]'
-                    }`}
+                    className={`absolute left-0 top-[0.55em] h-[5px] w-[5px] rotate-45 ${note
+                      ? 'border border-white/35 bg-transparent'
+                      : 'bg-[#C9A84C]'
+                      }`}
                   />
                   {text}
                 </li>
@@ -221,7 +217,7 @@ function Card({ exp, index, isLeft, onToggle }) {
 export default function Experience() {
   const trackRef = useRef(null);
   const fillRef = useRef(null);
-  const apiRef = useRef({ toggle: () => {} });
+  const apiRef = useRef({ toggle: () => { } });
 
   useEffect(() => {
     const track = trackRef.current;

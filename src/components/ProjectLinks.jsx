@@ -28,20 +28,6 @@ export default function ProjectLinks({ project }) {
       className="mt-4 flex flex-row flex-nowrap items-center gap-1.5 overflow-x-auto scrollbar-none"
       style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '1rem' }}
     >
-      {links.code && (
-        <a
-          href={links.code}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={stop}
-          aria-label={`${title} — source code on GitHub (opens in new tab)`}
-          className={`${BASE} border-[#C9A84C]/50 bg-transparent text-[#C9A84C] hover:bg-[#C9A84C] hover:text-black hover:border-[#C9A84C]`}
-        >
-          <FaGithub size={14} aria-hidden="true" />
-          Code
-        </a>
-      )}
-
       {links.caseStudy && (
         // Internal route — navigated in-app (the custom router's <Link> equivalent),
         // so NOT target="_blank". Real href so crawlers/users get a followable
@@ -58,6 +44,20 @@ export default function ProjectLinks({ project }) {
         >
           <FaFileLines size={12} aria-hidden="true" />
           Case study
+        </a>
+      )}
+
+      {links.code && (
+        <a
+          href={links.code}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={stop}
+          aria-label={`${title} — source code on GitHub (opens in new tab)`}
+          className={`${BASE} border-[#C9A84C]/50 bg-transparent text-[#C9A84C] hover:bg-[#C9A84C] hover:text-black hover:border-[#C9A84C]`}
+        >
+          <FaGithub size={14} aria-hidden="true" />
+          Code
         </a>
       )}
     </div>

@@ -4,7 +4,7 @@ import SocialBar from './SocialBar';
 const links = [
   { label: 'Home', type: 'section', target: 'home' },
   { label: 'About', type: 'section', target: 'about' },
-  { label: 'Services', type: 'section', target: 'services' },
+  { label: 'Capabilities', type: 'section', target: 'capabilities' },
   { label: 'Experience', type: 'section', target: 'experience' },
   { label: 'Projects', type: 'section', target: 'projects' },
   { label: 'Education', type: 'section', target: 'education' },

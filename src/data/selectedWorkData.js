@@ -30,7 +30,7 @@ export const selectedWork = [
     slug: 'rag-business-knowledge-assistant',
     title: 'RAG-Based Business Knowledge Assistant',
     problem:
-      "A generic AI model guessed at pricing, services, and process and got them subtly wrong, with no way to verify an answer was grounded in real company information — and interested visitors hit a dead end instead of being captured as leads.",
+      "A generic AI model guessed at pricing, capabilities, and process and got them subtly wrong, with no way to verify an answer was grounded in real company information — and interested visitors hit a dead end instead of being captured as leads.",
     approach:
       "Built an assistant that answers only from the business's own ingested documents, cites its source for every answer, captures leads inside the conversation, and escalates to a human when it doesn't know.",
     outcome: 'First response time cut from 2–6 hours to under 1 minute, with ~60–70% of repetitive queries AI-deflected.',

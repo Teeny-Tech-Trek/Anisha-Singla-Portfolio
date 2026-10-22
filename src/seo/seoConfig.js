@@ -9,28 +9,28 @@ import { SITE_URL, buildMeta, personJsonLd, breadcrumbJsonLd, organizationJsonLd
 
 const HOME = buildMeta({
   path: '/',
-  title: 'Anisha Singla - AI Product Manager and Business Analyst | Toronto',
-  description: 'AI Product Manager and Business Analyst. Founder of Teeny Tech Trek. I build production RAG systems and AI agents. Relocating to Toronto, September 2026.',
+  title: 'Anisha Singla | AI Strategist & Business Analyst | Toronto',
+  description: 'AI strategist and business analyst in Toronto. 10 client AI engagements, 3 production agent products, RAG and AI governance. Open to full-time roles.',
   jsonLd: [personJsonLd(), organizationJsonLd(), websiteJsonLd()],
 });
 
 const ABOUT = buildMeta({
   path: '/about',
-  title: 'About Anisha Singla - AI Product Manager & Business Analyst',
-  description: "Applied AI and Project Management professional working at the intersection of AI implementation, business analysis, and delivery. 10+ client AI deployments, postgraduate credentials from George Brown College.",
+  title: 'About Anisha Singla | AI Strategist & Business Analyst',
+  description: 'AI Strategist and Business Analyst based in Toronto. 10 client AI engagements, George Brown Polytechnic, Rotman Executive Program.',
   jsonLd: [personJsonLd(), breadcrumbJsonLd([{ name: 'Home', path: '/' }, { name: 'About', path: '/about' }])],
 });
 
 const PROJECTS = buildMeta({
   path: '/projects',
-  title: 'All Projects - Anisha Singla | AI Product Manager & Business Analyst',
+  title: 'All Projects - Anisha Singla | AI Strategist & Business Analyst',
   description: 'Browse all AI and software projects by Anisha Singla, including RAG systems, agentic workflows, automation tools, and analytics dashboards.',
   jsonLd: [breadcrumbJsonLd([{ name: 'Home', path: '/' }, { name: 'Projects', path: '/projects' }])],
 });
 
 const CASE_STUDIES = buildMeta({
   path: '/case-studies',
-  title: 'Case Studies - Anisha Singla | AI Product Manager & Business Analyst',
+  title: 'Case Studies - Anisha Singla | AI Strategist & Business Analyst',
   description: 'In-depth case studies covering production AI systems built by Anisha Singla: agentic workflows, RAG assistants, analytics dashboards, and responsible AI governance.',
   jsonLd: [breadcrumbJsonLd([{ name: 'Home', path: '/' }, { name: 'Case Studies', path: '/case-studies' }])],
 });

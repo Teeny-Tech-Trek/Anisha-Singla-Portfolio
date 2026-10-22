@@ -188,7 +188,7 @@ export default function AllCaseStudies() {
     const ctx = gsap.context(() => {
       gsap.fromTo(pageRef.current, { opacity: 0 }, { opacity: 1, duration: .5, ease: 'power2.out' });
       gsap.fromTo('.acs-heading', { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: .9, ease: 'power3.out', stagger: .1, delay: .15 });
-      gsap.fromTo('.acs-filter',  { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .6, ease: 'power2.out', stagger: .06, delay: .35 });
+      gsap.fromTo('.acs-filter', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .6, ease: 'power2.out', stagger: .06, delay: .35 });
     }, pageRef);
     return () => ctx.revert();
   }, []);
@@ -272,13 +272,13 @@ export default function AllCaseStudies() {
                 className="acs-filter font-body text-xs tracking-widest uppercase px-4 py-2 transition-all duration-300"
                 style={{
                   background: activeFilter === cat ? '#C9A84C' : 'rgba(255,255,255,0.06)',
-                  color:      activeFilter === cat ? '#000'    : 'rgba(255,255,255,0.65)',
-                  border:     activeFilter === cat ? '1px solid #C9A84C' : '1px solid rgba(255,255,255,0.14)',
+                  color: activeFilter === cat ? '#000' : 'rgba(255,255,255,0.65)',
+                  border: activeFilter === cat ? '1px solid #C9A84C' : '1px solid rgba(255,255,255,0.14)',
                   fontWeight: activeFilter === cat ? 700 : 500,
                   cursor: 'pointer',
                 }}
-                onMouseEnter={e => { if (activeFilter !== cat) { e.currentTarget.style.color = '#fff'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'; }}}
-                onMouseLeave={e => { if (activeFilter !== cat) { e.currentTarget.style.color = 'rgba(255,255,255,0.65)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.14)'; }}}
+                onMouseEnter={e => { if (activeFilter !== cat) { e.currentTarget.style.color = '#fff'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'; } }}
+                onMouseLeave={e => { if (activeFilter !== cat) { e.currentTarget.style.color = 'rgba(255,255,255,0.65)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.14)'; } }}
               >
                 {cat}
                 {cat === ALL && (

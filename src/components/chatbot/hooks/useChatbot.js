@@ -36,7 +36,7 @@ const PRESET_INSTANT_RESPONSES = {
   "Download Resume": `✨ Anisha Singla's official resume has been downloaded to your device! Feel free to review her AI product portfolio, featured case studies, or get in touch directly.`,
 
 
-  "Contact": `You can reach me directly via email at anishasingla23@gmail.com or connect with me on LinkedIn and GitHub. I'm open to AI Product Manager, Business Analyst, and AI implementation roles! [Read More](#contact)`,
+  "Contact": `You can reach me directly via email at anishasingla23@gmail.com or connect with me on LinkedIn and GitHub. I'm open to AI Strategy, Business Analyst, and AI Consulting roles! [Read More](#contact)`,
 
   "🎬 Know Me in 64s": {
     type: "video",

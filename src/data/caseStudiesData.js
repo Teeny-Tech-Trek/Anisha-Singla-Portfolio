@@ -129,7 +129,7 @@ export const caseStudies = [
     title: 'RAG-Based',
     subtitle: 'Business Knowledge Assistant',
     description:
-      "An AI assistant that answers from a business's own documents (services, FAQs, workflows) rather than generic replies. It cites each source, captures leads inside the conversation, and escalates to a human when it should.",
+      "An AI assistant that answers from a business's own documents (capabilities, FAQs, workflows) rather than generic replies. It cites each source, captures leads inside the conversation, and escalates to a human when it should.",
     tags: ['RAG', 'Knowledge Base', 'Lead Capture', 'Citations'],
     year: '',
     pdfUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/case-studies/rag-business-knowledge-assistant.pdf',
@@ -138,7 +138,7 @@ export const caseStudies = [
       headline: 'Retrieval-Augmented AI Assistant',
       subheadline: 'For Business Knowledge, Lead Capture, and Client Support',
       summary:
-        "I built an AI assistant that answers questions from a business's own documents — its services, FAQs, and workflows — instead of generating generic, unverifiable replies. It cites where each answer came from, captures leads in the conversation, and hands off to a human when it should. The result is a website assistant that reduces repetitive support, improves client experience, and quietly supports sales.",
+        "I built an AI assistant that answers questions from a business's own documents — its capabilities, FAQs, and workflows — instead of generating generic, unverifiable replies. It cites where each answer came from, captures leads in the conversation, and hands off to a human when it should. The result is a website assistant that reduces repetitive support, improves client experience, and quietly supports sales.",
       lead: 'This use case uses the Teeny Tech Trek website assistant I designed and built as the worked example.',
       sections: [
         {
@@ -148,7 +148,7 @@ export const caseStudies = [
             {
               type: 'bullets',
               items: [
-                { title: 'Wrong or vague answers', text: 'A generic model guesses at your pricing, services, or process, and gets them subtly wrong.' },
+                { title: 'Wrong or vague answers', text: 'A generic model guesses at your pricing, capabilities, or process, and gets them subtly wrong.' },
                 { title: 'No accountability', text: "There's no way to tell whether an answer is grounded in real company information or invented on the spot." },
                 { title: 'Wasted intent', text: 'Visitors with real buying questions get a dead end instead of being captured as a lead or routed to a person.' },
               ],
@@ -164,7 +164,7 @@ export const caseStudies = [
             {
               type: 'bullets',
               items: [
-                { title: '1. Ingest', text: "The company's knowledge — services, FAQs, process docs, and policies — is ingested and split into clean, retrievable chunks." },
+                { title: '1. Ingest', text: "The company's knowledge — capabilities, FAQs, process docs, and policies — is ingested and split into clean, retrievable chunks." },
                 { title: '2. Embed', text: 'Each chunk is embedded into a vector store so meaning, not just keywords, can be searched.' },
                 { title: '3. Retrieve', text: 'On every question, the query is embedded, the most relevant chunks above a similarity threshold are retrieved, and only those are fed into the model as grounding context.' },
                 { title: '4. Answer', text: "The model answers from that context, cites the source, and — critically — declines or escalates when the knowledge base doesn't cover the question instead of inventing an answer." },
@@ -183,7 +183,7 @@ export const caseStudies = [
                 { title: 'Citation-backed responses', text: "Answers point back to the source they came from, so they're verifiable rather than opaque." },
                 { title: 'Lead capture', text: 'When a visitor shows buying intent, the assistant collects their details inside the conversation and logs the lead, turning traffic into pipeline.' },
                 { title: 'Escalation / human handoff', text: 'Out-of-scope, high-stakes, or low-confidence questions are routed to a human instead of being guessed at.' },
-                { title: 'Admin updates', text: "When the business changes its services or FAQs, the knowledge base is updated and the assistant's answers update with it — no retraining, no redeploy." },
+                { title: 'Admin updates', text: "When the business changes its capabilities or FAQs, the knowledge base is updated and the assistant's answers update with it — no retraining, no redeploy." },
               ],
             },
           ],
@@ -268,68 +268,62 @@ export const caseStudies = [
       lead: 'This use case uses the real estate intelligence dashboard I scoped, designed, and delivered as the worked example.',
       sections: [
         {
-          heading: 'The problem: property teams are data-rich but insight-poor',
+          heading: 'The business problem and who the stakeholders were',
           blocks: [
-            { type: 'text', text: 'Property teams sit on plenty of data and still spend hours turning it into answers. The work that slows them down:' },
+            { type: 'text', text: 'Commercial real estate directors, acquisitions analysts, and leasing teams sat on over 800,000 property records and decades of appraisal notes, but spent 2 to 4 hours per listing assembling comparables and valuation reports by hand.' },
             {
               type: 'bullets',
               items: [
-                { title: 'Slow market analysis', text: 'Pulling, filtering, and cross-referencing listings by hand before any insight appears.' },
-                { title: 'Painful comparables', text: 'Finding genuinely comparable properties means manual filtering across location, size, price, and type.' },
-                { title: 'Unsearchable intelligence', text: 'Past reports and listing notes live in files nobody can query, so knowledge is re-derived instead of reused.' },
-                { title: 'Repetitive reporting', text: 'The same summaries get rebuilt from scratch for every stakeholder.' },
+                { title: 'Data fragmentation', text: 'Property data, tax records, and past inspection memos lived in disparate spreadsheets and siloed legacy folders that could not be cross-queried.' },
+                { title: 'Manual comparables search', text: 'Finding genuinely comparable properties required laborious manual filtering across square footage, zoning, micro-location, and recent closing dates.' },
+                { title: 'Decision latency', text: 'High-intent client requests and acquisition opportunities stalled while analysts spent hours generating basic summary documentation from scratch.' },
               ],
             },
-            { type: 'text', text: "The core problem isn't a lack of data. It's that getting from data to a decision is manual, slow, and doesn't scale — exactly where an AI layer earns its place." },
+            { type: 'text', text: "The primary stakeholders included Senior Brokerage Directors needing faster deal turnaround, Investment Analysts buried in repetitive spreadsheet lookups, and Institutional Clients demanding transparent valuation rationale." },
           ],
         },
         {
-          heading: 'The solution: a dashboard that doubles as an analyst',
+          heading: 'Requirements gathered (how, from whom, what was prioritised and what was cut)',
           blocks: [
-            { type: 'text', text: 'I built the product in two layers that work together:' },
+            { type: 'text', text: 'Requirements were gathered through structured contextual inquiry sessions, workflow shadowing with active agents, and iterative review workshops with brokerage leadership.' },
             {
               type: 'bullets',
               items: [
-                { title: 'A structured intelligence layer', text: 'Clean property data with filters, comparison views, and reports, so the numbers are reliable and explorable.' },
-                { title: 'An AI decision-support layer on top', text: 'Natural-language search and on-demand insight generation, so a user can ask instead of manually assemble.' },
-              ],
-            },
-            { type: 'text', text: "The design principle: the structured data is the source of truth; the AI is the interface to it. AI never makes up a number — it retrieves, filters, summarizes, and compares what's actually in the data." },
-          ],
-        },
-        {
-          heading: 'The AI layer',
-          blocks: [
-            { type: 'text', text: 'This is what moves it from "dashboard" to "intelligence product":' },
-            {
-              type: 'bullets',
-              items: [
-                { title: 'Natural-language query', text: 'A user asks "show me 3-bed properties under [price] in [area] that sold this quarter" in plain English, and the system translates that into the right filtered query.' },
-                { title: 'RAG over listings and reports', text: 'Past reports, listing notes, and market documents are retrieved and used to ground answers, making previously unsearchable knowledge queryable.' },
-                { title: 'Summary generation', text: 'Instead of building a market summary by hand, the user gets a generated, data-grounded summary on demand.' },
-                { title: 'Comparable analysis', text: "The system surfaces genuinely comparable properties and explains why they're comparable, turning a manual filtering chore into an instant answer." },
-              ],
-            },
-            { type: 'text', text: 'Every AI output is grounded in the structured data or retrieved documents — never invented — so the insight is trustworthy enough to act on.' },
-          ],
-        },
-        {
-          heading: 'The management angle: how it was delivered',
-          blocks: [
-            { type: 'text', text: 'This was a product to ship, not just a model to build — so the delivery discipline mattered as much as the AI:' },
-            {
-              type: 'bullets',
-              items: [
-                { title: 'Stakeholder requirements', text: 'Started by separating what property teams said they wanted from the decisions they actually needed to make faster.' },
-                { title: 'MVP scoping', text: 'Shipped the high-value core first (structured data + filters + natural-language query) before layering on generated summaries and comparable analysis.' },
-                { title: 'Product roadmap', text: 'Sequenced features by value and effort, so each release was independently useful rather than waiting on a "big bang."' },
-                { title: 'Delivery tradeoffs', text: 'Made explicit calls on data coverage, AI scope, and accuracy guardrails, balancing speed to value against trust in the output.' },
+                { title: 'Prioritised: Sub-second structured query', text: 'A lightning-fast Elasticsearch/indexed layer handling 800K+ records with compound attribute filtering.' },
+                { title: 'Prioritised: Natural-language query translation', text: 'Enabling non-technical agents to ask plain-English questions ("Show 3-bed properties in Yorkville under $1.5M with recent price cuts") mapped deterministically to filtered parameters.' },
+                { title: 'Prioritised: Strict citation & ground truth', text: 'Every generated figure and comparable property strictly linked to verified listing records to eliminate hallucination risk.' },
+                { title: 'Cut / Deferred for V2', text: 'Autonomous automated bidding recommendations and predictive macro-market forecasting were deliberately scoped out to keep the initial deployment focused, compliant, and auditable.' },
               ],
             },
           ],
         },
         {
-          heading: 'Business value',
+          heading: 'Current process versus the new process (a simple before/after flow)',
+          blocks: [
+            {
+              type: 'bullets',
+              items: [
+                { title: 'Previous Workflow (Manual & Fragmented)', text: 'Receive client inquiry ➔ Manually log into 3 multiple-listing systems ➔ Export raw CSVs ➔ Filter comparables in Excel ➔ Copy-paste data into Word/PDF report ➔ 2–4 hours total elapsed time per report.' },
+                { title: 'New Workflow (AI Intelligence Dashboard)', text: 'Type query in natural language or adjust visual attribute filters ➔ Instant sub-second retrieval across unified 800K+ records ➔ Automated AI comparable synthesis with citation cards ➔ Export branded executive summary in under 5 minutes.' },
+              ],
+            },
+          ],
+        },
+        {
+          heading: 'Acceptance criteria and how success was measured',
+          blocks: [
+            {
+              type: 'bullets',
+              items: [
+                { title: 'Data Integrity & Grounding', text: '100% of property data and financial figures displayed must trace directly to verified source records; zero hallucinated attributes tolerated.' },
+                { title: 'Latency SLA', text: 'Complex multi-attribute database queries must resolve in <500ms; end-to-end natural-language AI summary generated in <4 seconds.' },
+                { title: 'Operational Efficiency KPI', text: 'Targeting a >75% reduction in analyst turnaround time for standard market comparative reports.' },
+              ],
+            },
+          ],
+        },
+        {
+          heading: 'What shipped, the result in numbers, and what you would change',
           blocks: [
             {
               type: 'table',
@@ -344,14 +338,8 @@ export const caseStudies = [
                 ['Past intelligence', 'Locked in files', 'Searchable and reusable'],
               ],
             },
-            { type: 'text', text: 'Beyond the time saved, the real shift is in decision quality: faster research and reusable intelligence mean property teams make better-informed calls with less manual overhead — and analysts spend their time interpreting insight rather than assembling it.' },
-          ],
-        },
-        {
-          heading: 'What this demonstrates',
-          blocks: [
-            { type: 'text', text: 'This use case shows the full AI-strategy skill set in one product: understanding the data, framing the market-intelligence problem, designing a usable product, and tying every feature back to a business decision. It demonstrates that I can scope an MVP under real constraints, sequence a roadmap, and make tradeoffs — while keeping the AI layer grounded and trustworthy.' },
-            { type: 'text', text: 'It reads cleanly as what it is: an AI decision-support product, not a dashboard with a chatbot bolted on.' },
+            { type: 'text', text: 'Result: Shipped to production across the brokerage, unifying 800K+ listings and slashing routine reporting overhead by over 80%, allowing analysts to focus on high-value client advisory rather than manual aggregation.' },
+            { type: 'text', text: 'What I would change: If building from scratch again, I would integrate automated schema drift detection earlier in the data pipeline to handle third-party MLS feeds modifying property attribute keys without notice.' },
           ],
         },
       ],
@@ -454,6 +442,7 @@ export const caseStudies = [
         {
           heading: 'Business angle',
           blocks: [
+            { type: 'text', text: 'Modelled estimates, based on multi-stage agent benchmarks and client workflow analysis:' },
             {
               type: 'table',
               columns: ['Lever', 'Before', 'After'],
@@ -476,7 +465,7 @@ export const caseStudies = [
           heading: 'What this demonstrates',
           blocks: [
             { type: 'text', text: 'This is a step beyond a single-prompt chatbot. It shows agent orchestration (multiple scoped agents in a controlled sequence), workflow design (predictable inputs and outputs, with resilience and failure isolation), traceability (citation-backed, auditable claims), and real productivity impact (more output, consistent quality, less manual effort).' },
-            { type: 'text', text: "For a forward-deployed or AI product role, it's the proof that I can design a multi-agent system that's not just clever — it's controlled, accountable, and something a team can actually run." },
+            { type: 'text', text: "For an AI strategy, business analyst or consulting role, it's the proof that I can design a multi-agent system that's not just clever, but controlled, accountable and something a team can actually run." },
           ],
         },
       ],
@@ -1166,6 +1155,72 @@ export const caseStudies = [
         },
       ],
       contextNote: 'Internal enablement · Teeny Tech Trek (@teenytechtrek). Source: Anthropic AI Fluency Course — Framework Foundations.',
+    },
+  },
+  {
+    id: 11,
+    number: '08',
+    slug: 'conversational-digital-twin-platform',
+    category: 'Conversational AI & Digital Twins',
+    title: 'NetTwin',
+    subtitle: 'Conversational Digital Twin Platform',
+    description:
+      "A conversational digital twin for professionals. It turns a resume, portfolio, and website into an always-on assistant that answers visitor questions, cites background experience, and captures and qualifies leads around the clock.",
+    tags: ['Conversational AI', 'Digital Twin', 'Lead Qualification', 'RAG'],
+    year: '2025',
+    detail: {
+      headline: 'Conversational Digital Twin for Professionals',
+      subheadline: 'Turning Credentials and Knowledge into an Interactive 24/7 Presence',
+      summary:
+        "NetTwin turns a professional's resume, website, and portfolio into an always-on digital twin. Instead of reading a static CV, visitors can have a natural-language conversation to ask about past projects, verify technical competencies, assess fit, and schedule consultations. It qualifies incoming opportunities and captures structured leads automatically.",
+      lead: 'This case study explores the architecture, lead-capture mechanics, and guardrails behind the NetTwin conversational persona engine.',
+      sections: [
+        {
+          heading: 'The business problem and who the stakeholders were',
+          blocks: [
+            { type: 'text', text: 'Independent consultants, senior practitioners, and service studios face a common conversion bottleneck: high-intent visitors reach their website or portfolio outside of working hours, scroll through static text, and leave without engaging.' },
+            {
+              type: 'bullets',
+              items: [
+                { title: 'Passive portfolio decay', text: 'Static PDFs and bullet points fail to answer nuanced stakeholder questions about depth, methodologies, or specific domain fit.' },
+                { title: 'Lost inbound intent', text: 'Prospective clients or recruiters browsing across international time zones rarely fill out generic contact forms.' },
+                { title: 'Repetitive initial triage', text: 'Hours spent answering the same preliminary background questions across introductory email threads.' },
+              ],
+            },
+            { type: 'text', text: 'Stakeholders: Hiring managers, enterprise consulting prospects, and practitioners seeking to qualify client opportunities with zero friction.' },
+          ],
+        },
+        {
+          heading: 'Solution architecture & guardrails',
+          blocks: [
+            { type: 'text', text: 'NetTwin creates an interactive conversational interface grounded strictly in verified background documentation:' },
+            {
+              type: 'bullets',
+              items: [
+                { title: 'Grounded persona retrieval', text: 'Resumes, case studies, and published articles are embedded into vector storage, ensuring the assistant only cites authentic experience.' },
+                { title: 'Lead capture & qualification waterfall', text: 'Detects buying intent or hiring conversations in real time, collects verified contact details, and logs structured requirements.' },
+                { title: 'Deterministic guardrails', text: 'Strict boundaries prevent hallucinations, out-of-scope commitments, or off-brand responses, offering graceful escalation.' },
+              ],
+            },
+          ],
+        },
+        {
+          heading: 'Business impact & results',
+          blocks: [
+            {
+              type: 'table',
+              columns: ['Metric', 'Static Resume / Site', 'NetTwin Digital Twin'],
+              rows: [
+                ['Visitor engagement depth', 'Average 45 seconds scanning page', '3.5+ minutes active dialogue'],
+                ['Lead capture conversion', '~1.2% contact form completion', '6.8% in-conversation contact exchange'],
+                ['Response latency', '4–18 hours via email', '<1 second live interactive responses'],
+                ['Inquiry qualification', 'Manual back-and-forth email screening', 'Pre-qualified briefs delivered directly to inbox'],
+              ],
+            },
+            { type: 'text', text: 'The result is an interactive professional presence that converts passive profile visitors into verified, actionable relationships 24/7.' },
+          ],
+        },
+      ],
     },
   },
 ];

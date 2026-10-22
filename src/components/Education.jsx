@@ -23,7 +23,7 @@ const education = [
   {
     degree: 'Postgraduate',
     field: 'Applied AI Solutions',
-    institution: 'George Brown College',
+    institution: 'George Brown Polytechnic',
     location: 'Toronto, Canada',
     year: '2022 - 2023',
     // short: 'GBC',
@@ -32,13 +32,21 @@ const education = [
   {
     degree: 'Postgraduate',
     field: 'Project Management',
-    institution: 'George Brown College',
+    institution: 'George Brown Polytechnic',
     location: 'Toronto, Canada',
     year: '2023 - 2024',
     // short: 'GBC',
     index: '03',
   },
- 
+  {
+    degree: 'Executive Program',
+    field: 'Generative AI and Organizational Transformation',
+    institution: 'Rotman School of Management, University of Toronto',
+    location: 'Toronto, Canada',
+    year: 'Oct 2026 - In progress',
+    // short: 'Rotman',
+    index: '04',
+  },
 ];
 
 export default function Education() {
@@ -407,7 +415,7 @@ export default function Education() {
             ))}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-0 mt-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-0 mt-12">
             {education.map((entry, index) => (
               <div
                 key={entry.index}

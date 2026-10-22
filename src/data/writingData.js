@@ -10,11 +10,26 @@ export const writingItems = [
     label: 'LinkedIn Technical Series',
     description: 'A series of technical write-ups published on LinkedIn.',
     urls: [
-      'https://www.linkedin.com/posts/singlaanisha_aiarchitecture-enterpriseai-aiagents-ugcPost-7485282125529759744-0tqi/?utm_source=share&utm_medium=member_desktop&rcm=ACoAAGnRKPsB3IFg7wQBtq8xVIdn5BvQHpfSrOo',
-      'https://www.linkedin.com/posts/singlaanisha_aiengineering-productionai-aiagents-ugcPost-7485281736856117248-H3P6/?utm_source=share&utm_medium=member_desktop&rcm=ACoAAGnRKPsB3IFg7wQBtq8xVIdn5BvQHpfSrOo',
-      'https://www.linkedin.com/posts/singlaanisha_rag-aiforbusiness-llm-ugcPost-7485281372312469504-e3QP/?utm_source=share&utm_medium=member_desktop&rcm=ACoAAGnRKPsB3IFg7wQBtq8xVIdn5BvQHpfSrOo',
-      'https://www.linkedin.com/posts/singlaanisha_rag-aiengineering-productionai-ugcPost-7485280404220837888-LVXE/?utm_source=share&utm_medium=member_desktop&rcm=ACoAAGnRKPsB3IFg7wQBtq8xVIdn5BvQHpfSrOo',
-      'https://www.linkedin.com/posts/singlaanisha_rag-aiengineering-aiagents-ugcPost-7483480527241441280-y72a/?utm_source=share&utm_medium=member_desktop&rcm=ACoAAGnRKPsB3IFg7wQBtq8xVIdn5BvQHpfSrOo',
+      {
+        title: 'MCP Tool "Rug Pull"',
+        url: 'https://www.linkedin.com/posts/singlaanisha_aiarchitecture-enterpriseai-aiagents-ugcPost-7485282125529759744-0tqi/?utm_source=share&utm_medium=member_desktop&rcm=ACoAAGnRKPsB3IFg7wQBtq8xVIdn5BvQHpfSrOo',
+      },
+      {
+        title: 'The "Lethal Trifecta"',
+        url: 'https://www.linkedin.com/posts/singlaanisha_aiengineering-productionai-aiagents-ugcPost-7485281736856117248-H3P6/?utm_source=share&utm_medium=member_desktop&rcm=ACoAAGnRKPsB3IFg7wQBtq8xVIdn5BvQHpfSrOo',
+      },
+      {
+        title: 'RAG for Business',
+        url: 'https://www.linkedin.com/posts/singlaanisha_rag-aiforbusiness-llm-ugcPost-7485281372312469504-e3QP/?utm_source=share&utm_medium=member_desktop&rcm=ACoAAGnRKPsB3IFg7wQBtq8xVIdn5BvQHpfSrOo',
+      },
+      {
+        title: 'Production AI & Engineering',
+        url: 'https://www.linkedin.com/posts/singlaanisha_rag-aiengineering-productionai-ugcPost-7485280404220837888-LVXE/?utm_source=share&utm_medium=member_desktop&rcm=ACoAAGnRKPsB3IFg7wQBtq8xVIdn5BvQHpfSrOo',
+      },
+      {
+        title: 'AI Agents in Practice',
+        url: 'https://www.linkedin.com/posts/singlaanisha_rag-aiengineering-aiagents-ugcPost-7483480527241441280-y72a/?utm_source=share&utm_medium=member_desktop&rcm=ACoAAGnRKPsB3IFg7wQBtq8xVIdn5BvQHpfSrOo',
+      },
     ],
   },
   {
