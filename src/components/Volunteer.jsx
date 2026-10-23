@@ -19,7 +19,7 @@ const groups = [
   {
     category: 'COMMUNITY',
     items: [
-      { role:'Community Coordinator', org:'Connect Circles: Chandigarh', date:'Mar 2026 – Present', location:'Remote' },
+      { role:'Community Coordinator', org:'Connect Circles: Chandigarh', date:'Mar 2026 – June 2026', location:'Remote' },
       { role:'Charter Member',        org:'TiE Chandigarh',              date:'May 2026 – Present', location:'Remote' },
       { role:'Associate Member',      org:'TiE Chandigarh',              date:'Dec 2025 – Apr 2026', location:'Remote' },
     ],
