@@ -160,6 +160,8 @@ function Cursor() {
 
     <span
 
+      className="hero-cursor"
+
       style={{
 
         opacity: blink ? 1 : 0,
@@ -214,23 +216,39 @@ export default function Hero() {
 
   const TEXT_TOTAL_DURATION_MS = Math.max(1000, videoPlayDurationMs - TEXT_START_DELAY_MS);
 
-  const VERCEL_VIDEO_URL =
+  const DESKTOP_VIDEO_URL = 'Hero_Video.webm';
+  const MOBILE_VIDEO_URL = 'HeroPage-Videoforphone.webm';
 
-    'Hero_Video.webm';
+  const [isMobileScreen, setIsMobileScreen] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth <= 768;
+    }
+    return false;
+  });
 
-  const videoSrc = VERCEL_VIDEO_URL.startsWith('http') || VERCEL_VIDEO_URL.startsWith('/')
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
+    const updateMobile = (e) => setIsMobileScreen(e.matches);
 
-    ? VERCEL_VIDEO_URL
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener('change', updateMobile);
+      return () => mediaQuery.removeEventListener('change', updateMobile);
+    } else {
+      mediaQuery.addListener(updateMobile);
+      return () => mediaQuery.removeListener(updateMobile);
+    }
+  }, []);
 
-    : `/${VERCEL_VIDEO_URL}`;
+  const activeVideoUrl = isMobileScreen ? MOBILE_VIDEO_URL : DESKTOP_VIDEO_URL;
+  const videoSrc = activeVideoUrl.startsWith('http') || activeVideoUrl.startsWith('/')
+    ? activeVideoUrl
+    : `/${activeVideoUrl}`;
 
 
 
   const totalTypingCharacters = [LINE1, LINE2, LINE3, LINE4].reduce((total, line) => total + line.length, 0);
-
   const getLineDuration = (line) => (line.length / totalTypingCharacters) * TEXT_TOTAL_DURATION_MS;
-
-
 
   const LINE1_DURATION = getLineDuration(LINE1);
 
@@ -313,8 +331,6 @@ export default function Hero() {
   const videoRef = useRef(null);
 
   const heroSectionRef = useRef(null);
-
-  const hasAutoScrolledRef = useRef(false);
 
 
 
@@ -462,7 +478,7 @@ export default function Hero() {
 
     };
 
-  }, []);
+  }, [videoSrc]);
 
 
 
@@ -1064,7 +1080,7 @@ export default function Hero() {
 
             object-fit: cover;
 
-            object-position: 20% top;
+            object-position: center top;
 
             opacity: ${isDark ? 0.9 : 0.85};
 
@@ -1138,6 +1154,128 @@ export default function Hero() {
 
           }
 
+          .hero-bottom-fade {
+
+            height: 88%;
+
+            background: linear-gradient(
+
+              to top,
+
+              #000000 0%,
+
+              rgba(0, 0, 0, 0.98) 25%,
+
+              rgba(0, 0, 0, 0.90) 55%,
+
+              rgba(0, 0, 0, 0.68) 78%,
+
+              rgba(0, 0, 0, 0.22) 92%,
+
+              transparent 100%
+
+            );
+
+            pointer-events: none;
+
+          }
+
+          ${!isDark ? `
+
+          .hero-eyebrow {
+
+            color: #60A5FA !important;
+
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+
+          }
+
+          .hero-cursor {
+
+            color: #60A5FA !important;
+
+          }
+
+          .hero-name {
+
+            color: #FFFFFF !important;
+
+            text-shadow: 0 2px 16px rgba(0, 0, 0, 0.95), 0 1px 4px rgba(0, 0, 0, 0.9);
+
+          }
+
+          .hero-badge {
+
+            background: rgba(255, 255, 255, 0.12) !important;
+
+            color: #FFFFFF !important;
+
+            border: 1px solid rgba(255, 255, 255, 0.25) !important;
+
+            backdrop-filter: blur(8px);
+
+          }
+
+          .hero-tagline {
+
+            color: rgba(255, 255, 255, 0.9) !important;
+
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+
+          }
+
+          .hero-button.shadow-md:first-child {
+
+            background: #FFFFFF !important;
+
+            color: #111827 !important;
+
+            font-weight: 700;
+
+          }
+
+          .hero-button[href="/resume.pdf"] {
+
+            background: rgba(255, 255, 255, 0.08) !important;
+
+            color: #FFFFFF !important;
+
+            border: 1.5px solid rgba(255, 255, 255, 0.35) !important;
+
+          }
+
+          .hero-stats {
+
+            border-top: 1px solid rgba(255, 255, 255, 0.18) !important;
+
+          }
+
+          .hero-stat-value {
+
+            color: #60A5FA !important;
+
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+
+          }
+
+          .hero-stat-label {
+
+            color: rgba(255, 255, 255, 0.75) !important;
+
+          }
+
+          .hero-link-row a {
+
+            color: rgba(255, 255, 255, 0.8) !important;
+
+            border-color: rgba(255, 255, 255, 0.22) !important;
+
+            background: rgba(255, 255, 255, 0.06) !important;
+
+          }
+
+          ` : ''}
+
         }
 
       `}</style>
@@ -1153,6 +1291,8 @@ export default function Hero() {
           <div className="hero-media-glow" />
 
           <video
+
+            key={videoSrc}
 
             className="hero-video"
 
@@ -1171,8 +1311,6 @@ export default function Hero() {
             <source src={`${videoSrc}#t=${VIDEO_START_TIME},${VIDEO_END_TIME}`} type="video/webm" />
 
             <source src={videoSrc} type="video/webm" />
-
-            <source src={videoSrc} type="video/mp4" />
 
           </video>
 
@@ -1544,6 +1682,8 @@ export default function Hero() {
 
 
 /////////////////////////////////////////////////////////
+
+
 
 // import { useEffect, useRef, useState } from 'react';
 // import { scrollToSection } from '../routes';
