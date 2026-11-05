@@ -1,189 +1,805 @@
-/* Self-hosted, Latin-subset font files (@fontsource) — replaces the Google
-   Fonts <link> entirely, removing two third-party origins (fonts.googleapis.com
-   / fonts.gstatic.com) from the critical path. Vite inlines these into the
-   single built CSS bundle at build time, so in production this is not a
-   runtime network request at all. Only the weights/styles actually used
-   across the codebase are imported (previously spread across 4 duplicate
-   @import statements — see git history / Phase 2 notes). Each file already
-   ships font-display: swap. */
+/* Self-hosted, Latin-subset font files (@fontsource) */
+
 @import '@fontsource/bebas-neue/latin-400.css';
+
 @import '@fontsource/dm-sans/latin-300.css';
+
 @import '@fontsource/dm-sans/latin-400.css';
+
 @import '@fontsource/dm-sans/latin-500.css';
+
 @import '@fontsource/dm-sans/latin-600.css';
+
 @import '@fontsource/dm-sans/latin-700.css';
+
 @import '@fontsource/dm-sans/latin-300-italic.css';
+
 @import '@fontsource/dm-sans/latin-400-italic.css';
 
+
+
 @tailwind base;
+
 @tailwind components;
+
 @tailwind utilities;
+
+
+
+/* ── Theme CSS Variables ───────────────────────────────────────────────── */
+
+:root,
+
+[data-theme="dark"] {
+
+  --bg-primary:       #000000;
+
+  --bg-secondary:     #050505;
+
+  --bg-card:          #0c0c0c;
+
+  --text-primary:     #ffffff;
+
+  --text-secondary:   rgba(255, 255, 255, 0.72);
+
+  --text-muted:       rgba(255, 255, 255, 0.45);
+
+  --border-subtle:    rgba(255, 255, 255, 0.08);
+
+  --border-gold:      rgba(201, 168, 76, 0.3);
+
+  --scrollbar-track:  #000000;
+
+  --scrollbar-thumb:  #C9A84C;
+
+  --noise-opacity:    0.2;
+
+}
+
+
+
+[data-theme="light"] {
+  --bg-primary:       #FAF8F5;
+  --bg-secondary:     #F3EFEA;
+  --bg-card:          #FFFFFF;
+  --text-primary:     #111827;
+  --text-secondary:   #374151;
+  --text-muted:       #4B5563;
+  --border-subtle:    rgba(0, 0, 0, 0.09);
+  --border-gold:      rgba(37, 99, 235, 0.25);
+  --scrollbar-track:  #FAF8F5;
+  --scrollbar-thumb:  #2563EB;
+  --accent:           #2563EB;
+  --accent-hover:     #1D4ED8;
+  --accent-soft:      rgba(37, 99, 235, 0.08);
+  --noise-opacity:    0.02;
+}
+
+
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+
+
 html,
+
 body {
+
   margin: 0;
+
   padding: 0;
+
   width: 100%;
+
   max-width: 100%;
+
   overflow-x: hidden;
+
 }
+
+
 
 html.lenis,
+
 html.lenis body {
+
   height: auto;
+
 }
+
+
 
 .lenis.lenis-smooth {
+
   scroll-behavior: auto !important;
+
 }
+
+
 
 .lenis.lenis-smooth [data-lenis-prevent] {
+
   overscroll-behavior: contain;
+
 }
+
+
 
 .lenis.lenis-stopped {
+
   overflow: hidden;
+
 }
+
+
 
 .lenis.lenis-scrolling iframe {
+
   pointer-events: none;
+
 }
+
+
 
 body {
-  background: #000;
-  color: #fff;
+
+  background: var(--bg-primary);
+
+  color: var(--text-primary);
+
   font-family: 'DM Sans', sans-serif;
+
   overflow-x: hidden;
+
+  transition: background 0.35s ease, color 0.35s ease;
+
 }
+
+
 
 #root {
+
   width: 100%;
+
   max-width: 100%;
+
   overflow-x: hidden;
+
 }
+
+
 
 img,
+
 video {
+
   display: block;
+
   max-width: 100%;
+
   height: auto;
+
 }
+
+
 
 section,
+
 div {
+
   max-width: 100%;
+
   box-sizing: border-box;
+
 }
 
-::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: #000; }
-::-webkit-scrollbar-thumb { background: #C9A84C; border-radius: 2px; }
+
+
+::-webkit-scrollbar { width: 4px; }
+
+::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 2px; }
+
+
 
 /* noise overlay */
+
 body::after {
+
   content: '';
+
   position: fixed;
+
   inset: 0;
+
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+
   pointer-events: none;
+
   z-index: 9999;
-  opacity: 0.2;
+
+  opacity: var(--noise-opacity, 0.2);
+
+  transition: opacity 0.35s ease;
+
 }
+
+
 
 .btn-gold {
-  background: linear-gradient(90deg,#C9A84C 0%,#E8C97A 50%,#C9A84C 100%);
+
+  background: linear-gradient(90deg, #C9A84C 0%, #E8C97A 50%, #C9A84C 100%);
+
   background-size: 200% auto;
+
   transition: background-position .5s ease, transform .2s ease, box-shadow .3s ease;
+
   font-family: 'DM Sans', sans-serif;
+
   font-weight: 700;
+
   font-size: .72rem;
+
   letter-spacing: .2em;
+
   text-transform: uppercase;
+
   color: #000;
+
   padding: 1rem 2.2rem;
+
   border: none;
+
   cursor: pointer;
+
   display: inline-block;
+
 }
+
 .btn-gold:hover {
+
   background-position: right center;
+
   transform: translateY(-2px);
+
   box-shadow: 0 8px 25px rgba(201,168,76,.4);
+
 }
+
+
 
 .btn-outline {
+
   font-family: 'DM Sans', sans-serif;
+
   font-weight: 600;
+
   font-size: .72rem;
+
   letter-spacing: .2em;
+
   text-transform: uppercase;
+
   color: #C9A84C;
+
   padding: .85rem 2.2rem;
+
   border: 1px solid #C9A84C;
+
   background: transparent;
+
   cursor: pointer;
+
   transition: all .3s ease;
+
   display: inline-block;
+
 }
+
 .btn-outline:hover { background: #C9A84C; color: #000; transform: translateY(-2px); }
 
+
+
 .card {
-  background: #0d0d0d;
-  border: 1px solid rgba(201,168,76,.15);
-  transition: transform .3s ease, box-shadow .3s ease;
+
+  background: var(--bg-card);
+
+  border: 1px solid var(--border-subtle);
+
+  transition: transform .3s ease, box-shadow .3s ease, background 0.35s ease, border-color 0.35s ease;
+
 }
+
 .card:hover {
+
   transform: translateY(-6px);
-  box-shadow: 0 0 30px rgba(201,168,76,.2);
+
+  box-shadow: 0 10px 30px rgba(201,168,76,.15);
+
 }
+
+
 
 .section-label {
+
   font-family: 'DM Sans', sans-serif;
-  font-size: .68rem;
+
+  font-size: .72rem;
+
+  font-weight: 600;
+
   letter-spacing: .35em;
+
   text-transform: uppercase;
+
   color: #C9A84C;
+
   margin-bottom: .6rem;
+
 }
+
+
 
 .section-title {
+
   font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(3rem,6vw,5.5rem);
+
+  font-size: clamp(3rem, 6vw, 5.5rem);
+
   letter-spacing: .05em;
+
   line-height: 1;
+
 }
+
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+
+   PREMIUM LIGHT THEME ARCHITECTURE
+
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+
+
+[data-theme="light"] {
+  /* 1. Global typography & text */
+  h1, h2, h3, h4, h5, h6,
+  .section-title,
+  .text-white {
+    color: #111827 !important;
+  }
+
+  /* Global section label & text accents */
+  .section-label {
+    color: #2563EB !important;
+    font-weight: 700 !important;
+  }
+
+  .text-gold {
+    color: #2563EB !important;
+  }
+
+  /* Buttons in light mode */
+  .btn-gold {
+    background: #2563EB !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25) !important;
+  }
+  .btn-gold:hover {
+    background: #1D4ED8 !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.35) !important;
+  }
+
+  .btn-outline {
+    color: #2563EB !important;
+    border-color: #2563EB !important;
+    background: transparent !important;
+  }
+  .btn-outline:hover {
+    background: #2563EB !important;
+    color: #FFFFFF !important;
+  }
+
+  /* Card hover glow */
+  .card:hover {
+    box-shadow: 0 10px 30px rgba(37, 99, 235, 0.12) !important;
+  }
+
+  /* 2. Experience Component */
+  #experience {
+    background: #FAF8F5 !important;
+    --gold: #2563EB;
+    --gold-lite: #3B82F6;
+  }
+  #experience .tl-card {
+    background: #FFFFFF !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04) !important;
+  }
+  #experience .tl-card h3,
+  #experience .tl-card .tl-role {
+    color: #111827 !important;
+  }
+  #experience .tl-card p {
+    color: #4B5563 !important;
+  }
+  #experience .tl-card li {
+    color: #374151 !important;
+  }
+  #experience .tl-card ul {
+    border-top-color: rgba(0, 0, 0, 0.08) !important;
+  }
+  #experience .tl-dot,
+  #experience .tl-node {
+    background: #FFFFFF !important;
+    border-color: #2563EB !important;
+  }
+  #experience .tl-railbase {
+    background: rgba(37, 99, 235, 0.18) !important;
+  }
+  #experience .tl-fill {
+    background: linear-gradient(to bottom, rgba(37, 99, 235, 0.2), #2563EB 60%, #3B82F6) !important;
+    box-shadow: 0 0 14px rgba(37, 99, 235, 0.35) !important;
+  }
+  #experience .tl-tag {
+    color: #1D4ED8 !important;
+    background: rgba(37, 99, 235, 0.08) !important;
+    border-color: rgba(37, 99, 235, 0.22) !important;
+  }
+  #experience .tl-badge {
+    background: #2563EB !important;
+    color: #FFFFFF !important;
+  }
+  #experience .tl-bullets li::before {
+    background: #2563EB !important;
+  }
+  #experience .tl-card.is-active {
+    border-color: #2563EB !important;
+    box-shadow: 0 12px 36px rgba(37, 99, 235, 0.12) !important;
+  }
+
+  /* 3. Capabilities Section & Diagrams */
+  #capabilities {
+    background: #FAF8F5 !important;
+  }
+  #capabilities h3 {
+    color: #111827 !important;
+  }
+  #capabilities p {
+    color: #374151 !important;
+  }
+  #capabilities .svc-section {
+    border-top-color: rgba(0, 0, 0, 0.08) !important;
+  }
+  #capabilities .svc-roman {
+    color: #2563EB !important;
+    font-weight: 700 !important;
+  }
+  #capabilities .svc-line {
+    background: rgba(37, 99, 235, 0.45) !important;
+  }
+  #capabilities .svc-title-underline {
+    background: #2563EB !important;
+  }
+  #capabilities .svc-subtitle {
+    color: #4B5563 !important;
+    font-weight: 600 !important;
+  }
+  #capabilities .svc-tag {
+    color: #374151 !important;
+    font-weight: 600 !important;
+  }
+  #capabilities .svc-tag-diamond {
+    color: #2563EB !important;
+  }
+  #capabilities .svc-tech {
+    color: #374151 !important;
+    background: rgba(37, 99, 235, 0.05) !important;
+    border-color: rgba(37, 99, 235, 0.18) !important;
+  }
+  #capabilities .svc-motif {
+    color: #1D4ED8 !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.08em !important;
+  }
+  #capabilities .svc-motif-code {
+    background: #FFFFFF !important;
+    border-color: rgba(37, 99, 235, 0.25) !important;
+    color: #1D4ED8 !important;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.06) !important;
+  }
+  #capabilities .svc-motif-code span {
+    color: #6B7280 !important;
+  }
+
+  /* Remove container white box on diagrams */
+  #capabilities .flex.items-center.justify-center.w-full > div {
+    background: transparent !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  /* SVG diagrams in light mode: rely on dynamic theme-aware component styles */
+  #capabilities svg .bd-label {
+    fill: #0F172A !important;
+    font-weight: 700 !important;
+    opacity: 1 !important;
+  }
+
+  /* 4. Projects Section */
+  #projects {
+    background: #FAF8F5 !important;
+  }
+  #projects h2,
+  #projects h3 {
+    color: #111827 !important;
+  }
+  #projects p {
+    color: #4B5563 !important;
+  }
+  #projects .proj-card > div,
+  #projects .feat-card > div {
+    background: #FFFFFF !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    border-top: 2px solid #2563EB !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04) !important;
+  }
+  #projects span[title] {
+    background: rgba(37, 99, 235, 0.08) !important;
+    color: #1D4ED8 !important;
+    border: 1px solid rgba(37, 99, 235, 0.22) !important;
+  }
+  #projects a[class*="border-[#C9A84C]"],
+  #projects a[class*="border-white/15"] {
+    border-color: rgba(37, 99, 235, 0.35) !important;
+    color: #2563EB !important;
+    background: rgba(37, 99, 235, 0.04) !important;
+  }
+  #projects a[class*="border-[#C9A84C]"]:hover,
+  #projects a[class*="border-white/15"]:hover {
+    background: #2563EB !important;
+    color: #FFFFFF !important;
+    border-color: #2563EB !important;
+  }
+
+  /* 5. About Section */
+  #about {
+    background: #FAF8F5 !important;
+  }
+  #about p {
+    color: #374151 !important;
+  }
+  #about .card {
+    background: #FFFFFF !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    border-left: 3px solid #2563EB !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04) !important;
+  }
+  #about .card .font-title {
+    color: #2563EB !important;
+    text-shadow: none !important;
+  }
+  #about .card p {
+    color: #4B5563 !important;
+  }
+
+  /* 6. Education Section */
+  #education {
+    background: #FAF8F5 !important;
+  }
+  #education h2, #education h3 {
+    color: #111827 !important;
+  }
+  #education p, #education li {
+    color: #374151 !important;
+  }
+  #education [style*="background: '#0d0d0d'"],
+  #education [style*="background: '#111'"] {
+    background: #FFFFFF !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04) !important;
+  }
+
+  /* 7. Skills & Certifications Section */
+  #skills {
+    background: #F3EFEA !important;
+  }
+  #skills h2, #skills h3 {
+    color: #111827 !important;
+  }
+  #skills p {
+    color: #374151 !important;
+  }
+  #skills [style*="background: '#050505'"],
+  #skills [style*="background: '#0d0d0d'"] {
+    background: #FFFFFF !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  }
+
+  /* 8. Suite Section */
+  #suite {
+    background: #FAF8F5 !important;
+  }
+  #suite h2, #suite h3 {
+    color: #111827 !important;
+  }
+  #suite p {
+    color: #4B5563 !important;
+  }
+  #suite .suite-row {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+  }
+  #suite .suite-row:hover {
+    background: rgba(37, 99, 235, 0.03) !important;
+  }
+  #suite .suite-row span[style*="background: #C9A84C"],
+  #suite .suite-row span[style*="background:#C9A84C"] {
+    background: #2563EB !important;
+  }
+  #suite .suite-row span[style*="color: #C9A84C"],
+  #suite .suite-row span[style*="color:#C9A84C"] {
+    color: #2563EB !important;
+  }
+
+  /* 9. Volunteer Section */
+  #volunteer {
+    background: #FAF8F5 !important;
+  }
+  #volunteer h2, #volunteer .vol-item h3 {
+    color: #111827 !important;
+  }
+  #volunteer .vol-item {
+    border-left-color: rgba(0, 0, 0, 0.15) !important;
+  }
+  #volunteer .vol-item:hover {
+    border-left-color: #2563EB !important;
+  }
+  #volunteer .vol-item p[style*="color: '#C9A84C'"],
+  #volunteer .vol-item p[style*="color:#C9A84C"],
+  #volunteer p[style*="color: '#C9A84C'"] {
+    color: #1D4ED8 !important;
+  }
+  #volunteer span[style*="background: '#C9A84C'"],
+  #volunteer span[style*="background:#C9A84C"] {
+    background: #2563EB !important;
+    color: #FFFFFF !important;
+  }
+
+  /* 10. Writing Section */
+  #writing {
+    background: #FAF8F5 !important;
+  }
+  #writing h2, #writing h3 {
+    color: #111827 !important;
+  }
+  #writing p, #writing a {
+    color: #374151 !important;
+  }
+  #writing a[class*="border-[#C9A84C]"] {
+    border-color: rgba(37, 99, 235, 0.4) !important;
+    color: #2563EB !important;
+  }
+  #writing a[class*="border-[#C9A84C]"]:hover {
+    background: #2563EB !important;
+    color: #FFFFFF !important;
+    border-color: #2563EB !important;
+  }
+
+  /* 11. Availability Banner */
+  #availability {
+    background: #0a0a0a !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+  }
+  #availability p {
+    color: #FFFFFF !important;
+  }
+  #availability a {
+    color: #60A5FA !important;
+  }
+
+  /* 12. Footer */
+  footer {
+    background: #FAF8F5 !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+  }
+  footer p, footer a, footer button {
+    color: #4B5563 !important;
+  }
+
+  /* 13. Global fallbacks for text & highlights */
+  p[style*="rgba(255,255,255"],
+  p[style*="rgba(255, 255, 255"],
+  span[style*="rgba(255,255,255"],
+  span[style*="rgba(255, 255, 255"],
+  div[style*="rgba(255,255,255"],
+  div[style*="rgba(255, 255, 255"],
+  li[style*="rgba(255,255,255"],
+  li[style*="rgba(255, 255, 255"],
+  small[style*="rgba(255,255,255"],
+  small[style*="rgba(255, 255, 255"] {
+    color: #374151 !important;
+  }
+
+  p[style*="rgba(201,168,76"],
+  p[style*="rgba(201, 168, 76"],
+  span[style*="rgba(201,168,76"],
+  span[style*="rgba(201, 168, 76"],
+  div[style*="rgba(201,168,76"],
+  div[style*="rgba(201, 168, 76"],
+  small[style*="rgba(201,168,76"],
+  small[style*="rgba(201, 168, 76"] {
+    color: #1D4ED8 !important;
+    font-weight: 600 !important;
+  }
+}
+
+
 
 @keyframes float {
+
   0%,100% { transform: translateY(0); }
+
   50%      { transform: translateY(-14px); }
-}
-.scrollbar-none::-webkit-scrollbar {
-  display: none;
-}
-.scrollbar-none {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+
 }
 
+.scrollbar-none::-webkit-scrollbar {
+
+  display: none;
+
+}
+
+.scrollbar-none {
+
+  -ms-overflow-style: none;
+
+  scrollbar-width: none;
+
+}
+
+
+
 @media (max-width: 768px) {
+
   html,
+
   body {
+
     overflow-x: hidden;
+
   }
 
   * {
+
     max-width: 100%;
+
   }
+
 }
 
+
+
 /* Visible focus outlines for keyboard accessibility */
+
 button:focus-visible,
+
 a:focus-visible,
+
 input:focus-visible,
+
 textarea:focus-visible,
+
 [role="button"]:focus-visible {
+
   outline: 2px solid #C9A84C !important;
+
   outline-offset: 3px !important;
+
 }
+

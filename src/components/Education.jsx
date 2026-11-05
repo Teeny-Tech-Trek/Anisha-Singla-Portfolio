@@ -329,7 +329,7 @@ export default function Education() {
       id="education"
       ref={sectionRef}
       className=" px-6 md:px-14 relative overflow-hidden"
-      style={{ background: '#000' }}
+      style={{ background: 'var(--bg-primary)' }}
     >
       <div
         className="absolute left-1/2 bottom-0 -translate-x-1/2 pointer-events-none"

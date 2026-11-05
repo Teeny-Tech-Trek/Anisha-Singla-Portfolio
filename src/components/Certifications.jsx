@@ -888,7 +888,7 @@ export default function Certifications() {
   return (
     <>
       <section id="skills" style={{
-        background: '#050505',
+        background: 'var(--bg-secondary)',
         padding: isMobile ? '40px 16px' : windowWidth < 1024 ? '50px 20px' : '60px 24px',
       }}>
         <div style={{ maxWidth: windowWidth >= 1400 ? 1200 : 960, margin: '0 auto' }}>

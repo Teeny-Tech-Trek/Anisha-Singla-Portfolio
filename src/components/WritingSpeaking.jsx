@@ -87,7 +87,7 @@ function WritingRow({ item }) {
 
 export default function WritingSpeaking() {
   return (
-    <section id="writing" className="py-20 md:py-28 px-6 md:px-14" style={{ background: '#000' }}>
+    <section id="writing" className="py-20 md:py-28 px-6 md:px-14" style={{ background: 'var(--bg-primary)' }}>
       <div className="max-w-4xl mx-auto">
         <p className="section-label">Writing &amp; Speaking</p>
         <h2 className="section-title text-white mb-10">Beyond the Build</h2>

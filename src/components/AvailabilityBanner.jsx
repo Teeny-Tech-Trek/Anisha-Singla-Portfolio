@@ -1,7 +1,9 @@
 import { useEffect, useRef } from 'react';
+import { useTheme } from '../context/ThemeContext';
 
 export default function AvailabilityBanner() {
   const rootRef = useRef(null);
+  const { isDark } = useTheme();
 
   // Hero.jsx reserves exactly this much space below the fold so the banner
   // is never cut off — measured for real (font wrap varies a lot by
@@ -28,16 +30,18 @@ export default function AvailabilityBanner() {
       id="availability"
       ref={rootRef}
       style={{
-        background: 'linear-gradient(90deg, rgba(201,168,76,0.14) 0%, rgba(201,168,76,0.06) 100%)',
-        borderTop: '1px solid rgba(201,168,76,0.5)',
-        borderBottom: '1px solid rgba(201,168,76,0.5)',
+        background: isDark
+          ? 'linear-gradient(90deg, rgba(201,168,76,0.14) 0%, rgba(201,168,76,0.06) 100%), #000000'
+          : '#0a0a0a',
+        borderTop: isDark ? '1px solid rgba(201,168,76,0.5)' : '1px solid rgba(255,255,255,0.15)',
+        borderBottom: isDark ? '1px solid rgba(201,168,76,0.5)' : '1px solid rgba(255,255,255,0.15)',
       }}
     >
       <div className="max-w-7xl mx-auto px-6 md:px-14 py-4 md:py-5">
         <p
           className="font-body text-center"
           style={{
-            color: 'rgba(255,255,255,0.88)',
+            color: '#FFFFFF',
             fontSize: 'clamp(1rem, 1.4vw, 1.05rem)',
             fontWeight: 500,
             lineHeight: 1.6,
@@ -48,7 +52,7 @@ export default function AvailabilityBanner() {
           <a
             href="mailto:anishasingla23@gmail.com"
             style={{
-              color: '#C9A84C',
+              color: isDark ? '#C9A84C' : '#60A5FA',
               fontWeight: 700,
               textDecoration: 'underline',
               textUnderlineOffset: '2px',

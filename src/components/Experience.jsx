@@ -1,13 +1,14 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useTheme } from '../context/ThemeContext';
 
 gsap.registerPlugin(ScrollTrigger);
 
 /* ──────────────────────────────────────────────────────────────
    Experience — scroll-driven accordion timeline (single file, Tailwind).
 
-   BEHAVIOUR (the animation you described):
+   BEHAVIOUR:
    • Every card starts COMPACT — only role / company / period visible.
    • As you scroll, the card that reaches the viewport centre EXPANDS
      (tags + bullets slide open), and the previously active card
@@ -15,11 +16,6 @@ gsap.registerPlugin(ScrollTrigger);
    • Rail fill glows up to the active node, nodes above stay lit,
      click header to expand/collapse manually, reduced-motion safe.
    ────────────────────────────────────────────────────────────── */
-
-const GOLD = '#C9A84C';
-const GOLD_LITE = '#E4C976';
-const LINE = 'rgba(255,255,255,0.07)';
-const NODE_BORDER = 'rgba(201,168,76,0.45)';
 
 const experiences = [
   {
@@ -113,32 +109,56 @@ const FONT_MONO = 'font-mono';
 const FONT_DISPLAY = "font-['Bebas_Neue',sans-serif]";
 const FONT_BODY = "font-['DM_Sans',sans-serif]";
 
-function Card({ exp, index, isLeft, onToggle }) {
+function Card({ exp, index, isLeft, onToggle, isDark }) {
   const tags = Array.isArray(exp.tags) ? exp.tags : [];
   return (
     <article
-      className={`tl-card relative rounded-[14px] border bg-[#0c0c0c] px-6 py-[1.35rem] ${isLeft ? 'md:mr-[calc(50%+2.2rem)]' : 'md:ml-[calc(50%+2.2rem)]'
-        }`}
-      style={{ borderColor: LINE }}
+      className={`tl-card relative rounded-[14px] border px-6 py-[1.35rem] transition-colors duration-300 ${
+        isLeft ? 'md:mr-[calc(50%+2.2rem)]' : 'md:ml-[calc(50%+2.2rem)]'
+      }`}
+      style={{
+        backgroundColor: isDark ? '#0c0c0c' : '#FFFFFF',
+        borderColor: isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.08)',
+        boxShadow: isDark ? 'none' : '0 8px 30px rgba(0, 0, 0, 0.04)',
+      }}
     >
       {/* rail → card connector */}
       <span
         aria-hidden="true"
-        className={`tl-conn absolute top-[2.45rem] h-px w-[1.85rem] -left-[1.85rem] bg-gradient-to-l from-[rgba(201,168,76,0.55)] to-[rgba(201,168,76,0.1)] ${isLeft
-          ? 'md:left-auto md:-right-[2.2rem] md:w-[2.2rem] md:bg-gradient-to-r'
-          : 'md:-left-[2.2rem] md:w-[2.2rem]'
-          }`}
+        className={`tl-conn absolute top-[2.45rem] h-px w-[1.85rem] -left-[1.85rem] ${
+          isLeft
+            ? 'md:left-auto md:-right-[2.2rem] md:w-[2.2rem]'
+            : 'md:-left-[2.2rem] md:w-[2.2rem]'
+        }`}
+        style={{
+          background: isDark
+            ? (isLeft
+                ? 'linear-gradient(to right, rgba(201,168,76,0.55), rgba(201,168,76,0.1))'
+                : 'linear-gradient(to left, rgba(201,168,76,0.55), rgba(201,168,76,0.1))')
+            : (isLeft
+                ? 'linear-gradient(to right, rgba(37,99,235,0.45), rgba(37,99,235,0.1))'
+                : 'linear-gradient(to left, rgba(37,99,235,0.45), rgba(37,99,235,0.1))'),
+        }}
       />
 
-      {/* active gold sheen */}
+      {/* active glow sheen */}
       <span
         aria-hidden="true"
-        className="tl-glow pointer-events-none absolute inset-0 rounded-[13px] opacity-0 bg-[linear-gradient(180deg,rgba(201,168,76,0.07),rgba(201,168,76,0)_46%)]"
+        className="tl-glow pointer-events-none absolute inset-0 rounded-[13px] opacity-0"
+        style={{
+          background: isDark
+            ? 'linear-gradient(180deg, rgba(201,168,76,0.07), rgba(201,168,76,0) 46%)'
+            : 'linear-gradient(180deg, rgba(37,99,235,0.06), rgba(37,99,235,0) 46%)',
+        }}
       />
 
       {exp.badge && (
         <span
-          className={`absolute top-[1.1rem] right-[1.1rem] z-[2] rounded-full bg-[#C9A84C] px-[0.6rem] py-[0.24rem] text-[0.58rem] uppercase tracking-[0.2em] text-black ${FONT_MONO}`}
+          className={`tl-badge absolute top-[1.1rem] right-[1.1rem] z-[2] rounded-full px-[0.6rem] py-[0.24rem] text-[0.58rem] font-bold uppercase tracking-[0.2em] ${FONT_MONO}`}
+          style={{
+            backgroundColor: isDark ? '#C9A84C' : '#2563EB',
+            color: isDark ? '#000000' : '#FFFFFF',
+          }}
         >
           {exp.badge}
         </span>
@@ -149,19 +169,27 @@ function Card({ exp, index, isLeft, onToggle }) {
         type="button"
         onClick={() => onToggle(index)}
         aria-expanded="false"
-        className="tl-head relative z-[1] block w-full cursor-pointer rounded-[10px] border-0 bg-transparent p-0 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[5px] focus-visible:outline-[#E4C976]"
+        className="tl-head relative z-[1] block w-full cursor-pointer rounded-[10px] border-0 bg-transparent p-0 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[5px]"
+        style={{
+          outlineColor: isDark ? '#E4C976' : '#2563EB',
+        }}
       >
         <h3
-          className={`tl-role m-0 pr-16 text-[1.55rem] leading-[1.05] tracking-[0.03em] text-white ${FONT_DISPLAY}`}
+          className={`tl-role m-0 pr-16 text-[1.55rem] leading-[1.05] tracking-[0.03em] ${FONT_DISPLAY}`}
+          style={{ color: isDark ? '#FFFFFF' : '#111827' }}
         >
           {exp.role}
         </h3>
         <p
-          className={`mt-[0.45rem] mb-[0.2rem] text-[0.92rem] font-medium text-white/70 ${FONT_BODY}`}
+          className={`mt-[0.45rem] mb-[0.2rem] text-[0.92rem] font-medium ${FONT_BODY}`}
+          style={{ color: isDark ? 'rgba(255,255,255,0.7)' : '#4B5563' }}
         >
           {exp.company}
         </p>
-        <p className={`m-0 text-[0.7rem] text-white/[0.46] ${FONT_MONO}`}>
+        <p
+          className={`m-0 text-[0.7rem] ${FONT_MONO}`}
+          style={{ color: isDark ? 'rgba(255,255,255,0.46)' : '#6B7280' }}
+        >
           {exp.period} · {exp.location}
         </p>
       </button>
@@ -178,7 +206,12 @@ function Card({ exp, index, isLeft, onToggle }) {
               {tags.map((t) => (
                 <span
                   key={t}
-                  className={`rounded-full border border-[rgba(201,168,76,0.22)] bg-[rgba(201,168,76,0.08)] px-[0.6rem] py-[0.28rem] text-[0.62rem] tracking-[0.03em] text-[rgba(201,168,76,0.92)] ${FONT_MONO}`}
+                  className={`tl-tag rounded-full border px-[0.6rem] py-[0.28rem] text-[0.62rem] font-medium tracking-[0.03em] ${FONT_MONO}`}
+                  style={{
+                    backgroundColor: isDark ? 'rgba(201,168,76,0.08)' : 'rgba(37,99,235,0.07)',
+                    borderColor: isDark ? 'rgba(201,168,76,0.22)' : 'rgba(37,99,235,0.22)',
+                    color: isDark ? 'rgba(201,168,76,0.92)' : '#1D4ED8',
+                  }}
                 >
                   {t}
                 </span>
@@ -186,22 +219,37 @@ function Card({ exp, index, isLeft, onToggle }) {
             </div>
           )}
 
-          <ul className="m-0 mt-[1.2rem] flex list-none flex-col gap-[0.68rem] border-t border-white/[0.07] p-0 pt-[1.2rem]">
+          <ul
+            className="m-0 mt-[1.2rem] flex list-none flex-col gap-[0.68rem] p-0 pt-[1.2rem]"
+            style={{
+              borderTop: isDark ? '1px solid rgba(255,255,255,0.07)' : '1px solid rgba(0,0,0,0.08)',
+            }}
+          >
             {exp.bullets.map((b, i) => {
               const note = b.trim().startsWith('[');
               const text = note ? b.trim().replace(/^\[|\]$/g, '') : b;
               return (
                 <li
                   key={i}
-                  className={`relative pl-[1.15rem] text-[0.83rem] font-light leading-[1.6] ${FONT_BODY} ${note ? 'italic text-white/40' : 'text-white/[0.65]'
-                    }`}
+                  className={`relative pl-[1.15rem] text-[0.83rem] font-light leading-[1.6] ${FONT_BODY}`}
+                  style={{
+                    color: note
+                      ? (isDark ? 'rgba(255,255,255,0.4)' : '#9CA3AF')
+                      : (isDark ? 'rgba(255,255,255,0.65)' : '#374151'),
+                    fontStyle: note ? 'italic' : 'normal',
+                  }}
                 >
                   <span
                     aria-hidden="true"
-                    className={`absolute left-0 top-[0.55em] h-[5px] w-[5px] rotate-45 ${note
-                      ? 'border border-white/35 bg-transparent'
-                      : 'bg-[#C9A84C]'
-                      }`}
+                    className="absolute left-0 top-[0.55em] h-[5px] w-[5px] rotate-45"
+                    style={{
+                      backgroundColor: note
+                        ? 'transparent'
+                        : (isDark ? '#C9A84C' : '#2563EB'),
+                      border: note
+                        ? (isDark ? '1px solid rgba(255,255,255,0.35)' : '1px solid rgba(0,0,0,0.3)')
+                        : 'none',
+                    }}
                   />
                   {text}
                 </li>
@@ -215,9 +263,17 @@ function Card({ exp, index, isLeft, onToggle }) {
 }
 
 export default function Experience() {
+  const { isDark } = useTheme();
   const trackRef = useRef(null);
   const fillRef = useRef(null);
-  const apiRef = useRef({ toggle: () => { } });
+  const apiRef = useRef({ toggle: () => {} });
+
+  const GOLD = '#C9A84C';
+  const GOLD_LITE = '#E4C976';
+  const BLUE = '#2563EB';
+  const BLUE_LITE = '#3B82F6';
+  const LINE = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.08)';
+  const NODE_BORDER = isDark ? 'rgba(201,168,76,0.45)' : 'rgba(37,99,235,0.35)';
 
   useEffect(() => {
     const track = trackRef.current;
@@ -243,14 +299,11 @@ export default function Experience() {
         gsap.to(fillEl, {
           height: Math.max(h, 0),
           duration: instant ? 0 : 0.85 * D,
-          ease: 'power2.inOut', // same curve as the card body → rail and
-          overwrite: 'auto',    // card feel like one connected motion
+          ease: 'power2.inOut',
+          overwrite: 'auto',
         });
       };
 
-      /* ── heights change when a card opens/closes, so trigger positions
-         must be re-measured. Debounced + fires only AFTER the height
-         animation has fully settled, so refresh never mid-tween janks. ── */
       const scheduleRefresh = () => {
         refreshCall?.kill();
         refreshCall = gsap.delayedCall(0.85 * D + 0.1, () => {
@@ -273,18 +326,11 @@ export default function Experience() {
 
           head?.setAttribute('aria-expanded', on ? 'true' : 'false');
 
-          /* body: 0 ↔ content height — measured in px so a mid-scroll
-             interruption re-targets smoothly from the current height
-             instead of snapping. One symmetric ease both ways, so an
-             opening card and the closing one breathe at the same rate
-             and the page's total height changes gradually (no jump). */
           gsap.to(body, {
             height: on ? inner.offsetHeight : 0,
             duration: 0.85 * D,
             ease: 'power2.inOut',
             overwrite: 'auto',
-            // once fully open, hand height back to the browser so content
-            // can reflow naturally on resize while this card stays active
             onComplete: on ? () => gsap.set(body, { height: 'auto' }) : undefined,
           });
           gsap.to(inner, {
@@ -297,14 +343,15 @@ export default function Experience() {
             overwrite: 'auto',
           });
 
-          /* card chrome — same duration family as the body so border,
-             glow and lift ride along with the height change */
+          /* card chrome */
           gsap.to(card, {
             y: on ? -4 : 0,
-            borderColor: on ? 'rgba(201,168,76,0.5)' : LINE,
+            borderColor: on ? (isDark ? 'rgba(201,168,76,0.5)' : '#2563EB') : LINE,
             boxShadow: on
-              ? '0 28px 60px -32px rgba(0,0,0,0.95), 0 0 0 1px rgba(201,168,76,0.2), 0 0 34px -6px rgba(201,168,76,0.28)'
-              : '0 0 0 0 rgba(0,0,0,0)',
+              ? (isDark
+                  ? '0 28px 60px -32px rgba(0,0,0,0.95), 0 0 0 1px rgba(201,168,76,0.2), 0 0 34px -6px rgba(201,168,76,0.28)'
+                  : '0 12px 36px rgba(37,99,235,0.12), 0 0 0 1px rgba(37,99,235,0.25)')
+              : (isDark ? '0 0 0 0 rgba(0,0,0,0)' : '0 8px 30px rgba(0, 0, 0, 0.04)'),
             duration: 0.85 * D,
             ease: 'power2.inOut',
             force3D: true,
@@ -320,10 +367,20 @@ export default function Experience() {
 
           gsap.to(row.querySelector('.tl-dot'), {
             scale: on ? 1.45 : 1,
-            backgroundColor: on ? GOLD_LITE : lit ? GOLD : '#0c0c0c',
-            borderColor: on ? '#fff6df' : lit ? GOLD : NODE_BORDER,
+            backgroundColor: on
+              ? (isDark ? GOLD_LITE : BLUE_LITE)
+              : lit
+              ? (isDark ? GOLD : BLUE)
+              : (isDark ? '#0c0c0c' : '#ffffff'),
+            borderColor: on
+              ? (isDark ? '#fff6df' : '#2563EB')
+              : lit
+              ? (isDark ? GOLD : BLUE)
+              : NODE_BORDER,
             boxShadow: on
-              ? '0 0 0 5px rgba(201,168,76,0.16), 0 0 22px rgba(201,168,76,0.8)'
+              ? (isDark
+                  ? '0 0 0 5px rgba(201,168,76,0.16), 0 0 22px rgba(201,168,76,0.8)'
+                  : '0 0 0 5px rgba(37,99,235,0.16), 0 0 22px rgba(37,99,235,0.4)')
               : '0 0 0 0 rgba(0,0,0,0)',
             duration: 0.6 * D,
             ease: on ? 'back.out(1.6)' : 'power2.out',
@@ -332,7 +389,7 @@ export default function Experience() {
           });
 
           gsap.to(row.querySelector('.tl-role'), {
-            color: on ? GOLD_LITE : '#ffffff',
+            color: on ? (isDark ? GOLD_LITE : BLUE) : (isDark ? '#ffffff' : '#111827'),
             duration: 0.4 * D,
             overwrite: 'auto',
           });
@@ -348,11 +405,8 @@ export default function Experience() {
         scheduleRefresh();
       };
 
-      // click / Enter / Space on the header — manual toggle
       apiRef.current.toggle = (i) => setActive(active === i ? -1 : i);
 
-      /* ── scroll → active: a row is active while its box straddles the
-         viewport centre. Fires only on entry, so it can't flicker. ── */
       rows.forEach((row, i) => {
         ScrollTrigger.create({
           trigger: row,
@@ -364,7 +418,6 @@ export default function Experience() {
         });
       });
 
-      /* ── entrance: row slide → node pop → connector draw, once ── */
       if (!reduce) {
         const mm = gsap.matchMedia();
         mm.add(
@@ -411,7 +464,7 @@ export default function Experience() {
           if (active !== i)
             gsap.to(card, {
               y: -2,
-              borderColor: 'rgba(201,168,76,0.24)',
+              borderColor: isDark ? 'rgba(201,168,76,0.24)' : 'rgba(37,99,235,0.24)',
               duration: 0.3,
               overwrite: 'auto',
             });
@@ -433,7 +486,6 @@ export default function Experience() {
         });
       });
 
-      // keep fill glued to its node across resizes / refreshes
       const onRefresh = () => fillTo(active, true);
       ScrollTrigger.addEventListener('refresh', onRefresh);
       cleanups.push(() =>
@@ -441,7 +493,6 @@ export default function Experience() {
       );
       cleanups.push(() => refreshCall?.kill());
 
-      /* reduced motion: keep everything readable — open ALL bodies */
       if (reduce) {
         rows.forEach((row) => {
           gsap.set(row.querySelector('.tl-body'), { height: 'auto' });
@@ -449,7 +500,6 @@ export default function Experience() {
         });
       }
 
-      // initial: first card starts expanded
       requestAnimationFrame(() => {
         if (active === -1) setActive(0);
       });
@@ -459,27 +509,29 @@ export default function Experience() {
       cleanups.forEach((fn) => fn());
       ctx.revert();
     };
-  }, []);
+  }, [isDark]);
 
   return (
     <section
       id="experience"
-      className="px-6 py-20 text-white md:px-14 md:py-24"
+      className="px-6 py-20 md:px-14 md:py-24 transition-colors duration-400"
       style={{
-        background:
-          'radial-gradient(1000px 460px at 50% -14%, rgba(201,168,76,0.06), transparent 62%), #000',
+        background: isDark
+          ? 'radial-gradient(1000px 460px at 50% -14%, rgba(201,168,76,0.06), transparent 62%), #000'
+          : 'radial-gradient(1000px 460px at 50% -14%, rgba(37,99,235,0.05), transparent 62%), #FAF8F5',
+        color: isDark ? '#ffffff' : '#111827',
       }}
     >
-      {/* Fonts are loaded once via a <link> in index.html — see index.html. */}
-
       <div className="mx-auto max-w-6xl">
         <p
-          className={`m-0 mb-[0.55rem] text-[0.72rem] font-medium uppercase tracking-[0.34em] text-[#C9A84C] ${FONT_MONO}`}
+          className={`m-0 mb-[0.55rem] text-[0.72rem] font-medium uppercase tracking-[0.34em] ${FONT_MONO}`}
+          style={{ color: isDark ? '#C9A84C' : '#2563EB' }}
         >
           03 / My Journey
         </p>
         <h2
-          className={`m-0 mb-[3.4rem] text-[clamp(2.6rem,6vw,4rem)] leading-[0.95] tracking-[0.02em] text-white ${FONT_DISPLAY}`}
+          className={`m-0 mb-[3.4rem] text-[clamp(2.6rem,6vw,4rem)] leading-[0.95] tracking-[0.02em] ${FONT_DISPLAY}`}
+          style={{ color: isDark ? '#ffffff' : '#111827' }}
         >
           Experience
         </h2>
@@ -488,15 +540,34 @@ export default function Experience() {
           {/* rail base */}
           <span
             aria-hidden="true"
-            className="absolute top-[0.3rem] bottom-[0.3rem] left-[18px] w-[2px] rounded-[2px] bg-[rgba(201,168,76,0.18)] md:left-[calc(50%-1px)]"
+            className="absolute top-[0.3rem] bottom-[0.3rem] left-[18px] w-[2px] rounded-[2px] md:left-[calc(50%-1px)]"
+            style={{
+              backgroundColor: isDark ? 'rgba(201,168,76,0.18)' : 'rgba(37,99,235,0.18)',
+            }}
           />
           {/* rail fill */}
           <span
             ref={fillRef}
             aria-hidden="true"
-            className="absolute top-[0.3rem] left-[18px] h-0 w-[2px] rounded-[2px] bg-gradient-to-b from-[rgba(201,168,76,0.15)] via-[#C9A84C] via-60% to-[#E4C976] shadow-[0_0_18px_rgba(201,168,76,0.55)] md:left-[calc(50%-1px)]"
+            className="absolute top-[0.3rem] left-[18px] h-0 w-[2px] rounded-[2px] md:left-[calc(50%-1px)]"
+            style={{
+              background: isDark
+                ? 'linear-gradient(to bottom, rgba(201,168,76,0.15), #C9A84C 60%, #E4C976)'
+                : 'linear-gradient(to bottom, rgba(37,99,235,0.2), #2563EB 60%, #3B82F6)',
+              boxShadow: isDark
+                ? '0 0 18px rgba(201,168,76,0.55)'
+                : '0 0 14px rgba(37,99,235,0.35)',
+            }}
           >
-            <span className="absolute -bottom-1 left-1/2 h-[10px] w-[10px] -translate-x-1/2 rounded-full bg-[#E4C976] shadow-[0_0_6px_#E4C976,0_0_18px_rgba(201,168,76,0.9),0_0_34px_rgba(201,168,76,0.5)]" />
+            <span
+              className="absolute -bottom-1 left-1/2 h-[10px] w-[10px] -translate-x-1/2 rounded-full"
+              style={{
+                backgroundColor: isDark ? '#E4C976' : '#3B82F6',
+                boxShadow: isDark
+                  ? '0 0 6px #E4C976, 0 0 18px rgba(201,168,76,0.9), 0 0 34px rgba(201,168,76,0.5)'
+                  : '0 0 6px #3B82F6, 0 0 18px rgba(37,99,235,0.6)',
+              }}
+            />
           </span>
 
           {experiences.map((exp, i) => {
@@ -511,8 +582,11 @@ export default function Experience() {
                   className="tl-nodewrap absolute left-[18px] top-[2.45rem] z-[3] h-0 w-0 md:left-1/2"
                 >
                   <span
-                    className="tl-dot -ml-[6.5px] -mt-[6.5px] block h-[13px] w-[13px] rounded-full border-2 bg-[#0c0c0c]"
-                    style={{ borderColor: NODE_BORDER }}
+                    className="tl-dot -ml-[6.5px] -mt-[6.5px] block h-[13px] w-[13px] rounded-full border-2"
+                    style={{
+                      backgroundColor: isDark ? '#0c0c0c' : '#ffffff',
+                      borderColor: NODE_BORDER,
+                    }}
                   />
                 </span>
 
@@ -521,6 +595,7 @@ export default function Experience() {
                   index={i}
                   isLeft={isLeft}
                   onToggle={(idx) => apiRef.current.toggle(idx)}
+                  isDark={isDark}
                 />
               </div>
             );

@@ -5,10 +5,13 @@ import { projects, statusStyle } from '../data/projectsData';
 import { getReplayScrollTrigger } from '../hooks/useGsap';
 import { navigateTo, ROUTES } from '../routes';
 import ProjectLinks from './ProjectLinks';
+import { useTheme } from '../context/ThemeContext';
 
 gsap.registerPlugin(ScrollTrigger);
 
 function ProjectCard({ p, featured = false }) {
+  const { isDark } = useTheme();
+  const accent = isDark ? '#C9A84C' : '#2563EB';
   const cardRef = useRef(null);
 
   // A project with a live URL opens that URL on card click; other cards browse
@@ -28,7 +31,7 @@ function ProjectCard({ p, featured = false }) {
   const handleEnter = () => {
     gsap.to(cardRef.current, {
       y: featured ? -4 : -7, duration: .35, ease: 'power2.out',
-      boxShadow: '0 20px 50px rgba(201,168,76,0.13)'
+      boxShadow: isDark ? '0 20px 50px rgba(201,168,76,0.13)' : '0 20px 50px rgba(37,99,235,0.12)'
     });
     const arrow = cardRef.current.querySelector('.card-arrow');
     if (arrow) gsap.to(arrow, { x: 5, opacity: 1, duration: .3 });
@@ -45,10 +48,13 @@ function ProjectCard({ p, featured = false }) {
       ref={cardRef}
       className="relative overflow-hidden h-full"
       style={{
-        background: '#0d0d0d',
-        border: featured ? '1px solid rgba(201,168,76,0.25)' : '1px solid rgba(255,255,255,0.07)',
-        borderTop: `2px solid ${featured ? '#C9A84C' : 'rgba(201,168,76,0.3)'}`,
-        transition: 'box-shadow .35s ease',
+        background: isDark ? '#0d0d0d' : '#FFFFFF',
+        border: featured
+          ? (isDark ? '1px solid rgba(201,168,76,0.25)' : '1px solid rgba(37,99,235,0.22)')
+          : (isDark ? '1px solid rgba(255,255,255,0.07)' : '1px solid rgba(0,0,0,0.08)'),
+        borderTop: `2px solid ${featured ? accent : (isDark ? 'rgba(201,168,76,0.3)' : 'rgba(37,99,235,0.3)')}`,
+        boxShadow: isDark ? 'none' : '0 8px 30px rgba(0,0,0,0.04)',
+        transition: 'box-shadow .35s ease, transform .35s ease',
         height: '100%',
         cursor: clickable ? 'pointer' : 'default',
       }}
@@ -64,7 +70,7 @@ function ProjectCard({ p, featured = false }) {
         <div className="flex items-center justify-between gap-2 mb-5 w-full">
           <span className="font-body text-[10px] tracking-wider uppercase px-2 py-0.5 truncate max-w-[70%]"
             title={p.category}
-            style={{ background: 'rgba(201,168,76,0.1)', color: '#C9A84C', border: '1px solid rgba(201,168,76,0.25)' }}>
+            style={{ background: isDark ? 'rgba(201,168,76,0.1)' : 'rgba(37,99,235,0.08)', color: accent, border: `1px solid ${isDark ? 'rgba(201,168,76,0.25)' : 'rgba(37,99,235,0.22)'}` }}>
             {p.category}
           </span>
 
@@ -79,11 +85,12 @@ function ProjectCard({ p, featured = false }) {
         </div>
 
         {/* Title */}
-        <h3 className="font-title mb-3 text-white"
+        <h3 className="font-title mb-3"
           style={{
             fontFamily: "'Bebas Neue', sans-serif",
             fontSize: featured ? 'clamp(2rem,3.5vw,2.8rem)' : '1.75rem',
             letterSpacing: '.04em', lineHeight: 1,
+            color: isDark ? '#FFFFFF' : '#111827',
           }}
         >
           {p.title}
@@ -92,7 +99,7 @@ function ProjectCard({ p, featured = false }) {
         {/* Desc */}
         <p className="font-body text-base leading-relaxed flex-1"
           style={{
-            color: 'rgba(255,255,255,0.48)',
+            color: isDark ? 'rgba(255,255,255,0.48)' : '#4B5563',
             fontWeight: 300,
             display: featured ? 'block' : '-webkit-box',
             WebkitLineClamp: featured ? 'unset' : 2,
@@ -113,16 +120,17 @@ function ProjectCard({ p, featured = false }) {
             {p.tags.map(t => (
               <span key={t} className="font-body text-xs px-2.5 py-1"
                 style={{
-                  background: 'rgba(255,255,255,0.04)', color: 'rgba(255,255,255,0.38)',
-                  border: '1px solid rgba(255,255,255,0.08)'
+                  background: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)',
+                  color: isDark ? 'rgba(255,255,255,0.38)' : '#4B5563',
+                  border: isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.08)'
                 }}>
                 {t}
               </span>
             ))}
           </div>
           <div className="flex items-center justify-between"
-            style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '1rem' }}>
-            <span className="font-body text-xs tracking-widest" style={{ color: 'rgba(255,255,255,0.46)' }}>
+            style={{ borderTop: isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.06)', paddingTop: '1rem' }}>
+            <span className="font-body text-xs tracking-widest" style={{ color: isDark ? 'rgba(255,255,255,0.46)' : '#6B7280' }}>
               {p.year}
             </span>
           </div>
@@ -136,6 +144,8 @@ function ProjectCard({ p, featured = false }) {
 }
 
 export default function Projects() {
+  const { isDark } = useTheme();
+  const accent = isDark ? '#C9A84C' : '#2563EB';
   const sectionRef = useRef(null);
   const headingRef = useRef(null);
   const gridRef = useRef(null);
@@ -179,9 +189,9 @@ export default function Projects() {
   }, []);
 
   return (
-    <section id="projects" ref={sectionRef} className="py-28 px-6 md:px-14 relative" style={{ background: '#000' }}>
+    <section id="projects" ref={sectionRef} className="py-28 px-6 md:px-14 relative" style={{ background: 'var(--bg-primary)' }}>
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div style={{ position: 'absolute', top: '8%', right: '-8%', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(201,168,76,0.05) 0%,transparent 70%)', filter: 'blur(60px)', contain: 'paint' }} />
+        <div style={{ position: 'absolute', top: '8%', right: '-8%', width: '500px', height: '500px', borderRadius: '50%', background: isDark ? 'radial-gradient(circle,rgba(201,168,76,0.05) 0%,transparent 70%)' : 'radial-gradient(circle,rgba(37,99,235,0.05) 0%,transparent 70%)', filter: 'blur(60px)', contain: 'paint' }} />
         <div style={{ position: 'absolute', bottom: '8%', left: '-8%', width: '400px', height: '400px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(100,150,255,0.04) 0%,transparent 70%)', filter: 'blur(60px)', contain: 'paint' }} />
       </div>
 
@@ -189,23 +199,24 @@ export default function Projects() {
 
         {/* Heading */}
         <div ref={headingRef} className="mb-14">
-          <p className="reveal font-body text-xs tracking-[.35em] uppercase mb-2" style={{ color: '#C9A84C' }}>
+          <p className="reveal font-body text-xs tracking-[.35em] uppercase mb-2" style={{ color: accent }}>
             04 / Selected Work
           </p>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <h2 className="reveal font-title" style={{
               fontFamily: "'Bebas Neue',sans-serif",
-              fontSize: 'clamp(3rem,6vw,5.5rem)', letterSpacing: '.05em', lineHeight: 1, color: '#fff'
+              fontSize: 'clamp(3rem,6vw,5.5rem)', letterSpacing: '.05em', lineHeight: 1,
+              color: isDark ? '#FFFFFF' : '#111827'
             }}>
               Projects
             </h2>
             <p className="reveal font-body text-sm max-w-xs"
-              style={{ color: 'rgba(255,255,255,0.38)', fontWeight: 300, lineHeight: 1.7 }}>
+              style={{ color: isDark ? 'rgba(255,255,255,0.38)' : '#4B5563', fontWeight: 300, lineHeight: 1.7 }}>
               A curated selection of work spanning AI, product design, and business strategy.
             </p>
           </div>
           <div className="reveal mt-8"
-            style={{ height: '1px', background: 'linear-gradient(to right,#C9A84C,rgba(201,168,76,0.08))' }} />
+            style={{ height: '1px', background: isDark ? 'linear-gradient(to right,#C9A84C,rgba(201,168,76,0.08))' : 'linear-gradient(to right,#2563EB,rgba(37,99,235,0.08))' }} />
         </div>
 
         {/* Featured full-width */}
@@ -229,11 +240,12 @@ export default function Projects() {
               className="font-body flex items-center gap-3 transition-all duration-300"
               style={{
                 fontWeight: 600, fontSize: '.72rem', letterSpacing: '.2em', textTransform: 'uppercase',
-                color: '#C9A84C', padding: '.9rem 3rem', border: '1px solid rgba(201,168,76,0.4)',
+                color: accent, padding: '.9rem 3rem',
+                border: `1px solid ${isDark ? 'rgba(201,168,76,0.4)' : 'rgba(37,99,235,0.4)'}`,
                 background: 'transparent', cursor: 'pointer', textDecoration: 'none',
               }}
-              onMouseEnter={e => { e.currentTarget.style.background = '#C9A84C'; e.currentTarget.style.color = '#000'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#C9A84C'; e.currentTarget.style.transform = 'translateY(0)'; }}>
+              onMouseEnter={e => { e.currentTarget.style.background = accent; e.currentTarget.style.color = isDark ? '#000' : '#fff'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = accent; e.currentTarget.style.transform = 'translateY(0)'; }}>
               View All Projects
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M5 12h14M12 5l7 7-7 7" />

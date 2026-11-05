@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import { useFadeUp, useStaggerLeft, useStaggerRight } from '../hooks/useGsap';
+import { useTheme } from '../context/ThemeContext';
 
 export default function Contact() {
+  const { isDark } = useTheme();
+  const accent = isDark ? '#C9A84C' : '#2563EB';
+
   const [form, setForm]   = useState({ name:'', email:'', message:'' });
   const [sent, setSent]   = useState(false);
   const headRef  = useFadeUp('.fade-up', { sectionId: 'contact' });
@@ -22,32 +26,41 @@ export default function Contact() {
     setForm({name:'',email:'',message:''});
   };
 
+  const borderBottomRest = isDark ? '1px solid rgba(201,168,76,0.3)' : '1px solid rgba(37,99,235,0.3)';
+
   const inp = {
-    background:'#0d0d0d', border:'none',
-    borderBottom:'1px solid rgba(201,168,76,0.3)',
-    color:'#fff', fontFamily:"'DM Sans',sans-serif",
-    fontSize:'.95rem', width:'100%', outline:'none',
-    transition:'border-color .3s ease',
-    padding:'14px', // to offset the 1px border on focus
-    // borderRadius:'10',
+    background: isDark ? '#0d0d0d' : '#FFFFFF',
+    border: 'none',
+    borderBottom: borderBottomRest,
+    color: isDark ? '#fff' : '#111827',
+    fontFamily: "'DM Sans',sans-serif",
+    fontSize: '.95rem',
+    width: '100%',
+    outline: 'none',
+    transition: 'border-color .3s ease',
+    padding: '14px',
   };
 
   return (
-    <section id="contact" className="py-28 px-6 md:px-14 relative" style={{background:'#000'}}>
+    <section id="contact" className="py-28 px-6 md:px-14 relative" style={{ background: 'var(--bg-primary)' }}>
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none" style={{
-        width:'600px',height:'300px',
-        background:'radial-gradient(ellipse at center bottom,rgba(201,168,76,0.08) 0%,transparent 70%)',
-        filter:'blur(40px)',
+        width: '600px', height: '300px',
+        background: isDark
+          ? 'radial-gradient(ellipse at center bottom,rgba(201,168,76,0.08) 0%,transparent 70%)'
+          : 'radial-gradient(ellipse at center bottom,rgba(37,99,235,0.08) 0%,transparent 70%)',
+        filter: 'blur(40px)',
       }}/>
 
       <div ref={headRef} className="max-w-7xl mx-auto">
         <p className="section-label fade-up">08 / Get In Touch</p>
-        <h2 className="section-title text-white mb-14 fade-up">Let's Build Something Great</h2>
+        <h2 className="section-title mb-14 fade-up" style={{ color: isDark ? '#FFFFFF' : '#111827' }}>
+          Let's Build Something Great
+        </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
           {/* Left info */}
           <div ref={leftRef}>
-            <p className="stagger font-body text-lg leading-relaxed mb-8" style={{color:'rgba(255,255,255,0.55)',fontWeight:300}}>
+            <p className="stagger font-body text-lg leading-relaxed mb-8" style={{ color: isDark ? 'rgba(255,255,255,0.55)' : '#4B5563', fontWeight: 300 }}>
               Have a project in mind? Want to explore how AI can transform your business? I'd love to connect and discuss how we can create something impactful together.
             </p>
             {[
@@ -59,15 +72,24 @@ export default function Contact() {
               { icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>, label:'Location', value:'Toronto, Ontario, Canada', href:null },
             ].map(item => (
               <div key={item.label} className="stagger flex items-center gap-4 mb-5">
-                <div className="flex items-center justify-center shrink-0 text-gold"
-                  style={{width:'44px',height:'44px',border:'1px solid rgba(201,168,76,0.3)'}}>
+                <div
+                  className="flex items-center justify-center shrink-0"
+                  style={{
+                    width: '44px',
+                    height: '44px',
+                    border: isDark ? '1px solid rgba(201,168,76,0.3)' : '1px solid rgba(37,99,235,0.25)',
+                    color: accent,
+                    background: isDark ? 'transparent' : 'rgba(37,99,235,0.04)',
+                    borderRadius: '8px',
+                  }}
+                >
                   {item.icon}
                 </div>
                 <div>
-                  <p className="font-body text-xs tracking-widest uppercase mb-0.5" style={{color:'rgba(255,255,255,0.46)'}}>{item.label}</p>
+                  <p className="font-body text-xs tracking-widest uppercase mb-0.5" style={{ color: isDark ? 'rgba(255,255,255,0.46)' : '#6B7280' }}>{item.label}</p>
                   {item.href
-                    ? <a href={item.href} target="_blank" rel="noopener noreferrer" className="font-body text-sm text-white hover:text-gold transition-colors">{item.value}</a>
-                    : <p className="font-body text-sm text-white">{item.value}</p>
+                    ? <a href={item.href} target="_blank" rel="noopener noreferrer" className="font-body text-sm transition-colors" style={{ color: isDark ? '#FFFFFF' : '#111827' }} onMouseEnter={e=>e.currentTarget.style.color=accent} onMouseLeave={e=>e.currentTarget.style.color=isDark ? '#FFFFFF' : '#111827'}>{item.value}</a>
+                    : <p className="font-body text-sm" style={{ color: isDark ? '#FFFFFF' : '#111827' }}>{item.value}</p>
                   }
                 </div>
               </div>
@@ -78,12 +100,16 @@ export default function Contact() {
           <div ref={rightRef}>
             {sent ? (
               <div className="stagger-r flex flex-col items-center justify-center h-full text-center py-12"
-                style={{border:'1px solid rgba(201,168,76,0.2)',background:'rgba(201,168,76,0.05)'}}>
-                <svg className="mb-4" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" strokeWidth="1.5">
+                style={{
+                  border: isDark ? '1px solid rgba(201,168,76,0.2)' : '1px solid rgba(37,99,235,0.2)',
+                  background: isDark ? 'rgba(201,168,76,0.05)' : 'rgba(37,99,235,0.05)',
+                  borderRadius: '12px',
+                }}>
+                <svg className="mb-4" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth="1.5">
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
                 </svg>
-                <h3 className="font-title text-2xl text-white mb-2" style={{fontFamily:"'Bebas Neue',sans-serif",letterSpacing:'.1em'}}>Almost there!</h3>
-                <p className="font-body text-sm" style={{color:'rgba(255,255,255,0.5)'}}>Your email client should now be open with your message ready to send.</p>
+                <h3 className="font-title text-2xl mb-2" style={{ fontFamily:"'Bebas Neue',sans-serif", letterSpacing:'.1em', color: isDark ? '#FFFFFF' : '#111827' }}>Almost there!</h3>
+                <p className="font-body text-sm" style={{ color: isDark ? 'rgba(255,255,255,0.5)' : '#4B5563' }}>Your email client should now be open with your message ready to send.</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="flex flex-col gap-8">
@@ -92,18 +118,18 @@ export default function Contact() {
                   {name:'email', type:'email', label:'Email Address',   placeholder:'Email address'},
                 ].map(f => (
                   <div key={f.name} className="stagger-r">
-                    <label className="font-body text-xs tracking-widest uppercase block mb-2" style={{color:'rgba(255,255,255,0.46)'}}>{f.label}</label>
+                    <label className="font-body text-xs tracking-widest uppercase block mb-2" style={{ color: isDark ? 'rgba(255,255,255,0.46)' : '#6B7280' }}>{f.label}</label>
                     <input name={f.name} type={f.type} value={form[f.name]} onChange={handleChange} required placeholder={f.placeholder} style={inp}
-                      onFocus={e=>e.target.style.borderBottomColor='#C9A84C'}
-                      onBlur={e=>e.target.style.borderBottomColor='rgba(201,168,76,0.3)'}/>
+                      onFocus={e=>e.target.style.borderBottomColor=accent}
+                      onBlur={e=>e.target.style.borderBottomColor=isDark ? 'rgba(201,168,76,0.3)' : 'rgba(37,99,235,0.3)'}/>
                   </div>
                 ))}
                 <div className="stagger-r">
-                  <label className="font-body text-xs tracking-widest uppercase block mb-2" style={{color:'rgba(255,255,255,0.46)'}}>Your Message</label>
+                  <label className="font-body text-xs tracking-widest uppercase block mb-2" style={{ color: isDark ? 'rgba(255,255,255,0.46)' : '#6B7280' }}>Your Message</label>
                   <textarea name="message" value={form.message} onChange={handleChange} required rows={4}
                     placeholder="Tell me about your project..." style={{...inp,resize:'none'}}
-                    onFocus={e=>e.target.style.borderBottomColor='#C9A84C'}
-                    onBlur={e=>e.target.style.borderBottomColor='rgba(201,168,76,0.3)'}/>
+                    onFocus={e=>e.target.style.borderBottomColor=accent}
+                    onBlur={e=>e.target.style.borderBottomColor=isDark ? 'rgba(201,168,76,0.3)' : 'rgba(37,99,235,0.3)'}/>
                 </div>
                 <button type="submit" className="stagger-r btn-gold w-full">Send Message</button>
               </form>

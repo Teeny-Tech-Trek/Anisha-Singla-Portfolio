@@ -14,6 +14,7 @@ import NotFound from '../components/NotFound';
 import { ROUTES, consumePendingSection, getCurrentPath, navigateTo, navigateToSection, scrollToSection } from './index';
 import { useSeo } from '../hooks/useSeo';
 import { SEO } from '../seo/seoConfig';
+import { useTheme } from '../context/ThemeContext';
 
 // Code-split: none of these are needed for the first paint of the home page.
 // - Certifications pulls in pdfjs-dist (a large PDF-rendering library) just
@@ -28,11 +29,15 @@ const CaseStudyDetail = lazy(() => import('../components/CaseStudyDetail'));
 const AboutDetail = lazy(() => import('../components/AboutDetail'));
 
 function RouteFallback() {
+  const { isDark } = useTheme();
   return (
-    <div className="min-h-screen w-full flex items-center justify-center" style={{ background: '#000' }}>
+    <div className="min-h-screen w-full flex items-center justify-center transition-colors duration-300" style={{ background: isDark ? '#000000' : '#FAF8F5' }}>
       <div
         className="h-8 w-8 rounded-full animate-spin"
-        style={{ border: '2px solid rgba(201,168,76,0.25)', borderTopColor: '#C9A84C' }}
+        style={{
+          border: isDark ? '2px solid rgba(201,168,76,0.25)' : '2px solid rgba(37,99,235,0.25)',
+          borderTopColor: isDark ? '#C9A84C' : '#2563EB',
+        }}
         role="status"
         aria-label="Loading"
       />
@@ -45,10 +50,12 @@ function RouteFallback() {
 // id is kept so in-page nav links to "Skills" still land in the right spot
 // while the chunk is still loading.
 function CertificationsFallback() {
-  return <section id="skills" style={{ background: '#050505', minHeight: 480 }} />;
+  const { isDark } = useTheme();
+  return <section id="skills" style={{ background: isDark ? '#050505' : '#F3EFEA', minHeight: 480 }} />;
 }
 
 function HomeRoute() {
+  const { isDark } = useTheme();
   useSeo(SEO.home);
 
   useEffect(() => {
@@ -79,7 +86,7 @@ function HomeRoute() {
   }, []);
 
   return (
-    <div className="bg-black min-h-screen w-full max-w-full overflow-x-hidden">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden transition-colors duration-400" style={{ background: isDark ? '#000000' : '#FAF8F5' }}>
       <Navbar />
       <main>
         <Hero />
