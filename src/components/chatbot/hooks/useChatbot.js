@@ -26,17 +26,15 @@ const initialMessages = [
 ];
 
 const PRESET_INSTANT_RESPONSES = {
-  "AI projects": `- **Teeny Tech Trek**: AI consultancy studio delivering custom RAG chatbots and automations for 10 clients. [Read More](/case-studies/responsible-ai-governance-framework+rag-business-knowledge-assistant)\n\n- **Neo-Script**: MCP-native multi-agent content pipeline running in Claude Desktop, Cursor, and Windsurf. [Read More](/case-studies/multi-agent-content-intelligence-system)\n\n- **Nex-Estate**: Always-on AI real estate assistant with built-in CRM cutting 10+ hours/week. [Read More](/case-studies/real-estate-intelligence-dashboard+rag-business-knowledge-assistant)\n\n[Read More](#projects)`,
+  "AI projects": `- **AI Search Visibility Platform (AEO/GEO)**: Method definition and product requirements for AI visibility audits across ChatGPT, Gemini, and Perplexity.\n\n- **Export Process Automations**: Process mapping and 5 automations for quotation and production reporting at Appu International.\n\n- **Tech Trekkers Suite Strategy**: Product definition across NeoScript, NexEstate, and NetTwin.\n\n[Explore Selected Work](#projects)`,
 
-  "Tech stack": `- **ML Algorithms & AI Models**: Machine Learning Algorithms, Google Gemini 2.5 Flash, Vertex AI, RAG Architectures, Multi-Agent Orchestration.\n\n- **No-Code Automations & Workflows**: n8n workflow automations, RAG pipelines, Vector DBs (Qdrant, FAISS), Zapier, Make.\n\n- **Product & Business Strategy**: AI Product Management, Business Analysis (PRDs/BRDs), AI Strategy, Stakeholder Management, Agile/Scrum.\n\n[Read More](#skills)`,
+  "Tech stack": `- **Analysis & Delivery**: Requirements elicitation, user stories, acceptance criteria with failure cases, process mapping, SOP authoring, Jira, ClickUp.\n\n- **AI Solution Design**: Use-case discovery & prioritisation, RAG & agent workflows, human-in-the-loop design, model selection across Anthropic, OpenAI, Gemini, and Azure OpenAI.\n\n- **Tools & Enablement**: n8n workflow design & review, data modelling for PostgreSQL & MongoDB, Microsoft Excel.\n\n[View Skills](#skills)`,
 
+  "Experience": `AI Business Analyst with 15 engagements for 10 clients across six industries at Teeny Tech Trek. Currently an AI-Powered Digital Marketing Consultant at APT Growth Digital in Toronto, and previously Project Manager at Appu International leading process automations and export operations. [Read More](#experience)`,
 
-  "Experience": `I founded Teeny Tech Trek, an AI solutions studio, delivering production-grade RAG chatbots and workflow automations to 10 clients with 100% on-time delivery. Concurrently, as Automation R&D Lead at Appu International, I led 5 process automations, reducing manual effort by 10 hours per week. [Read More](#experience)`,
+  "Download Resume": `Anisha's resume is available upon request. Feel free to request it via email at anishasingla23@gmail.com!`,
 
-  "Download Resume": `✨ Anisha Singla's official resume has been downloaded to your device! Feel free to review her AI product portfolio, featured case studies, or get in touch directly.`,
-
-
-  "Contact": `You can reach me directly via email at anishasingla23@gmail.com or connect with me on LinkedIn and GitHub. I'm open to AI Strategy, Business Analyst, and AI Consulting roles! [Read More](#contact)`,
+  "Contact": `You can reach me directly via email at anishasingla23@gmail.com or connect with me on LinkedIn at linkedin.com/in/singlaanisha. Open to AI Business Analyst, AI Implementation, and AI Enablement roles! [Get in Touch](#contact)`,
 
   "🎬 Know Me in 64s": {
     type: "video",

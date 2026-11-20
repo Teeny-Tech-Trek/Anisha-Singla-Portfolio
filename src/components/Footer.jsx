@@ -16,7 +16,7 @@ const links = [
 
 export default function Footer() {
   const { isDark } = useTheme();
-  const accent = isDark ? '#C9A84C' : '#2563EB';
+  const accent = isDark ? '#FFFFFF' : '#2563EB';
 
   const go = (link) => {
     if (link.type === 'route') {
@@ -33,7 +33,7 @@ export default function Footer() {
     <footer
       className="py-10 px-6 md:px-14"
       style={{
-        borderTop: isDark ? '1px solid rgba(201,168,76,0.15)' : '1px solid rgba(0,0,0,0.08)',
+        borderTop: isDark ? '1px solid rgba(255,255,255,0.16)' : '1px solid rgba(0,0,0,0.08)',
         background: 'var(--bg-primary)',
         contentVisibility: 'auto',
         containIntrinsicSize: 'auto 220px',
@@ -42,7 +42,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
         <span
           className="font-title text-xl tracking-[.3em] cursor-pointer"
-          style={{ fontFamily: "'Bebas Neue',sans-serif", color: isDark ? '#C9A84C' : '#111827' }}
+          style={{ fontFamily: "'Bebas Neue',sans-serif", color: isDark ? '#FFFFFF' : '#111827' }}
           onClick={() => go(links[0])}
         >
           ANISHA.

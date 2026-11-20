@@ -5,8 +5,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        gold: '#C9A84C',
-        'gold-light': '#E8C97A',
+        gold: '#FFFFFF',
+        'gold-light': 'rgba(255,255,255,0.88)',
       },
       fontFamily: {
         title: ['"Bebas Neue"', 'sans-serif'],

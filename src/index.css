@@ -29,31 +29,18 @@
 /* ── Theme CSS Variables ───────────────────────────────────────────────── */
 
 :root,
-
 [data-theme="dark"] {
-
-  --bg-primary:       #000000;
-
-  --bg-secondary:     #050505;
-
-  --bg-card:          #0c0c0c;
-
+  --bg-primary:       #072450;
+  --bg-secondary:     #072450;
+  --bg-card:          #0B2D62;
   --text-primary:     #ffffff;
-
-  --text-secondary:   rgba(255, 255, 255, 0.72);
-
-  --text-muted:       rgba(255, 255, 255, 0.45);
-
-  --border-subtle:    rgba(255, 255, 255, 0.08);
-
-  --border-gold:      rgba(201, 168, 76, 0.3);
-
-  --scrollbar-track:  #000000;
-
-  --scrollbar-thumb:  #C9A84C;
-
-  --noise-opacity:    0.2;
-
+  --text-secondary:   rgba(255, 255, 255, 0.78);
+  --text-muted:       rgba(255, 255, 255, 0.52);
+  --border-subtle:    rgba(255, 255, 255, 0.12);
+  --border-gold:      rgba(255, 255, 255, 0.32);
+  --scrollbar-track:  #072450;
+  --scrollbar-thumb:  #FFFFFF;
+  --noise-opacity:    0.15;
 }
 
 
@@ -228,76 +215,43 @@ body::after {
 
 
 .btn-gold {
-
-  background: linear-gradient(90deg, #C9A84C 0%, #E8C97A 50%, #C9A84C 100%);
-
+  background: linear-gradient(90deg, #FFFFFF 0%, rgba(255, 255, 255, 0.88) 50%, #FFFFFF 100%);
   background-size: 200% auto;
-
   transition: background-position .5s ease, transform .2s ease, box-shadow .3s ease;
-
   font-family: 'DM Sans', sans-serif;
-
   font-weight: 700;
-
   font-size: .72rem;
-
   letter-spacing: .2em;
-
   text-transform: uppercase;
-
-  color: #000;
-
+  color: #072450;
   padding: 1rem 2.2rem;
-
   border: none;
-
   cursor: pointer;
-
   display: inline-block;
-
 }
 
 .btn-gold:hover {
-
   background-position: right center;
-
   transform: translateY(-2px);
-
-  box-shadow: 0 8px 25px rgba(201,168,76,.4);
-
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.28);
 }
-
-
 
 .btn-outline {
-
   font-family: 'DM Sans', sans-serif;
-
   font-weight: 600;
-
   font-size: .72rem;
-
   letter-spacing: .2em;
-
   text-transform: uppercase;
-
-  color: #C9A84C;
-
+  color: #FFFFFF;
   padding: .85rem 2.2rem;
-
-  border: 1px solid #C9A84C;
-
+  border: 1px solid #FFFFFF;
   background: transparent;
-
   cursor: pointer;
-
   transition: all .3s ease;
-
   display: inline-block;
-
 }
 
-.btn-outline:hover { background: #C9A84C; color: #000; transform: translateY(-2px); }
+.btn-outline:hover { background: #FFFFFF; color: #072450; transform: translateY(-2px); }
 
 
 
@@ -315,7 +269,7 @@ body::after {
 
   transform: translateY(-6px);
 
-  box-shadow: 0 10px 30px rgba(201,168,76,.15);
+  box-shadow: 0 10px 30px rgba(255, 255, 255, 0.12);
 
 }
 
@@ -333,7 +287,7 @@ body::after {
 
   text-transform: uppercase;
 
-  color: #C9A84C;
+  color: #FFFFFF;
 
   margin-bottom: .6rem;
 
@@ -342,15 +296,11 @@ body::after {
 
 
 .section-title {
-
   font-family: 'Bebas Neue', sans-serif;
-
   font-size: clamp(3rem, 6vw, 5.5rem);
-
   letter-spacing: .05em;
-
   line-height: 1;
-
+  color: var(--text-primary);
 }
 
 
@@ -438,11 +388,12 @@ body::after {
     border-color: #2563EB !important;
   }
   #experience .tl-railbase {
-    background: rgba(37, 99, 235, 0.18) !important;
+    background: #3B82F6 !important;
+    opacity: 0.55 !important;
   }
   #experience .tl-fill {
-    background: linear-gradient(to bottom, rgba(37, 99, 235, 0.2), #2563EB 60%, #3B82F6) !important;
-    box-shadow: 0 0 14px rgba(37, 99, 235, 0.35) !important;
+    background: linear-gradient(to bottom, rgba(59, 130, 246, 0.3), #2563EB 60%, #1D4ED8) !important;
+    box-shadow: 0 0 14px rgba(37, 99, 235, 0.5) !important;
   }
   #experience .tl-tag {
     color: #1D4ED8 !important;
@@ -468,7 +419,7 @@ body::after {
   #capabilities h3 {
     color: #111827 !important;
   }
-  #capabilities p {
+  #capabilities p:not(.section-label) {
     color: #374151 !important;
   }
   #capabilities .svc-section {
@@ -539,7 +490,7 @@ body::after {
   #projects h3 {
     color: #111827 !important;
   }
-  #projects p {
+  #projects p:not(.section-label):not(.role-line):not(.outcome-line) {
     color: #4B5563 !important;
   }
   #projects .proj-card > div,
@@ -554,13 +505,13 @@ body::after {
     color: #1D4ED8 !important;
     border: 1px solid rgba(37, 99, 235, 0.22) !important;
   }
-  #projects a[class*="border-[#C9A84C]"],
+  #projects a[class*="border-white/50"],
   #projects a[class*="border-white/15"] {
     border-color: rgba(37, 99, 235, 0.35) !important;
     color: #2563EB !important;
     background: rgba(37, 99, 235, 0.04) !important;
   }
-  #projects a[class*="border-[#C9A84C]"]:hover,
+  #projects a[class*="border-white/50"]:hover,
   #projects a[class*="border-white/15"]:hover {
     background: #2563EB !important;
     color: #FFFFFF !important;
@@ -571,7 +522,7 @@ body::after {
   #about {
     background: #FAF8F5 !important;
   }
-  #about p {
+  #about p:not(.section-label) {
     color: #374151 !important;
   }
   #about .card {
@@ -607,18 +558,69 @@ body::after {
 
   /* 7. Skills & Certifications Section */
   #skills {
-    background: #F3EFEA !important;
+    background: #FAF8F5 !important;
   }
-  #skills h2, #skills h3 {
+  #skills h2,
+  #skills h3,
+  #skills .section-title {
     color: #111827 !important;
   }
-  #skills p {
-    color: #374151 !important;
+  #skills .section-label {
+    color: #2563EB !important;
+    font-weight: 700 !important;
   }
-  #skills [style*="background: '#050505'"],
-  #skills [style*="background: '#0d0d0d'"] {
-    background: #FFFFFF !important;
-    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  #skills p.os-instruction {
+    color: #64748B !important;
+  }
+
+  /* Shield dark laptop OS screen and mobile OS card from light-mode charcoal overrides */
+  #skills .skill-tag,
+  [data-theme="light"] #skills .skill-tag,
+  [data-theme="dark"] #skills .skill-tag {
+    color: #FFFFFF !important;
+    background: rgba(13, 34, 71, 0.95) !important;
+    border: 1.5px solid rgba(56, 189, 248, 0.5) !important;
+    font-weight: 600 !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45) !important;
+  }
+  #skills .skill-tag:hover,
+  [data-theme="light"] #skills .skill-tag:hover {
+    color: #FFFFFF !important;
+    background: rgba(56, 189, 248, 0.28) !important;
+    border-color: #38BDF8 !important;
+    box-shadow: 0 0 14px rgba(56, 189, 248, 0.6) !important;
+  }
+  #skills .skill-cat-title,
+  [data-theme="light"] #skills .skill-cat-title {
+    color: #FFFFFF !important;
+    font-weight: 700 !important;
+  }
+  #skills .skills-terminal,
+  [data-theme="light"] #skills .skills-terminal {
+    color: #E2E8F0 !important;
+  }
+  #skills .os-tile-label,
+  [data-theme="light"] #skills .os-tile-label {
+    color: #FFFFFF !important;
+  }
+  [data-theme="light"] #skills .os-screen span[style*="rgba(255,255,255"],
+  [data-theme="light"] #skills .os-screen span[style*="rgba(255, 255, 255"],
+  [data-theme="light"] #skills .os-screen p[style*="rgba(255,255,255"],
+  [data-theme="light"] #skills .os-screen p[style*="rgba(255, 255, 255"],
+  [data-theme="light"] #skills .os-screen div[style*="rgba(255,255,255"],
+  [data-theme="light"] #skills .os-screen div[style*="rgba(255, 255, 255"],
+  [data-theme="light"] #skills .os-screen small[style*="rgba(255,255,255"],
+  [data-theme="light"] #skills .os-screen small[style*="rgba(255, 255, 255"],
+  [data-theme="light"] #skills .os-panel span[style*="rgba(255,255,255"],
+  [data-theme="light"] #skills .os-panel span[style*="rgba(255, 255, 255"],
+  [data-theme="light"] #skills .os-panel p[style*="rgba(255,255,255"],
+  [data-theme="light"] #skills .os-panel p[style*="rgba(255, 255, 255"],
+  [data-theme="light"] #skills .os-panel div[style*="rgba(255,255,255"],
+  [data-theme="light"] #skills .os-panel div[style*="rgba(255, 255, 255"],
+  [data-theme="light"] #skills .os-panel small[style*="rgba(255,255,255"],
+  [data-theme="light"] #skills .os-panel small[style*="rgba(255, 255, 255"] {
+    color: #E2E8F0 !important;
   }
 
   /* 8. Suite Section */
@@ -637,12 +639,12 @@ body::after {
   #suite .suite-row:hover {
     background: rgba(37, 99, 235, 0.03) !important;
   }
-  #suite .suite-row span[style*="background: #C9A84C"],
-  #suite .suite-row span[style*="background:#C9A84C"] {
+  #suite .suite-row span[style*="background: #FFFFFF"],
+  #suite .suite-row span[style*="background:#FFFFFF"] {
     background: #2563EB !important;
   }
-  #suite .suite-row span[style*="color: #C9A84C"],
-  #suite .suite-row span[style*="color:#C9A84C"] {
+  #suite .suite-row span[style*="color: #FFFFFF"],
+  #suite .suite-row span[style*="color:#FFFFFF"] {
     color: #2563EB !important;
   }
 
@@ -659,13 +661,13 @@ body::after {
   #volunteer .vol-item:hover {
     border-left-color: #2563EB !important;
   }
-  #volunteer .vol-item p[style*="color: '#C9A84C'"],
-  #volunteer .vol-item p[style*="color:#C9A84C"],
-  #volunteer p[style*="color: '#C9A84C'"] {
+  #volunteer .vol-item p[style*="color: '#FFFFFF'"],
+  #volunteer .vol-item p[style*="color:#FFFFFF"],
+  #volunteer p[style*="color: '#FFFFFF'"] {
     color: #1D4ED8 !important;
   }
-  #volunteer span[style*="background: '#C9A84C'"],
-  #volunteer span[style*="background:#C9A84C"] {
+  #volunteer span[style*="background: '#FFFFFF'"],
+  #volunteer span[style*="background:#FFFFFF"] {
     background: #2563EB !important;
     color: #FFFFFF !important;
   }
@@ -680,11 +682,11 @@ body::after {
   #writing p, #writing a {
     color: #374151 !important;
   }
-  #writing a[class*="border-[#C9A84C]"] {
+  #writing a[class*="border-white"] {
     border-color: rgba(37, 99, 235, 0.4) !important;
     color: #2563EB !important;
   }
-  #writing a[class*="border-[#C9A84C]"]:hover {
+  #writing a[class*="border-white"]:hover {
     background: #2563EB !important;
     color: #FFFFFF !important;
     border-color: #2563EB !important;
@@ -726,16 +728,46 @@ body::after {
     color: #374151 !important;
   }
 
-  p[style*="rgba(201,168,76"],
-  p[style*="rgba(201, 168, 76"],
-  span[style*="rgba(201,168,76"],
-  span[style*="rgba(201, 168, 76"],
-  div[style*="rgba(201,168,76"],
-  div[style*="rgba(201, 168, 76"],
-  small[style*="rgba(201,168,76"],
-  small[style*="rgba(201, 168, 76"] {
-    color: #1D4ED8 !important;
-    font-weight: 600 !important;
+  /* 14. Chatbot Launcher FAB & Dock in light mode */
+  .assistant-launcher {
+    background: #072450 !important;
+    border-color: #FFFFFF !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 10px 30px rgba(7, 36, 80, 0.35), 0 0 16px rgba(37, 99, 235, 0.25) !important;
+  }
+  .assistant-launcher span {
+    color: #FFFFFF !important;
+  }
+  .assistant-launcher:hover {
+    background: #2563EB !important;
+    border-color: #FFFFFF !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 14px 36px rgba(37, 99, 235, 0.45), 0 0 24px rgba(37, 99, 235, 0.35) !important;
+  }
+  .assistant-launcher:hover span {
+    color: #FFFFFF !important;
+  }
+
+  /* Shield Assistant phone dock & mobile sheet from light mode charcoal text overrides */
+  .assistant-phone,
+  .assistant-mobile {
+    color-scheme: dark;
+  }
+  .assistant-dock .pa-title,
+  .assistant-mobile .pa-title {
+    color: #FFFFFF !important;
+  }
+  .assistant-dock .pa-bubble.assistant,
+  .assistant-mobile .pa-bubble.assistant {
+    color: rgba(255, 255, 255, 0.82) !important;
+  }
+  .assistant-dock .pa-bubble.user,
+  .assistant-mobile .pa-bubble.user {
+    color: #FFFFFF !important;
+  }
+  .assistant-dock .pa-text,
+  .assistant-mobile .pa-text {
+    color: inherit !important;
   }
 }
 
@@ -797,7 +829,7 @@ textarea:focus-visible,
 
 [role="button"]:focus-visible {
 
-  outline: 2px solid #C9A84C !important;
+  outline: 2px solid #FFFFFF !important;
 
   outline-offset: 3px !important;
 

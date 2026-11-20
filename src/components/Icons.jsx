@@ -3,7 +3,7 @@
 ───────────────────────────────────────────── */
 
 /* eslint-disable react-refresh/only-export-components */
-const ICON_GLOW_COLOR = '#FFE06B';
+const ICON_GLOW_COLOR = '#FFFFFF';
 
 function getSizeValue(size, multiplier = 1) {
   if (typeof size === 'number') {
@@ -40,7 +40,7 @@ function IconGlow({ size = 32, children }) {
           width: haloSize,
           height: haloSize,
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(255,224,107,0.62) 0%, rgba(255,212,79,0.34) 34%, rgba(201,168,76,0.18) 58%, rgba(201,168,76,0) 76%)',
+          background: 'radial-gradient(circle, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.22) 34%, rgba(255,255,255,0.10) 58%, rgba(255,255,255,0) 76%)',
           filter: 'blur(10px)',
           opacity: 0.95,
           pointerEvents: 'none',
@@ -55,7 +55,7 @@ function IconGlow({ size = 32, children }) {
           display: 'inline-flex',
           alignItems: 'center',
           justifyContent: 'center',
-          filter: 'drop-shadow(0 0 7px rgba(255,224,107,0.5)) drop-shadow(0 0 16px rgba(255,214,92,0.3))',
+          filter: 'drop-shadow(0 0 7px rgba(255,255,255,0.4)) drop-shadow(0 0 16px rgba(255,255,255,0.22))',
         }}
       >
         {children}
@@ -73,8 +73,8 @@ export function PythonIcon({ size = 32 }) {
           <stop offset="100%" stopColor="#366994"/>
         </linearGradient>
         <linearGradient id="py2" x1="19.128%" y1="20.579%" x2="90.742%" y2="88.429%">
-          <stop offset="0%" stopColor="#FFE052"/>
-          <stop offset="100%" stopColor="#FFC331"/>
+          <stop offset="0%" stopColor="#FFFFFF"/>
+          <stop offset="100%" stopColor="#E2E8F0"/>
         </linearGradient>
       </defs>
       <path fill="url(#py1)" d="M126.916.072c-64.832 0-60.784 28.115-60.784 28.115l.072 29.128h61.868v8.745H41.631S.145 61.355.145 126.77c0 65.417 36.21 63.097 36.21 63.097h21.61v-30.356s-1.165-36.21 35.632-36.21h61.362s34.475.557 34.475-33.319V33.97S194.67.072 126.916.072zm-34.916 19.913a11.525 11.525 0 0 1 11.532 11.531 11.525 11.525 0 0 1-11.532 11.532 11.525 11.525 0 0 1-11.531-11.532 11.525 11.525 0 0 1 11.531-11.531z"/>
@@ -138,7 +138,7 @@ export function EmojiIcon({ symbol, label, size = 32 }) {
 }
 
 /* Generic award/cert icons */
-export function TrophyIcon({ size = 32, color = '#C9A84C' }) {
+export function TrophyIcon({ size = 32, color = '#FFFFFF' }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M6 9H3l1 3h2" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -149,7 +149,7 @@ export function TrophyIcon({ size = 32, color = '#C9A84C' }) {
   );
 }
 
-export function MedalIcon({ size = 32, color = '#C9A84C' }) {
+export function MedalIcon({ size = 32, color = '#FFFFFF' }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="12" cy="15" r="6" stroke={color} strokeWidth="1.5"/>
@@ -159,7 +159,7 @@ export function MedalIcon({ size = 32, color = '#C9A84C' }) {
   );
 }
 
-export function StarIcon({ size = 32, color = '#C9A84C' }) {
+export function StarIcon({ size = 32, color = '#FFFFFF' }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill={color + '33'}/>
@@ -167,7 +167,7 @@ export function StarIcon({ size = 32, color = '#C9A84C' }) {
   );
 }
 
-export function ScrollIcon({ size = 32, color = '#C9A84C' }) {
+export function ScrollIcon({ size = 32, color = '#FFFFFF' }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -178,7 +178,7 @@ export function ScrollIcon({ size = 32, color = '#C9A84C' }) {
   );
 }
 
-export function GraduateIcon({ size = 32, color = '#C9A84C' }) {
+export function GraduateIcon({ size = 32, color = '#FFFFFF' }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M12 3L2 8l10 5 10-5-10-5z" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill={color + '22'}/>
@@ -188,7 +188,7 @@ export function GraduateIcon({ size = 32, color = '#C9A84C' }) {
   );
 }
 
-export function SportsIcon({ size = 32, color = '#C9A84C' }) {
+export function SportsIcon({ size = 32, color = '#FFFFFF' }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="12" cy="12" r="10" stroke={color} strokeWidth="1.5"/>
@@ -230,8 +230,8 @@ export const FOLDER_COLORS = {
   'letter-appreciation':      '#10b981',
   'certificate-appreciation': '#f43f5e',
   'certificate-coordination': '#06b6d4',
-  'certificate-excellence':   '#f59e0b',
+  'certificate-excellence':   '#FFFFFF',
   'certificate-participation':'#84cc16',
-  'deans-list':               '#C9A84C',
+  'deans-list':               '#FFFFFF',
   'sports':                   '#ef4444',
 };

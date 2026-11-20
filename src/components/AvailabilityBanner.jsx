@@ -30,11 +30,9 @@ export default function AvailabilityBanner() {
       id="availability"
       ref={rootRef}
       style={{
-        background: isDark
-          ? 'linear-gradient(90deg, rgba(201,168,76,0.14) 0%, rgba(201,168,76,0.06) 100%), #000000'
-          : '#0a0a0a',
-        borderTop: isDark ? '1px solid rgba(201,168,76,0.5)' : '1px solid rgba(255,255,255,0.15)',
-        borderBottom: isDark ? '1px solid rgba(201,168,76,0.5)' : '1px solid rgba(255,255,255,0.15)',
+        background: '#072450',
+        borderTop: isDark ? '1px solid rgba(255,255,255,0.28)' : '1px solid rgba(255,255,255,0.15)',
+        borderBottom: isDark ? '1px solid rgba(255,255,255,0.28)' : '1px solid rgba(255,255,255,0.15)',
       }}
     >
       <div className="max-w-7xl mx-auto px-6 md:px-14 py-4 md:py-5">
@@ -48,11 +46,11 @@ export default function AvailabilityBanner() {
             letterSpacing: '0.01em',
           }}
         >
-          Based in Toronto. Valid PGWP with full work authorisation for any Canadian employer, no sponsorship required. Open to AI Strategy, Business Analyst and AI Consulting roles{' '}
+          Based in Toronto. Valid PGWP with full work authorization for any Canadian employer; no sponsorship required. Open to AI Business Analyst, AI Implementation and AI Enablement roles{' '}
           <a
             href="mailto:anishasingla23@gmail.com"
             style={{
-              color: isDark ? '#C9A84C' : '#60A5FA',
+              color: isDark ? '#FFFFFF' : '#60A5FA',
               fontWeight: 700,
               textDecoration: 'underline',
               textUnderlineOffset: '2px',

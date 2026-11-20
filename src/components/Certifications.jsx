@@ -80,11 +80,11 @@ function LaptopShell({ children }) {
             <stop offset="55%" stopColor="#fff" stopOpacity="0"/>
           </linearGradient>
 
-          {/* ── NEW: screen ke andar center se halka warm glow ── */}
+          {/* ── screen ke andar center se halka white glow ── */}
           <radialGradient id="lsInnerGlow" cx="50%" cy="50%" r="55%">
-            <stop offset="0%"   stopColor="#C9A84C" stopOpacity="0.13"/>
-            <stop offset="55%"  stopColor="#C9A84C" stopOpacity="0.05"/>
-            <stop offset="100%" stopColor="#C9A84C" stopOpacity="0"/>
+            <stop offset="0%"   stopColor="#FFFFFF" stopOpacity="0.10"/>
+            <stop offset="55%"  stopColor="#FFFFFF" stopOpacity="0.04"/>
+            <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0"/>
           </radialGradient>
 
           <filter id="lsShad">
@@ -98,14 +98,14 @@ function LaptopShell({ children }) {
         {/* Screen base fill */}
         <rect ref={screenRef} x="52" y="26" width="816" height="480" rx="6" fill="url(#lsS)"/>
 
-        {/* ── Yellow inner glow — screen ke center se ── */}
+        {/* ── Inner glow — screen ke center se ── */}
         <rect x="52" y="26" width="816" height="480" rx="6" fill="url(#lsInnerGlow)" style={{ pointerEvents: 'none' }}/>
 
         {/* Reflection */}
         <rect x="52" y="26" width="816" height="480" rx="6" fill="url(#lsR)" style={{ pointerEvents: 'none' }}/>
 
-        {/* Gold border */}
-        <rect x="52" y="26" width="816" height="480" rx="6" fill="none" stroke="rgba(201,168,76,0.18)" strokeWidth="1"/>
+        {/* Border */}
+        <rect x="52" y="26" width="816" height="480" rx="6" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="1"/>
 
         {/* Webcam */}
         <circle cx="460" cy="17.5" r="3.5" fill="#1e1e30"/>
@@ -153,14 +153,13 @@ function LaptopShell({ children }) {
 }
 
 /* ─────────────────────────────────────────────
-   OS SHELL  — background mein warm amber center
+   OS SHELL  — deep black cyber/OLED screen
 ───────────────────────────────────────────── */
 function DesktopOS({ children, time, openPanel }) {
   return (
-    <div style={{
+    <div className="os-screen" style={{
       width: '100%', height: '100%', position: 'relative',
-      // ── KEY CHANGE: warm amber center glow in background ──
-      background: 'radial-gradient(ellipse at 50% 48%, #261d0e 0%, #1a1530 22%, #0e0e1e 52%, #060610 100%)',
+      background: 'radial-gradient(ellipse at 50% 48%, #0f1c30 0%, #081020 45%, #03060d 100%)',
       fontFamily: "'SF Mono','JetBrains Mono',monospace",
       overflow: 'hidden',
     }}>
@@ -168,28 +167,28 @@ function DesktopOS({ children, time, openPanel }) {
       <div style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
         backgroundImage:
-          'linear-gradient(rgba(201,168,76,0.04) 1px,transparent 1px),' +
-          'linear-gradient(90deg,rgba(201,168,76,0.04) 1px,transparent 1px)',
+          'linear-gradient(rgba(255,255,255,0.04) 1px,transparent 1px),' +
+          'linear-gradient(90deg,rgba(255,255,255,0.04) 1px,transparent 1px)',
         backgroundSize: '46px 46px',
       }}/>
 
       {/* Menubar */}
       <div style={{
         position: 'absolute', top: 0, left: 0, right: 0, height: 24,
-        background: 'rgba(8,8,18,0.92)', backdropFilter: 'blur(12px)',
-        borderBottom: '1px solid rgba(201,168,76,0.1)',
+        background: 'rgba(3, 7, 18, 0.96)', backdropFilter: 'blur(12px)',
+        borderBottom: '1px solid rgba(255,255,255,0.12)',
         display: 'flex', alignItems: 'center', padding: '0 14px', gap: 16, zIndex: 100,
       }}>
-        <span style={{ color: '#C9A84C', fontSize: 9, fontWeight: 700, letterSpacing: '0.12em' }}>◆ PORTFOLIO OS</span>
-        <span style={{ color: 'rgba(255,255,255,0.46)', fontSize: 8.5 }}>Certifications</span>
-        <span style={{ color: 'rgba(255,255,255,0.46)', fontSize: 8.5 }}>Awards</span>
+        <span style={{ color: '#FFFFFF', fontSize: 9, fontWeight: 700, letterSpacing: '0.12em' }}>◆ PORTFOLIO OS</span>
+        <span style={{ color: '#CBD5E1', fontSize: 8.5 }}>Certifications</span>
+        <span style={{ color: '#CBD5E1', fontSize: 8.5 }}>Awards</span>
         <div style={{ flex: 1 }}/>
         {openPanel && (
-          <span style={{ color: '#C9A84C', fontSize: 8, opacity: 0.75, letterSpacing: '0.1em' }}>
+          <span style={{ color: '#38BDF8', fontSize: 8, fontWeight: 700, letterSpacing: '0.1em' }}>
             {openPanel.toUpperCase()}
           </span>
         )}
-        <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: 8.5 }}>{time}</span>
+        <span style={{ color: '#CBD5E1', fontSize: 8.5, fontFamily: 'monospace' }}>{time}</span>
       </div>
 
       {/* Content */}
@@ -200,16 +199,16 @@ function DesktopOS({ children, time, openPanel }) {
       {/* Dock */}
       <div style={{
         position: 'absolute', bottom: 0, left: 0, right: 0, height: 26,
-        background: 'rgba(8,8,18,0.92)', backdropFilter: 'blur(12px)',
-        borderTop: '1px solid rgba(201,168,76,0.08)',
+        background: 'rgba(3, 7, 18, 0.96)', backdropFilter: 'blur(12px)',
+        borderTop: '1px solid rgba(255,255,255,0.12)',
         display: 'flex', alignItems: 'center', padding: '0 14px', gap: 6, zIndex: 100,
       }}>
-        <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#C9A84C', boxShadow: '0 0 5px #C9A84C' }}/>
-        <span style={{ color: 'rgba(255,255,255,0.46)', fontSize: 7.5, letterSpacing: '0.12em' }}>
+        <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#38BDF8', boxShadow: '0 0 6px #38BDF8' }}/>
+        <span style={{ color: '#CBD5E1', fontSize: 7.5, letterSpacing: '0.12em', fontWeight: 600 }}>
           CLICK ANY ICON · PREVIEW CERTIFICATE · OPEN DOCUMENT
         </span>
         <div style={{ flex: 1 }}/>
-        <span style={{ color: 'rgba(255,255,255,0.46)', fontSize: 7.5 }}>11 ITEMS</span>
+        <span style={{ color: '#94A3B8', fontSize: 7.5, fontFamily: 'monospace' }}>11 ITEMS</span>
       </div>
     </div>
   );
@@ -220,10 +219,10 @@ function DesktopOS({ children, time, openPanel }) {
 ───────────────────────────────────────────── */
 function MobileOSCard({ children, time, openPanel }) {
   return (
-    <div style={{
+    <div className="os-screen" style={{
       borderRadius: 12,
-      background: 'radial-gradient(ellipse at 50% 48%, #261d0e 0%, #1a1530 22%, #0e0e1e 52%, #060610 100%)',
-      border: '1px solid rgba(201,168,76,0.2)',
+      background: 'radial-gradient(ellipse at 50% 48%, #0f1c30 0%, #081020 45%, #03060d 100%)',
+      border: '1px solid rgba(255,255,255,0.2)',
       boxShadow: '0 20px 60px rgba(0,0,0,0.6)',
       overflow: 'hidden',
       fontFamily: "'SF Mono','JetBrains Mono',monospace",
@@ -231,31 +230,31 @@ function MobileOSCard({ children, time, openPanel }) {
     }}>
       <div style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
-        backgroundImage: 'linear-gradient(rgba(201,168,76,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.04) 1px,transparent 1px)',
+        backgroundImage: 'linear-gradient(rgba(255,255,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.04) 1px,transparent 1px)',
         backgroundSize: '36px 36px',
       }}/>
       <div style={{
-        background: 'rgba(8,8,18,0.92)', backdropFilter: 'blur(12px)',
-        borderBottom: '1px solid rgba(201,168,76,0.1)',
+        background: 'rgba(3, 7, 18, 0.96)', backdropFilter: 'blur(12px)',
+        borderBottom: '1px solid rgba(255,255,255,0.12)',
         display: 'flex', alignItems: 'center', padding: '0 14px', gap: 12, height: 36, position: 'relative',
       }}>
-        <span style={{ color: '#C9A84C', fontSize: 11, fontWeight: 700, letterSpacing: '0.12em' }}>◆ PORTFOLIO OS</span>
-        {openPanel && <span style={{ color: 'rgba(255,255,255,0.46)', fontSize: 10 }}>{openPanel.toUpperCase()}</span>}
+        <span style={{ color: '#FFFFFF', fontSize: 11, fontWeight: 700, letterSpacing: '0.12em' }}>◆ PORTFOLIO OS</span>
+        {openPanel && <span style={{ color: '#38BDF8', fontSize: 10, fontWeight: 700 }}>{openPanel.toUpperCase()}</span>}
         <div style={{ flex: 1 }}/>
-        <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: 10 }}>{time}</span>
+        <span style={{ color: '#CBD5E1', fontSize: 10, fontFamily: 'monospace' }}>{time}</span>
       </div>
       <div style={{ position: 'relative', padding: '16px 14px 14px' }}>
         {children}
       </div>
       <div style={{
-        background: 'rgba(8,8,18,0.92)', backdropFilter: 'blur(12px)',
-        borderTop: '1px solid rgba(201,168,76,0.08)',
+        background: 'rgba(3, 7, 18, 0.96)', backdropFilter: 'blur(12px)',
+        borderTop: '1px solid rgba(255,255,255,0.12)',
         display: 'flex', alignItems: 'center', padding: '0 14px', gap: 6, height: 32, position: 'relative',
       }}>
-        <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#C9A84C', boxShadow: '0 0 5px #C9A84C' }}/>
-        <span style={{ color: 'rgba(255,255,255,0.46)', fontSize: 9, letterSpacing: '0.08em' }}>TAP ANY ICON · PREVIEW CERTIFICATE</span>
+        <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#38BDF8', boxShadow: '0 0 6px #38BDF8' }}/>
+        <span style={{ color: '#CBD5E1', fontSize: 9, letterSpacing: '0.08em', fontWeight: 600 }}>TAP ANY ICON · PREVIEW CERTIFICATE</span>
         <div style={{ flex: 1 }}/>
-        <span style={{ color: 'rgba(255,255,255,0.46)', fontSize: 9 }}>11 ITEMS</span>
+        <span style={{ color: '#94A3B8', fontSize: 9, fontFamily: 'monospace' }}>11 ITEMS</span>
       </div>
     </div>
   );
@@ -266,7 +265,7 @@ function MobileOSCard({ children, time, openPanel }) {
 ───────────────────────────────────────────── */
 const IconTile = memo(function IconTile({ folder, onClick, isActive, mobile, ariaLabel }) {
   const [hov, setHov] = useState(false);
-  const color  = FOLDER_COLORS[folder.id] || '#C9A84C';
+  const color  = FOLDER_COLORS[folder.id] || '#FFFFFF';
   const active = isActive || hov;
   const rgb    = hexToRgb(color);
   const isCert = folder.category === 'cert';
@@ -294,12 +293,12 @@ const IconTile = memo(function IconTile({ folder, onClick, isActive, mobile, ari
       <div style={{
         width: '100%', aspectRatio: '1',
         borderRadius: isCert ? 16 : 18,
-        background: active ? `rgba(${rgb},0.18)` : 'rgba(255,255,255,0.04)',
-        border: `1.5px solid ${active ? color + '88' : 'rgba(255,255,255,0.08)'}`,
+        background: active ? `rgba(${rgb},0.22)` : 'rgba(255,255,255,0.06)',
+        border: `1.5px solid ${active ? color + 'aa' : 'rgba(255,255,255,0.12)'}`,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         boxShadow: active
-          ? `0 0 24px ${color}55, 0 8px 22px rgba(0,0,0,0.5)`
-          : '0 3px 14px rgba(0,0,0,0.4)',
+          ? `0 0 24px ${color}66, 0 8px 22px rgba(0,0,0,0.6)`
+          : '0 4px 16px rgba(0,0,0,0.5)',
         transition: 'all 0.18s ease',
         position: 'relative', overflow: 'hidden',
       }}>
@@ -340,7 +339,7 @@ const IconTile = memo(function IconTile({ folder, onClick, isActive, mobile, ari
           <div style={{
             position: 'absolute', bottom: 6, right: 6,
             minWidth: 17, height: 17, borderRadius: 9,
-            background: color, fontSize: 8, fontWeight: 700, color: '#000',
+            background: color, fontSize: 8, fontWeight: 700, color: '#072450',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontFamily: 'monospace', padding: '0 4px',
           }}>
@@ -355,13 +354,14 @@ const IconTile = memo(function IconTile({ folder, onClick, isActive, mobile, ari
           }}/>
         )}
       </div>
-      <span style={{
-        fontSize: 9.5, color: active ? '#fff' : 'rgba(255,255,255,0.6)',
+      <span className="os-tile-label" style={{
+        fontSize: 10, fontWeight: 600,
+        color: active ? '#FFFFFF' : '#E2E8F0',
         textAlign: 'center', lineHeight: 1.25,
         width: '100%', letterSpacing: '0.01em',
         fontFamily: "'SF Mono',monospace",
         transition: 'color 0.15s',
-        textShadow: active ? '0 0 10px rgba(255,255,255,0.3)' : 'none',
+        textShadow: active ? '0 0 10px rgba(255,255,255,0.6)' : '0 1px 2px rgba(0,0,0,0.8)',
         overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
       }}>
         {folder.label}
@@ -430,8 +430,8 @@ function PdfThumb({ pdfUrl, thumbW = 200, thumbH = 130 }) {
       {state === 'loading' && (
         <div style={{
           width: 18, height: 18,
-          border: '2px solid rgba(201,168,76,0.15)',
-          borderTop: '2px solid #C9A84C', borderRadius: '50%',
+          border: '2px solid rgba(255,255,255,0.18)',
+          borderTop: '2px solid #FFFFFF', borderRadius: '50%',
           animation: 'thumbSpin 0.8s linear infinite',
         }}/>
       )}
@@ -524,12 +524,12 @@ const PdfCard = memo(function PdfCard({ item, index, color, onSelect, totalItems
         thumbH={thumbH}
       />
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 6 }}>
-        <span style={{ fontSize: 7.5, color: 'rgba(255,255,255,0.46)', fontFamily: 'monospace', marginTop: 1, flexShrink: 0 }}>
+        <span style={{ fontSize: 7.5, color: '#94A3B8', fontFamily: 'monospace', marginTop: 1, flexShrink: 0 }}>
           {String(index + 1).padStart(2, '0')}
         </span>
         <span style={{
           fontSize: 10.5, fontWeight: 600, flex: 1,
-          color: hasPdf ? (hov ? '#fff' : 'rgba(255,255,255,0.85)') : 'rgba(255,255,255,0.46)',
+          color: hasPdf ? (hov ? '#FFFFFF' : '#F1F5F9') : '#94A3B8',
           lineHeight: 1.35, letterSpacing: '0.01em',
           fontFamily: "'SF Mono',monospace",
           transition: 'color 0.15s',
@@ -539,7 +539,7 @@ const PdfCard = memo(function PdfCard({ item, index, color, onSelect, totalItems
       </div>
       <div style={{
         display: 'flex', alignItems: 'center', gap: 5,
-        borderTop: `1px solid ${hasPdf ? color + '22' : 'rgba(255,255,255,0.04)'}`,
+        borderTop: `1px solid ${hasPdf ? color + '22' : 'rgba(255,255,255,0.08)'}`,
         paddingTop: 7,
       }}>
         {hasPdf ? (
@@ -555,19 +555,19 @@ const PdfCard = memo(function PdfCard({ item, index, color, onSelect, totalItems
               </svg>
             </div>
             <span style={{
-              fontSize: 8, color: hov ? color : 'rgba(255,255,255,0.46)',
+              fontSize: 8, color: hov ? color : '#CBD5E1',
               letterSpacing: '0.1em', fontWeight: 700, flex: 1, transition: 'color 0.15s',
             }}>
               OPEN CERTIFICATE
             </span>
             <svg width="9" height="9" viewBox="0 0 24 24" fill="none"
-              stroke={hov ? color : 'rgba(255,255,255,0.2)'} strokeWidth="2.5"
+              stroke={hov ? color : '#94A3B8'} strokeWidth="2.5"
               style={{ flexShrink: 0, transition: 'stroke 0.15s' }}>
               <polyline points="9 18 15 12 9 6"/>
             </svg>
           </>
         ) : (
-          <span style={{ fontSize: 7.5, color: 'rgba(255,255,255,0.46)', letterSpacing: '0.12em' }}>COMING SOON</span>
+          <span style={{ fontSize: 7.5, color: '#94A3B8', letterSpacing: '0.12em' }}>COMING SOON</span>
         )}
       </div>
     </button>
@@ -579,7 +579,7 @@ const PdfCard = memo(function PdfCard({ item, index, color, onSelect, totalItems
 ───────────────────────────────────────────── */
 function PdfListPanel({ folder, onSelectPdf, onClose, isMobile }) {
   const [visible, setVisible] = useState(false);
-  const color = FOLDER_COLORS[folder.id] || '#C9A84C';
+  const color = FOLDER_COLORS[folder.id] || '#FFFFFF';
   const rgb   = hexToRgb(color);
 
   useEffect(() => { requestAnimationFrame(() => setVisible(true)); }, []);
@@ -597,14 +597,14 @@ function PdfListPanel({ folder, onSelectPdf, onClose, isMobile }) {
       style={{
         position: isMobile ? 'fixed' : 'absolute', inset: 0,
         zIndex: isMobile ? 1000 : 50,
-        background: 'rgba(6,6,16,0.55)', backdropFilter: 'blur(5px)',
+        background: 'rgba(5, 27, 61, 0.7)', backdropFilter: 'blur(5px)',
         display: 'flex', alignItems: 'stretch', justifyContent: 'flex-end',
         opacity: visible ? 1 : 0, transition: 'opacity 0.22s ease',
       }}
     >
-      <div style={{
+      <div className="os-panel" style={{
         width: isMobile ? '92%' : '72%', height: '100%',
-        background: 'linear-gradient(155deg, #13132a 0%, #0c0c1e 100%)',
+        background: 'linear-gradient(155deg, #0b2d62 0%, #051b3d 100%)',
         borderLeft: `1.5px solid ${color}44`,
         boxShadow: `-20px 0 60px rgba(0,0,0,0.7), 0 0 40px ${color}11`,
         display: 'flex', flexDirection: 'column',
@@ -645,7 +645,7 @@ function PdfListPanel({ folder, onSelectPdf, onClose, isMobile }) {
           {folder.items.length === 0 ? (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: 10 }}>
               <span style={{ fontSize: 30, opacity: 0.18 }}>📄</span>
-              <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.46)', letterSpacing: '0.12em', textAlign: 'center' }}>
+              <span style={{ fontSize: 9, color: '#CBD5E1', letterSpacing: '0.12em', textAlign: 'center' }}>
                 NO CERTIFICATES ATTACHED YET
               </span>
             </div>
@@ -657,7 +657,7 @@ function PdfListPanel({ folder, onSelectPdf, onClose, isMobile }) {
             </div>
           )}
         </div>
-        <div style={{ padding: '6px 14px', borderTop: '1px solid rgba(255,255,255,0.05)', fontSize: 7.5, color: 'rgba(255,255,255,0.46)', letterSpacing: '0.1em', flexShrink: 0 }}>
+        <div style={{ padding: '6px 14px', borderTop: '1px solid rgba(255,255,255,0.08)', fontSize: 7.5, color: '#CBD5E1', letterSpacing: '0.1em', flexShrink: 0 }}>
           {folder.items.length} ITEM{folder.items.length !== 1 ? 'S' : ''} · CLICK CARD TO OPEN CERTIFICATE
         </div>
       </div>
@@ -710,23 +710,24 @@ const TabBar = memo(function TabBar({ activeTab, onChange, mobile }) {
             onClick={() => onChange(t.id)}
             onMouseEnter={(e) => {
               if (active) return;
-              e.currentTarget.style.color = '#C9A84C';
-              e.currentTarget.style.borderColor = 'rgba(201,168,76,0.5)';
-              e.currentTarget.style.background = 'rgba(201,168,76,0.08)';
+              e.currentTarget.style.color = '#FFFFFF';
+              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.6)';
+              e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
             }}
             onMouseLeave={(e) => {
               if (active) return;
-              e.currentTarget.style.color = 'rgba(255,255,255,0.45)';
-              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
+              e.currentTarget.style.color = '#CBD5E1';
+              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)';
               e.currentTarget.style.background = 'transparent';
             }}
             style={{
               fontFamily: MONO, fontSize: mobile ? 11 : 10.5, fontWeight: 700,
               letterSpacing: '0.1em', textTransform: 'uppercase',
               padding: mobile ? '6px 13px' : '5px 13px', borderRadius: 7, cursor: 'pointer',
-              color: active ? '#C9A84C' : 'rgba(255,255,255,0.45)',
-              background: active ? 'rgba(201,168,76,0.12)' : 'transparent',
-              border: `1px solid ${active ? 'rgba(201,168,76,0.5)' : 'rgba(255,255,255,0.1)'}`,
+              color: active ? '#FFFFFF' : '#CBD5E1',
+              background: active ? 'rgba(255,255,255,0.18)' : 'rgba(255,255,255,0.03)',
+              border: `1px solid ${active ? '#FFFFFF' : 'rgba(255,255,255,0.2)'}`,
+              boxShadow: active ? '0 0 12px rgba(255,255,255,0.2)' : 'none',
               transition: 'all 0.15s ease',
             }}
           >
@@ -741,26 +742,36 @@ const TabBar = memo(function TabBar({ activeTab, onChange, mobile }) {
 /* Skills tab — terminal / file-tree aesthetic, data-driven, no numeric bars */
 function SkillsTerminal() {
   return (
-    <div style={{ fontFamily: MONO, fontSize: 12, color: '#9CA3AF', lineHeight: 1.5 }}>
-      <div style={{ marginBottom: 12, color: 'rgba(255,255,255,0.85)' }}>
-        <span style={{ color: '#C9A84C' }}>anisha@portfolio</span>
-        <span style={{ color: 'rgba(255,255,255,0.3)' }}>:~$</span> ls ~/skills
+    <div className="skills-terminal" style={{ fontFamily: MONO, fontSize: 12, color: '#E2E8F0', lineHeight: 1.5 }}>
+      <div style={{ marginBottom: 14, color: '#FFFFFF', display: 'flex', alignItems: 'center', gap: 6 }}>
+        <span style={{ color: '#38BDF8', fontWeight: 700 }}>anisha@portfolio</span>
+        <span style={{ color: '#94A3B8' }}>:~$</span> <span style={{ color: '#FFFFFF', fontWeight: 600 }}>ls ~/skills</span>
       </div>
       {skillsData.map((cat, idx) => {
         const last = idx === skillsData.length - 1;
         return (
-          <div key={cat.id} style={{ marginBottom: 12 }}>
-            <div style={{ color: '#C9A84C', fontSize: 11.5, letterSpacing: '0.04em', marginBottom: 6 }}>
-              <span style={{ color: 'rgba(201,168,76,0.45)' }}>{last ? '└─' : '├─'}</span> {cat.folder}/
+          <div key={cat.id} style={{ marginBottom: 14 }}>
+            <div className="skill-cat-title" style={{ color: '#FFFFFF', fontSize: 12, letterSpacing: '0.04em', marginBottom: 7, fontWeight: 700 }}>
+              <span style={{ color: '#38BDF8', fontWeight: 800 }}>{last ? '└─' : '├─'}</span> {cat.title || cat.folder}
             </div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, paddingLeft: 18 }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7, paddingLeft: 18 }}>
               {cat.skills.map(s => (
-                <span key={s} style={{
-                  fontSize: 10, color: '#9CA3AF',
-                  border: '1px solid #232323', borderRadius: 5,
-                  padding: '3px 8px', background: 'rgba(255,255,255,0.02)',
-                  whiteSpace: 'nowrap',
-                }}>
+                <span
+                  key={s}
+                  className="skill-tag"
+                  style={{
+                    fontSize: 10.5,
+                    fontWeight: 600,
+                    color: '#FFFFFF',
+                    border: '1.5px solid rgba(56, 189, 248, 0.45)',
+                    borderRadius: 6,
+                    padding: '4px 9px',
+                    background: 'rgba(13, 34, 71, 0.92)',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.45)',
+                    whiteSpace: 'nowrap',
+                    letterSpacing: '0.02em',
+                  }}
+                >
                   {s}
                 </span>
               ))}
@@ -893,7 +904,7 @@ export default function Certifications() {
       }}>
         <div style={{ maxWidth: windowWidth >= 1400 ? 1200 : 960, margin: '0 auto' }}>
           <p className="section-label">06 / Expertise &amp; Recognition</p>
-          <h2 className="section-title text-white" style={{ marginBottom: isMobile ? 24 : 36 }}>
+          <h2 className="section-title" style={{ marginBottom: isMobile ? 24 : 36 }}>
             Skills, Certifications &amp; Awards
           </h2>
 
@@ -922,9 +933,9 @@ export default function Certifications() {
                 />
               )}
 
-              <p style={{
+              <p className="os-instruction" style={{
                 textAlign: 'center', marginTop: 14,
-                fontSize: 9.5, color: 'rgba(255,255,255,0.46)',
+                fontSize: 9.5, color: '#94A3B8',
                 letterSpacing: '0.14em', fontFamily: "'SF Mono',monospace",
               }}>
                 ↑ TAP ANY ICON → PREVIEW CERTIFICATE → OPEN DOCUMENT
@@ -955,9 +966,9 @@ export default function Certifications() {
                 </DesktopOS>
               </LaptopShell>
 
-              <p style={{
+              <p className="os-instruction" style={{
                 textAlign: 'center', marginTop: 14,
-                fontSize: 9.5, color: 'rgba(255,255,255,0.46)',
+                fontSize: 9.5, color: '#94A3B8',
                 letterSpacing: '0.14em', fontFamily: "'SF Mono',monospace",
               }}>
                 ↑ CLICK ANY ICON → PREVIEW CERTIFICATE → OPEN DOCUMENT
@@ -975,7 +986,7 @@ export default function Certifications() {
       <style>{`
       @keyframes thumbSpin { to { transform: rotate(360deg); } }
       @keyframes glowPulse { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
-      .os-tab:focus-visible { outline: 2px solid #C9A84C; outline-offset: 2px; }
+      .os-tab:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 2px; }
     `}</style>
     </>
   );
@@ -983,9 +994,9 @@ export default function Certifications() {
 
 /* ─────────── helpers ─────────── */
 const catLabel = {
-  fontSize: 9.5, color: '#C9A84C', letterSpacing: '0.14em',
+  fontSize: 10, color: '#FFFFFF', letterSpacing: '0.14em',
   fontFamily: "'SF Mono',monospace", marginBottom: 0,
-  paddingLeft: 2, fontWeight: 700,
+  paddingLeft: 2, fontWeight: 700, textShadow: '0 0 10px rgba(255,255,255,0.4)',
 };
 
 const dotBtn = (color) => ({
@@ -997,7 +1008,7 @@ const dotBtn = (color) => ({
 
 function hexToRgb(hex) {
   const r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return r ? `${parseInt(r[1], 16)},${parseInt(r[2], 16)},${parseInt(r[3], 16)}` : '201,168,76';
+  return r ? `${parseInt(r[1], 16)},${parseInt(r[2], 16)},${parseInt(r[3], 16)}` : '255,255,255';
 }
 
 function getIconScaled(id, size = 48) {

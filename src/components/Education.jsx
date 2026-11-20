@@ -2,54 +2,58 @@ import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SECTION_SCROLL_EVENT } from '../routes';
+import { useTheme } from '../context/ThemeContext';
 
 gsap.registerPlugin(ScrollTrigger);
 
 const DOT_SHADOW_REST =
-  '0 0 18px rgba(201,168,76,0.85), 0 0 36px rgba(201,168,76,0.35)';
+  '0 0 18px rgba(255,255,255,0.75), 0 0 36px rgba(255,255,255,0.32)';
 const DOT_SHADOW_FLASH =
-  '0 0 34px rgba(201,168,76,1), 0 0 72px rgba(201,168,76,0.78), 0 0 120px rgba(201,168,76,0.42)';
+  '0 0 34px rgba(255,255,255,0.95), 0 0 72px rgba(255,255,255,0.68), 0 0 120px rgba(255,255,255,0.38)';
 
 const education = [
   {
-    degree: 'Bachelor of Technology',
+    degree: 'Bachelor of Technology (B.Tech)',
     field: 'Computer Engineering',
     institution: 'CGC Jhanjeri',
     location: 'Mohali, India',
-    year: '2017 - 2021',
-    // short: 'CGC',
+    year: '2017 – 2021',
+    honours: null,
     index: '01',
   },
   {
-    degree: 'Postgraduate',
-    field: 'Applied AI Solutions',
-    institution: 'George Brown Polytechnic',
+    degree: 'Graduate Certificate',
+    field: 'Applied AI Solutions Development',
+    institution: 'George Brown College',
     location: 'Toronto, Canada',
-    year: '2022 - 2023',
-    // short: 'GBC',
+    year: '2022 – 2023',
+    honours: "Dean's Honour List",
     index: '02',
   },
   {
-    degree: 'Postgraduate',
+    degree: 'Graduate Certificate',
     field: 'Project Management',
-    institution: 'George Brown Polytechnic',
+    institution: 'George Brown College',
     location: 'Toronto, Canada',
-    year: '2023 - 2024',
-    // short: 'GBC',
+    year: '2023 – 2024',
+    honours: "Dean's Honour List",
     index: '03',
   },
   {
     degree: 'Executive Program',
-    field: 'Generative AI and Organizational Transformation',
+    field: 'Generative & Agentic AI for Business',
+    fullField: 'Generative and Agentic AI for Business: Driving Growth and Competitive Advantage',
     institution: 'Rotman School of Management, University of Toronto',
     location: 'Toronto, Canada',
-    year: 'Oct 2026 - In progress',
-    // short: 'Rotman',
+    year: 'Oct 2026 – In progress',
+    honours: 'Dec 2026 (expected)',
     index: '04',
   },
 ];
 
 export default function Education() {
+  const { isDark } = useTheme();
+  const accent = isDark ? '#FFFFFF' : '#2563EB';
   const sectionRef = useRef(null);
   const headRef = useRef(null);
   const lineRef = useRef(null);
@@ -82,7 +86,7 @@ export default function Education() {
         gsap.set(dots, {
           scale: 0,
           opacity: 0,
-          boxShadow: '0 0 0 rgba(201,168,76,0)',
+          boxShadow: '0 0 0 rgba(255,255,255,0)',
           transformOrigin: 'center center',
         });
         gsap.set(bursts, {
@@ -336,8 +340,9 @@ export default function Education() {
         style={{
           width: '700px',
           height: '300px',
-          background:
-            'radial-gradient(ellipse at center, rgba(201,168,76,0.05) 0%, transparent 70%)',
+          background: isDark
+            ? 'radial-gradient(ellipse at center, rgba(255,255,255,0.05) 0%, transparent 70%)'
+            : 'radial-gradient(ellipse at center, rgba(37,99,235,0.05) 0%, transparent 70%)',
           filter: 'blur(50px)', contain: 'paint',
         }}
       />
@@ -371,8 +376,9 @@ export default function Education() {
                 left: 0,
                 width: '100%',
                 height: '2px',
-                background:
-                  'linear-gradient(to right, #C9A84C, rgba(201,168,76,0.4))',
+                background: isDark
+                  ? 'linear-gradient(to right, #FFFFFF, rgba(255,255,255,0.4))'
+                  : 'linear-gradient(to right, #2563EB, rgba(37,99,235,0.4))',
               }}
             />
           </div>
@@ -391,8 +397,8 @@ export default function Education() {
                     className="absolute rounded-full pointer-events-none"
                     style={{
                       inset: '-14px',
-                      border: '1px solid rgba(201,168,76,0.72)',
-                      boxShadow: '0 0 24px rgba(201,168,76,0.45)',
+                      border: isDark ? '1px solid rgba(255,255,255,0.65)' : '1px solid rgba(37,99,235,0.72)',
+                      boxShadow: isDark ? '0 0 24px rgba(255,255,255,0.4)' : '0 0 24px rgba(37,99,235,0.45)',
                       opacity: 0,
                     }}
                   />
@@ -404,7 +410,7 @@ export default function Education() {
                     style={{
                       width: '14px',
                       height: '14px',
-                      background: '#C9A84C',
+                      background: accent,
                       boxShadow: DOT_SHADOW_REST,
                       border: '2px solid rgba(255,255,255,0.25)',
                       opacity: 0,
@@ -434,7 +440,7 @@ export default function Education() {
               >
                 <span
                   className="font-body text-xs tracking-[.25em] block mb-5 font-semibold"
-                  style={{ color: '#C9A84C' }}
+                  style={{ color: accent }}
                 >
                   {entry.index}
                 </span>
@@ -442,9 +448,9 @@ export default function Education() {
                 <span
                   className="font-body text-xs tracking-widest uppercase font-bold px-3 py-1.5 mb-5 inline-block"
                   style={{
-                    color: '#C9A84C',
-                    border: '1px solid rgba(201,168,76,0.6)',
-                    background: 'rgba(201,168,76,0.12)',
+                    color: accent,
+                    border: isDark ? '1px solid rgba(255,255,255,0.55)' : '1px solid rgba(37,99,235,0.55)',
+                    background: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(37,99,235,0.1)',
                   }}
                 >
                   {entry.year}
@@ -457,8 +463,18 @@ export default function Education() {
                   {entry.degree}
                 </p>
 
+                {entry.honours && (
+                  <span
+                    className="font-body text-[11px] font-semibold block mb-2"
+                    style={{ color: accent }}
+                  >
+                    ★ {entry.honours}
+                  </span>
+                )}
+
                 <h3
                   className="font-title mb-5"
+                  title={entry.fullField || entry.field}
                   style={{
                     fontFamily: "'Bebas Neue', sans-serif",
                     fontSize: 'clamp(1.8rem, 2.8vw, 2.6rem)',
@@ -469,17 +485,25 @@ export default function Education() {
                 >
                   {entry.field}
                 </h3>
+                {entry.fullField && (
+                  <p
+                    className="font-body text-xs mb-4 leading-relaxed"
+                    style={{ color: 'rgba(255,255,255,0.6)' }}
+                  >
+                    {entry.fullField}
+                  </p>
+                )}
 
                 <div className="flex items-center gap-2 mb-1.5">
                   <div
                     style={{
                       width: '24px',
                       height: '2px',
-                      background: '#C9A84C',
+                      background: accent,
                       flexShrink: 0,
                     }}
                   />
-                  <p className="font-body font-bold text-sm" style={{ color: '#C9A84C' }}>
+                  <p className="font-body font-bold text-sm" style={{ color: accent }}>
                     {entry.institution}
                   </p>
                 </div>
@@ -497,7 +521,7 @@ export default function Education() {
                     fontFamily: "'Bebas Neue', sans-serif",
                     fontSize: '4.5rem',
                     letterSpacing: '.12em',
-                    color: 'rgba(201,168,76,0.1)',
+                    color: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(37,99,235,0.1)',
                     lineHeight: 1,
                   }}
                 >
@@ -512,8 +536,9 @@ export default function Education() {
           className="mt-20"
           style={{
             height: '1px',
-            background:
-              'linear-gradient(to right, transparent, rgba(201,168,76,0.2), transparent)',
+            background: isDark
+              ? 'linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent)'
+              : 'linear-gradient(to right, transparent, rgba(37,99,235,0.2), transparent)',
           }}
         />
       </div>

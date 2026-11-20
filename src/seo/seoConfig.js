@@ -9,29 +9,30 @@ import { SITE_URL, buildMeta, personJsonLd, breadcrumbJsonLd, organizationJsonLd
 
 const HOME = buildMeta({
   path: '/',
-  title: 'Anisha Singla | AI Strategist & Business Analyst | Toronto',
-  description: 'AI strategist and business analyst in Toronto. 10 client AI engagements, 3 production agent products, RAG and AI governance. Open to full-time roles.',
+  title: 'Anisha Singla | AI Business Analyst — GenAI Adoption & Delivery',
+  description: 'AI Business Analyst in Toronto specializing in GenAI adoption, requirements analysis, and delivery coordination. 15 engagements, 10 clients across six industries.',
   jsonLd: [personJsonLd(), organizationJsonLd(), websiteJsonLd()],
 });
 
 const ABOUT = buildMeta({
   path: '/about',
-  title: 'About Anisha Singla | AI Strategist & Business Analyst',
-  description: 'AI Strategist and Business Analyst based in Toronto. 10 client AI engagements, George Brown Polytechnic, Rotman Executive Program.',
+  title: 'About Anisha Singla | AI Business Analyst',
+  description: 'AI Business Analyst based in Toronto. 15 engagements across six industries, George Brown College Dean\'s Honour List, Rotman School of Management.',
   jsonLd: [personJsonLd(), breadcrumbJsonLd([{ name: 'Home', path: '/' }, { name: 'About', path: '/about' }])],
 });
 
+
 const PROJECTS = buildMeta({
   path: '/projects',
-  title: 'All Projects - Anisha Singla | AI Strategist & Business Analyst',
-  description: 'Browse all AI and software projects by Anisha Singla, including RAG systems, agentic workflows, automation tools, and analytics dashboards.',
+  title: 'Selected Work & Projects | Anisha Singla — AI Business Analyst',
+  description: 'Public-safe case studies in AI requirements, method definitions, process automations, and systems rollouts.',
   jsonLd: [breadcrumbJsonLd([{ name: 'Home', path: '/' }, { name: 'Projects', path: '/projects' }])],
 });
 
 const CASE_STUDIES = buildMeta({
   path: '/case-studies',
-  title: 'Case Studies - Anisha Singla | AI Strategist & Business Analyst',
-  description: 'In-depth case studies covering production AI systems built by Anisha Singla: agentic workflows, RAG assistants, analytics dashboards, and responsible AI governance.',
+  title: 'Case Studies | Anisha Singla — AI Business Analyst',
+  description: 'Detailed case studies on AI business analysis, requirements definition, human-in-the-loop design, and workflow adoption.',
   jsonLd: [breadcrumbJsonLd([{ name: 'Home', path: '/' }, { name: 'Case Studies', path: '/case-studies' }])],
 });
 

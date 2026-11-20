@@ -15,7 +15,7 @@ export const caseStudies = [
     tags: ['Agentic AI', 'Workflow Automation', 'RAG', 'Guardrails'],
     year: '',
     pdfUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/case-studies/agentic-workflow-automation-system.pdf',
-    gradient: 'linear-gradient(135deg, rgba(201,168,76,0.07) 0%, transparent 60%)',
+    gradient: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 60%)',
     detail: {
       headline: 'From Manual Workflow to Agentic AI System',
       subheadline: 'Designing Production-Ready Business Automation',
@@ -209,7 +209,7 @@ export const caseStudies = [
               type: 'table',
               columns: ['Metric', 'Before Assistant', 'After RAG Assistant'],
               rows: [
-                ['Repetitive query handling', '100% manual', '~60–70% AI-assisted deflection'],
+                ['Repetitive query handling', 'Fully manual', '~60–70% AI-assisted deflection'],
                 ['Response availability', 'Business hours only', '24/7 instant response'],
                 ['First response time', '2–6 hours / next business day', 'Under 1 minute'],
                 ['Knowledge retrieval', 'Manual lookup across website/docs', 'RAG-based retrieval from approved content'],
@@ -250,104 +250,6 @@ export const caseStudies = [
   {
     id: 3,
     number: '03',
-    slug: 'real-estate-intelligence-dashboard',
-    category: 'AI Analytics',
-    title: 'Real Estate',
-    subtitle: 'Intelligence Dashboard',
-    description:
-      "A decision-support product that turns raw property data into market intelligence. A structured data layer stays the source of truth while an AI layer adds natural-language search, RAG over listings and reports, on-demand summaries, and comparable analysis.",
-    tags: ['Market Intelligence', 'NL Search', 'RAG', 'Comparables'],
-    year: '',
-    pdfUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/case-studies/real-estate-intelligence-dashboard.pdf',
-    gradient: 'linear-gradient(135deg, rgba(150,100,255,0.05) 0%, transparent 60%)',
-    detail: {
-      headline: 'AI-Powered Real Estate Intelligence Dashboard',
-      subheadline: 'Turning Property Data into Market Insights',
-      summary:
-        'I built a decision-support product that turns raw property data into market intelligence. It combines structured listings, filters, and reports with an AI layer that lets a user ask questions in plain language, pull comparable properties, and generate summaries on demand. It isn\'t "a dashboard with charts" — it\'s a tool that answers the questions property teams actually ask, faster than manual research can.',
-      lead: 'This use case uses the real estate intelligence dashboard I scoped, designed, and delivered as the worked example.',
-      sections: [
-        {
-          heading: 'The business problem and who the stakeholders were',
-          blocks: [
-            { type: 'text', text: 'Commercial real estate directors, acquisitions analysts, and leasing teams sat on over 800,000 property records and decades of appraisal notes, but spent 2 to 4 hours per listing assembling comparables and valuation reports by hand.' },
-            {
-              type: 'bullets',
-              items: [
-                { title: 'Data fragmentation', text: 'Property data, tax records, and past inspection memos lived in disparate spreadsheets and siloed legacy folders that could not be cross-queried.' },
-                { title: 'Manual comparables search', text: 'Finding genuinely comparable properties required laborious manual filtering across square footage, zoning, micro-location, and recent closing dates.' },
-                { title: 'Decision latency', text: 'High-intent client requests and acquisition opportunities stalled while analysts spent hours generating basic summary documentation from scratch.' },
-              ],
-            },
-            { type: 'text', text: "The primary stakeholders included Senior Brokerage Directors needing faster deal turnaround, Investment Analysts buried in repetitive spreadsheet lookups, and Institutional Clients demanding transparent valuation rationale." },
-          ],
-        },
-        {
-          heading: 'Requirements gathered (how, from whom, what was prioritised and what was cut)',
-          blocks: [
-            { type: 'text', text: 'Requirements were gathered through structured contextual inquiry sessions, workflow shadowing with active agents, and iterative review workshops with brokerage leadership.' },
-            {
-              type: 'bullets',
-              items: [
-                { title: 'Prioritised: Sub-second structured query', text: 'A lightning-fast Elasticsearch/indexed layer handling 800K+ records with compound attribute filtering.' },
-                { title: 'Prioritised: Natural-language query translation', text: 'Enabling non-technical agents to ask plain-English questions ("Show 3-bed properties in Yorkville under $1.5M with recent price cuts") mapped deterministically to filtered parameters.' },
-                { title: 'Prioritised: Strict citation & ground truth', text: 'Every generated figure and comparable property strictly linked to verified listing records to eliminate hallucination risk.' },
-                { title: 'Cut / Deferred for V2', text: 'Autonomous automated bidding recommendations and predictive macro-market forecasting were deliberately scoped out to keep the initial deployment focused, compliant, and auditable.' },
-              ],
-            },
-          ],
-        },
-        {
-          heading: 'Current process versus the new process (a simple before/after flow)',
-          blocks: [
-            {
-              type: 'bullets',
-              items: [
-                { title: 'Previous Workflow (Manual & Fragmented)', text: 'Receive client inquiry ➔ Manually log into 3 multiple-listing systems ➔ Export raw CSVs ➔ Filter comparables in Excel ➔ Copy-paste data into Word/PDF report ➔ 2–4 hours total elapsed time per report.' },
-                { title: 'New Workflow (AI Intelligence Dashboard)', text: 'Type query in natural language or adjust visual attribute filters ➔ Instant sub-second retrieval across unified 800K+ records ➔ Automated AI comparable synthesis with citation cards ➔ Export branded executive summary in under 5 minutes.' },
-              ],
-            },
-          ],
-        },
-        {
-          heading: 'Acceptance criteria and how success was measured',
-          blocks: [
-            {
-              type: 'bullets',
-              items: [
-                { title: 'Data Integrity & Grounding', text: '100% of property data and financial figures displayed must trace directly to verified source records; zero hallucinated attributes tolerated.' },
-                { title: 'Latency SLA', text: 'Complex multi-attribute database queries must resolve in <500ms; end-to-end natural-language AI summary generated in <4 seconds.' },
-                { title: 'Operational Efficiency KPI', text: 'Targeting a >75% reduction in analyst turnaround time for standard market comparative reports.' },
-              ],
-            },
-          ],
-        },
-        {
-          heading: 'What shipped, the result in numbers, and what you would change',
-          blocks: [
-            {
-              type: 'table',
-              columns: ['Metric', 'Before Dashboard', 'After AI Intelligence Dashboard'],
-              rows: [
-                ['Market research time', '2–4 hours', 'Under 5 minutes'],
-                ['Property query speed', 'Manual lookup', '<400ms indexed query response'],
-                ['Property data coverage', 'Fragmented files', '800K+ centralized property records'],
-                ['Comparable analysis', 'Manual filtering', 'Instantly surfaced and explained'],
-                ['Data reliability', 'Inconsistent validation', '~99.8% data integrity'],
-                ['Report creation', 'Built from scratch', 'Generated on demand'],
-                ['Past intelligence', 'Locked in files', 'Searchable and reusable'],
-              ],
-            },
-            { type: 'text', text: 'Result: Shipped to production across the brokerage, unifying 800K+ listings and slashing routine reporting overhead by over 80%, allowing analysts to focus on high-value client advisory rather than manual aggregation.' },
-            { type: 'text', text: 'What I would change: If building from scratch again, I would integrate automated schema drift detection earlier in the data pipeline to handle third-party MLS feeds modifying property attribute keys without notice.' },
-          ],
-        },
-      ],
-    },
-  },
-  {
-    id: 4,
-    number: '04',
     slug: 'multi-agent-content-intelligence-system',
     category: 'Agentic Systems',
     title: 'Multi-Agent',
@@ -472,8 +374,8 @@ export const caseStudies = [
     },
   },
   {
-    id: 5,
-    number: '05',
+    id: 4,
+    number: '04',
     slug: 'responsible-ai-governance-framework',
     category: 'Responsible AI',
     title: 'Responsible AI',
@@ -483,7 +385,7 @@ export const caseStudies = [
     tags: ['Responsible AI', 'Risk & Guardrails', 'Evaluation', 'Human Oversight'],
     year: '',
     pdfUrl: 'https://arbgtqtruugewk5g.public.blob.vercel-storage.com/case-studies/responsible-ai-governance-framework.pdf',
-    gradient: 'linear-gradient(135deg, rgba(201,168,76,0.07) 0%, transparent 60%)',
+    gradient: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 60%)',
     detail: {
       headline: 'Responsible AI Framework for Agentic Workflows',
       subheadline: 'Risk, Evaluation, Guardrails, and Human Oversight',
@@ -573,8 +475,8 @@ export const caseStudies = [
     },
   },
   {
-    id: 6,
-    number: '06',
+    id: 5,
+    number: '05',
     slug: 'transfer-learning-image-classification',
     category: 'Deep Learning',
     title: 'Transfer Learning',
@@ -720,8 +622,8 @@ export const caseStudies = [
     },
   },
   {
-    id: 7,
-    number: '07',
+    id: 6,
+    number: '06',
     slug: 'shakegen-character-level-language-model',
     category: 'Deep Learning',
     title: 'ShakeGen',
@@ -855,8 +757,8 @@ export const caseStudies = [
     },
   },
   {
-    id: 8,
-    number: '08',
+    id: 7,
+    number: '07',
     slug: '4d-framework-ai-fluency',
     category: 'AI Fluency',
     title: 'The 4D Framework',
@@ -1158,7 +1060,7 @@ export const caseStudies = [
     },
   },
   {
-    id: 11,
+    id: 8,
     number: '08',
     slug: 'conversational-digital-twin-platform',
     category: 'Conversational AI & Digital Twins',

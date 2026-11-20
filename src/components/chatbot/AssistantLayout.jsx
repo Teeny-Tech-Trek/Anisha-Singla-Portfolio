@@ -39,6 +39,7 @@ export default function AssistantLayout({ children }) {
   const { isOpen, openChat, closeChat } = useChatbotContext();
   const isDesktop = useIsDesktop();
   const launcherRef = useRef(null);
+  const dockRef = useRef(null);
   const wasOpen = useRef(false);
 
   // `rendered` keeps the phone/panel mounted through the exit animation;
@@ -75,30 +76,40 @@ export default function AssistantLayout({ children }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [isOpen, closeChat]);
 
-  // Return focus to the launcher on close; nudge scroll-driven layout to
-  // recompute after the width transition settles.
+  // Outside click on desktop exits assistant
+  useEffect(() => {
+    if (!isOpen || !isDesktop) return undefined;
+    const onPointerDown = (e) => {
+      if (
+        dockRef.current &&
+        !dockRef.current.contains(e.target) &&
+        !launcherRef.current?.contains(e.target)
+      ) {
+        closeChat();
+      }
+    };
+    window.addEventListener("pointerdown", onPointerDown);
+    return () => window.removeEventListener("pointerdown", onPointerDown);
+  }, [isOpen, isDesktop, closeChat]);
+
+  // Return focus to the launcher on close
   useEffect(() => {
     if (wasOpen.current && !isOpen) launcherRef.current?.focus();
     wasOpen.current = isOpen;
-    const timer = window.setTimeout(() => window.dispatchEvent(new Event("resize")), EXIT_MS + 20);
-    return () => window.clearTimeout(timer);
   }, [isOpen]);
-
-  const splitOpen = shown && isDesktop;
 
   const canPortal = typeof document !== "undefined";
 
   return (
     <>
-      {/* Reserve space via padding-right so content shifts left under no fixed phone */}
-      <div className="assistant-split" data-open={splitOpen ? "" : undefined}>
+      {/* Website stays 100% full width — no push layout, no shifting */}
+      <div className="assistant-split">
         <main className="assistant-main">{children}</main>
       </div>
 
-      {/* Desktop: phone dock FIXED to the viewport, portaled to <body> so no
-          transformed/clipping ancestor can capture position: fixed. */}
+      {/* Desktop: floating phone dock FIXED to the viewport edge, portaled to <body> */}
       {isDesktop && rendered && canPortal && createPortal(
-        <div className="assistant-dock" data-shown={shown ? "" : undefined} aria-hidden={!isOpen}>
+        <div ref={dockRef} className="assistant-dock" data-shown={shown ? "" : undefined} aria-hidden={!isOpen}>
           <PhoneFrame onExit={closeChat}>
             <ChatShell onExit={closeChat} />
           </PhoneFrame>

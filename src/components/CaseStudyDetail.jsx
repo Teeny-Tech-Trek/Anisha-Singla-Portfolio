@@ -1,12 +1,12 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { getCaseStudyBySlug } from '../data/caseStudiesData';
-import { navigateTo, navigateToSection, ROUTES } from '../routes';
+import { navigateToSection, ROUTES } from '../routes';
 import { useSeo } from '../hooks/useSeo';
 import { SEO } from '../seo/seoConfig';
 import { getCaseStudySeo } from '../seo/caseStudySeo';
 
-const GOLD = '#C9A84C';
+const GOLD = '#FFFFFF';
 const TITLE_FONT = "'Bebas Neue', sans-serif";
 
 // ─── Shared bits ──────────────────────────────────────────────────────────────
@@ -47,7 +47,7 @@ function SectionHeading({ index, title }) {
       >
         {title}
       </h2>
-      <div className="mt-5" style={{ height: 1, background: 'linear-gradient(to right,#C9A84C,rgba(201,168,76,0.06))' }} />
+      <div className="mt-5" style={{ height: 1, background: 'linear-gradient(to right,#FFFFFF,rgba(255,255,255,0.08))' }} />
     </div>
   );
 }
@@ -93,7 +93,7 @@ function FeatureCards({ items }) {
             border: '1px solid rgba(255,255,255,0.1)',
             background: 'rgba(255,255,255,0.03)',
           }}
-          onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(201,168,76,0.4)'; e.currentTarget.style.background = 'rgba(201,168,76,0.05)'; }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.4)'; e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; }}
           onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'; e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; }}
         >
           <h3
@@ -190,7 +190,7 @@ function QuoteBlock({ text }) {
       className="p-6 md:p-8"
       style={{
         borderLeft: `2px solid ${GOLD}`,
-        background: 'linear-gradient(135deg, rgba(201,168,76,0.07) 0%, transparent 60%)',
+        background: 'linear-gradient(135deg, rgba(255,255,255,0.07) 0%, transparent 60%)',
         margin: '2rem 0 0',
       }}
     >
@@ -227,7 +227,7 @@ function SectionBlocks({ blocks }) {
 // ─── Not found ────────────────────────────────────────────────────────────────
 function StudyNotFound() {
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center px-6 text-center" style={{ background: '#000' }}>
+    <main className="min-h-screen flex flex-col items-center justify-center px-6 text-center" style={{ background: '#072450' }}>
       <p className="font-title text-5xl mb-3" style={{ fontFamily: TITLE_FONT, letterSpacing: '.1em', color: GOLD }}>
         Case Study Not Found
       </p>
@@ -262,21 +262,21 @@ export default function CaseStudyDetail({ slug }) {
     // Kill on every slug change (not just unmount) so switching between
     // case-study slugs quickly never leaves tweens targeting replaced nodes.
     return () => ctx.revert();
-  }, [slug]);
+  }, [slug, studies.length]);
 
   if (studies.length === 0) {
     return <StudyNotFound />;
   }
 
   return (
-    <div ref={pageRef} className="min-h-screen pt-24 pb-20 px-6 md:px-14" style={{ background: '#000' }}>
+    <div ref={pageRef} className="min-h-screen pt-24 pb-20 px-6 md:px-14" style={{ background: '#072450' }}>
 
       {/* ambient glow */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
         <div style={{
           position: 'absolute', top: '5%', right: '-5%',
           width: 600, height: 600, borderRadius: '50%',
-          background: 'radial-gradient(circle,rgba(201,168,76,0.06) 0%,transparent 70%)',
+          background: 'radial-gradient(circle,rgba(255,255,255,0.05) 0%,transparent 70%)',
           filter: 'blur(70px)', contain: 'paint',
         }} />
       </div>
@@ -306,11 +306,11 @@ export default function CaseStudyDetail({ slug }) {
                     paddingTop: '2rem',
                   }}
                 >
-                  <div className="h-[1px] flex-1" style={{ background: 'linear-gradient(to right, transparent, rgba(201,168,76,0.3))' }} />
+                  <div className="h-[1px] flex-1" style={{ background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.3))' }} />
                   <span className="font-body text-[10px] tracking-[.4em] uppercase font-semibold whitespace-nowrap" style={{ color: GOLD }}>
                     Next Integrated Case Study
                   </span>
-                  <div className="h-[1px] flex-1" style={{ background: 'linear-gradient(to left, transparent, rgba(201,168,76,0.3))' }} />
+                  <div className="h-[1px] flex-1" style={{ background: 'linear-gradient(to left, transparent, rgba(255,255,255,0.3))' }} />
                 </div>
               )}
 
@@ -322,8 +322,8 @@ export default function CaseStudyDetail({ slug }) {
                 <span
                   className="font-body text-xs tracking-widest uppercase px-3 py-1.5 font-semibold"
                   style={{
-                    background: 'rgba(201,168,76,0.1)', color: GOLD,
-                    border: '1px solid rgba(201,168,76,0.3)', display: 'inline-block',
+                    background: 'rgba(255,255,255,0.1)', color: GOLD,
+                    border: '1px solid rgba(255,255,255,0.3)', display: 'inline-block',
                   }}
                 >
                   {study.category}
@@ -358,9 +358,9 @@ export default function CaseStudyDetail({ slug }) {
                     key={tag}
                     className="font-body text-[10px] tracking-[.08em] uppercase px-2.5 py-1 font-medium"
                     style={{
-                      color: 'rgba(201,168,76,0.9)',
-                      border: '1px solid rgba(201,168,76,0.3)',
-                      background: 'rgba(201,168,76,0.08)',
+                      color: 'rgba(255,255,255,0.9)',
+                      border: '1px solid rgba(255,255,255,0.3)',
+                      background: 'rgba(255,255,255,0.08)',
                     }}
                   >
                     {tag}
@@ -373,7 +373,7 @@ export default function CaseStudyDetail({ slug }) {
                 className="csd-hero mt-10 p-6 md:p-8"
                 style={{
                   borderLeft: `2px solid ${GOLD}`,
-                  background: 'linear-gradient(135deg, rgba(201,168,76,0.07) 0%, transparent 60%)',
+                  background: 'linear-gradient(135deg, rgba(255,255,255,0.07) 0%, transparent 60%)',
                 }}
               >
                 <p className="font-body text-xs tracking-[.25em] uppercase mb-3 font-semibold" style={{ color: GOLD }}>
@@ -473,9 +473,9 @@ export default function CaseStudyDetail({ slug }) {
             style={{
               fontWeight: 600, fontSize: '.72rem', letterSpacing: '.2em', textTransform: 'uppercase',
               color: GOLD, padding: '.9rem 3rem',
-              border: '1px solid rgba(201,168,76,0.4)', background: 'transparent', cursor: 'pointer',
+              border: '1px solid rgba(255,255,255,0.4)', background: 'transparent', cursor: 'pointer',
             }}
-            onMouseEnter={e => { e.currentTarget.style.background = GOLD; e.currentTarget.style.color = '#000'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+            onMouseEnter={e => { e.currentTarget.style.background = GOLD; e.currentTarget.style.color = '#072450'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
             onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = GOLD; e.currentTarget.style.transform = 'translateY(0)'; }}
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

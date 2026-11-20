@@ -9,9 +9,10 @@ import Experience from '../components/Experience';
 import Education from '../components/Education';
 import WritingSpeaking from '../components/WritingSpeaking';
 import Volunteer from '../components/Volunteer';
+import Contact from '../components/Contact';
 import Footer from '../components/Footer';
 import NotFound from '../components/NotFound';
-import { ROUTES, consumePendingSection, getCurrentPath, navigateTo, navigateToSection, scrollToSection } from './index';
+import { ROUTES, consumePendingSection, getCurrentPath, navigateToSection, scrollToSection } from './index';
 import { useSeo } from '../hooks/useSeo';
 import { SEO } from '../seo/seoConfig';
 import { useTheme } from '../context/ThemeContext';
@@ -31,12 +32,12 @@ const AboutDetail = lazy(() => import('../components/AboutDetail'));
 function RouteFallback() {
   const { isDark } = useTheme();
   return (
-    <div className="min-h-screen w-full flex items-center justify-center transition-colors duration-300" style={{ background: isDark ? '#000000' : '#FAF8F5' }}>
+    <div className="min-h-screen w-full flex items-center justify-center transition-colors duration-300" style={{ background: isDark ? '#072450' : '#FAF8F5' }}>
       <div
         className="h-8 w-8 rounded-full animate-spin"
         style={{
-          border: isDark ? '2px solid rgba(201,168,76,0.25)' : '2px solid rgba(37,99,235,0.25)',
-          borderTopColor: isDark ? '#C9A84C' : '#2563EB',
+          border: isDark ? '2px solid rgba(255,255,255,0.22)' : '2px solid rgba(37,99,235,0.25)',
+          borderTopColor: isDark ? '#FFFFFF' : '#2563EB',
         }}
         role="status"
         aria-label="Loading"
@@ -51,7 +52,7 @@ function RouteFallback() {
 // while the chunk is still loading.
 function CertificationsFallback() {
   const { isDark } = useTheme();
-  return <section id="skills" style={{ background: isDark ? '#050505' : '#F3EFEA', minHeight: 480 }} />;
+  return <section id="skills" style={{ background: isDark ? '#072450' : '#F3EFEA', minHeight: 480 }} />;
 }
 
 function HomeRoute() {
@@ -65,28 +66,16 @@ function HomeRoute() {
       return undefined;
     }
 
-    // Try scrolling after 100ms, 300ms, and 600ms to align with dynamic height changes
-    const t1 = window.setTimeout(() => {
+    // Scroll cleanly once HomeRoute mounts; scrollToSection tracks late layout shifts.
+    const t = window.setTimeout(() => {
       scrollToSection(pendingSection);
-    }, 100);
+    }, 150);
 
-    const t2 = window.setTimeout(() => {
-      scrollToSection(pendingSection);
-    }, 300);
-
-    const t3 = window.setTimeout(() => {
-      scrollToSection(pendingSection);
-    }, 600);
-
-    return () => {
-      window.clearTimeout(t1);
-      window.clearTimeout(t2);
-      window.clearTimeout(t3);
-    };
+    return () => window.clearTimeout(t);
   }, []);
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-hidden transition-colors duration-400" style={{ background: isDark ? '#000000' : '#FAF8F5' }}>
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden transition-colors duration-400" style={{ background: isDark ? '#072450' : '#FAF8F5' }}>
       <Navbar />
       <main>
         <Hero />
@@ -101,6 +90,7 @@ function HomeRoute() {
         </Suspense>
         <WritingSpeaking />
         <Volunteer />
+        <Contact />
       </main>
       <Footer />
     </div>

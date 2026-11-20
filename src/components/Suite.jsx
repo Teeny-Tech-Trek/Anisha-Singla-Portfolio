@@ -4,8 +4,8 @@ import { useTheme } from '../context/ThemeContext';
 
 function SuiteRow({ p, index }) {
   const { isDark } = useTheme();
-  const accent = isDark ? '#C9A84C' : '#2563EB';
-  const slashColor = isDark ? 'rgba(201,168,76,0.7)' : 'rgba(37,99,235,0.7)';
+  const accent = isDark ? '#FFFFFF' : '#2563EB';
+  const slashColor = isDark ? 'rgba(255,255,255,0.7)' : 'rgba(37,99,235,0.7)';
 
   return (
     <a

@@ -1,14 +1,33 @@
-// Writing & speaking items. URLs are only included where a real, verified link
-// exists (given directly, or already present elsewhere in this repo's data) —
-// never invented. Items with url: null render as non-clickable text in
-// WritingSpeaking.jsx until the real link is supplied. Items with a `urls`
-// array (instead of a single `url`) render one small link button per entry —
-// used for the LinkedIn series, which is several individual posts, not one link.
+// Speaking & writing items verified against source of truth.
 export const writingItems = [
   {
+    id: 'speaking-five-questions',
+    label: '"Five Questions Before AI Adoption" Talk',
+    description: 'AiNetworking-Canada, November 2026. Framework for business stakeholders evaluating AI readiness, data grounding, and operational ROI.',
+    url: null,
+  },
+  {
+    id: 'workshop-unlock-ai',
+    label: '"Unlock AI" Workshop Facilitator',
+    description: 'Hands-on interactive workshop for business owners on scoping real-world automation, model selection, and prompt workflows.',
+    url: null,
+  },
+  {
+    id: 'tiecon-chandigarh',
+    label: 'TiECon Chandigarh 2026 & Open Mic',
+    description: 'Product demonstrations and open mic session sharing practical lessons from client AI implementations.',
+    url: 'https://www.linkedin.com/posts/tie-chandigarh_open-mic-session-tie-chandigarh-ugcPost-7463546856598364161-MmHB?utm_medium=ios_app&rcm=ACoAACtzlL0BRRG_qxSY4c8zUkLDpaq8zFl2c9I&utm_source=social_share_send&utm_campaign=share_via',
+  },
+  {
+    id: 'medium-articles',
+    label: 'Medium Articles — Applied AI',
+    description: 'Practical articles covering RAG for business, multi-agent pipelines, and adoption hurdles, published on Medium.',
+    url: 'https://medium.com/@teenytechtrek',
+  },
+  {
     id: 'linkedin-technical-series',
-    label: 'LinkedIn Technical Series',
-    description: 'A series of technical write-ups published on LinkedIn.',
+    label: 'LinkedIn Insights & Technical Series',
+    description: 'Articles on production AI implementation, evaluation criteria, and agent architecture.',
     urls: [
       {
         title: 'MCP Tool "Rug Pull"',
@@ -33,23 +52,9 @@ export const writingItems = [
     ],
   },
   {
-    id: 'medium-articles',
-    label: 'Medium Articles',
-    description: 'Applied AI writing, published on Medium.',
-    // Links to the Medium profile (same URL already used in socials.js) — no
-    // per-article URLs are available in the repo to link individually yet.
-    url: 'https://medium.com/@teenytechtrek',
-  },
-  {
-    id: 'tie-open-mic',
-    label: 'TiE Chandigarh — Open Mic Session',
-    description: 'Open Mic session with TiE Chandigarh.',
-    url: 'https://www.linkedin.com/posts/tie-chandigarh_open-mic-session-tie-chandigarh-ugcPost-7463546856598364161-MmHB?utm_medium=ios_app&rcm=ACoAACtzlL0BRRG_qxSY4c8zUkLDpaq8zFl2c9I&utm_source=social_share_send&utm_campaign=share_via',
-  },
-  {
-    id: 'podcast-april-2026',
-    label: 'Podcast Appearance',
-    description: 'April 2026 podcast appearance.',
+    id: 'podcast-appearance',
+    label: 'Podcast Appearance — AI & Business',
+    description: 'Discussion on turning ambiguous business problems into functional AI solutions.',
     url: 'https://youtu.be/MWCYy_OmrWs?si=yNQXBDq7AUeUS1uw',
   },
 ];

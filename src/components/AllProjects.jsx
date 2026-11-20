@@ -1,29 +1,34 @@
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import gsap from 'gsap';
-import { projects, statusStyle } from '../data/projectsData';
+import { projects } from '../data/projectsData';
 import ProjectLinks from './ProjectLinks';
 import { useSeo } from '../hooks/useSeo';
 import { SEO } from '../seo/seoConfig';
 import { useTheme } from '../context/ThemeContext';
+import { navigateTo, navigateToSection } from '../routes';
 
 const ALL = 'All';
-const categories = [ALL, ...Array.from(new Set(projects.map(p => p.category)))];
-
-const lightStatusStyle = {
-  Completed: { bg: 'rgba(37,99,235,0.09)', color: '#2563EB', border: 'rgba(37,99,235,0.25)' },
-  Live: { bg: 'rgba(16,185,129,0.1)', color: '#059669', border: 'rgba(16,185,129,0.3)' },
-  Beta: { bg: 'rgba(245,158,11,0.1)', color: '#D97706', border: 'rgba(245,158,11,0.3)' },
-  'In Progress': { bg: 'rgba(217,119,6,0.1)', color: '#D97706', border: 'rgba(217,119,6,0.3)' },
-};
+const categories = [ALL, ...Array.from(new Set(projects.map((p) => p.category)))];
 
 const ProjectCard = memo(function ProjectCard({ p, isDark }) {
   const cardRef = useRef(null);
-  const accent = isDark ? '#C9A84C' : '#2563EB';
+  const accent = isDark ? '#FFFFFF' : '#2563EB';
 
-  const liveClickable = !!p.links?.live;
+  const clickable = !!p.links?.caseStudy;
+
   const handleCardClick = (e) => {
     if (e.target.closest('a') || e.target.closest('button')) return;
-    if (liveClickable) window.open(p.links.live, '_blank', 'noopener,noreferrer');
+    if (clickable) {
+      navigateTo(p.links.caseStudy);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (!clickable) return;
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      navigateTo(p.links.caseStudy);
+    }
   };
 
   const handleEnter = () => {
@@ -32,7 +37,7 @@ const ProjectCard = memo(function ProjectCard({ p, isDark }) {
       duration: 0.3,
       ease: 'power2.out',
       boxShadow: isDark
-        ? '0 16px 45px rgba(201,168,76,0.12)'
+        ? '0 16px 45px rgba(255,255,255,0.12)'
         : '0 16px 45px rgba(37,99,235,0.12)',
     });
     const arrow = cardRef.current.querySelector('.card-arrow');
@@ -50,25 +55,25 @@ const ProjectCard = memo(function ProjectCard({ p, isDark }) {
     if (arrow) gsap.to(arrow, { x: 0, opacity: 0, duration: 0.25 });
   };
 
-  const currentStatus = isDark
-    ? statusStyle[p.status]
-    : (lightStatusStyle[p.status] || statusStyle[p.status]);
-
   return (
     <div
       ref={cardRef}
+      role={clickable ? 'link' : undefined}
+      tabIndex={clickable ? 0 : undefined}
+      aria-label={clickable ? `${p.title} — open case study` : undefined}
       className="relative overflow-hidden transition-all duration-300 rounded-lg"
       style={{
-        background: isDark ? '#0d0d0d' : '#FFFFFF',
-        border: isDark ? '1px solid rgba(255,255,255,0.07)' : '1px solid rgba(0,0,0,0.08)',
-        borderTop: `2px solid ${isDark ? 'rgba(201,168,76,0.35)' : '#2563EB'}`,
+        background: isDark ? '#0B2D62' : '#FFFFFF',
+        border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.08)',
+        borderTop: `2px solid ${isDark ? 'rgba(255,255,255,0.35)' : '#2563EB'}`,
         boxShadow: isDark ? 'none' : '0 8px 30px rgba(0,0,0,0.04)',
         height: '100%',
-        cursor: liveClickable ? 'pointer' : 'default',
+        cursor: clickable ? 'pointer' : 'default',
       }}
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
-      onClick={liveClickable ? handleCardClick : undefined}
+      onClick={clickable ? handleCardClick : undefined}
+      onKeyDown={clickable ? handleKeyDown : undefined}
     >
       <div
         className="absolute inset-0 pointer-events-none"
@@ -81,29 +86,28 @@ const ProjectCard = memo(function ProjectCard({ p, isDark }) {
           <span
             className="font-body text-xs tracking-widest uppercase px-3 py-1 rounded"
             style={{
-              background: isDark ? 'rgba(201,168,76,0.1)' : 'rgba(37,99,235,0.08)',
-              color: isDark ? '#C9A84C' : '#1D4ED8',
-              border: isDark ? '1px solid rgba(201,168,76,0.25)' : '1px solid rgba(37,99,235,0.22)',
+              background: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(37,99,235,0.08)',
+              color: isDark ? '#FFFFFF' : '#1D4ED8',
+              border: isDark ? '1px solid rgba(255,255,255,0.25)' : '1px solid rgba(37,99,235,0.22)',
             }}
           >
             {p.category}
           </span>
 
-          {/* Status */}
           <span
-            className="font-body text-xs font-bold px-3 py-1 rounded"
+            className="font-body text-xs font-semibold px-3 py-1 rounded"
             style={{
-              background: currentStatus?.bg,
-              color: currentStatus?.color,
-              border: `1px solid ${currentStatus?.border}`,
+              background: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(15,23,42,0.05)',
+              color: isDark ? 'rgba(255,255,255,0.75)' : '#475569',
+              border: `1px solid ${isDark ? 'rgba(255,255,255,0.14)' : 'rgba(15,23,42,0.1)'}`,
             }}
           >
-            ● {p.status}
+            {p.year}
           </span>
         </div>
 
         <h3
-          className="font-title mb-3"
+          className="font-title mb-2"
           style={{
             fontFamily: "'Bebas Neue',sans-serif",
             fontSize: '1.75rem',
@@ -115,10 +119,19 @@ const ProjectCard = memo(function ProjectCard({ p, isDark }) {
           {p.title}
         </h3>
 
+        {p.role && (
+          <p
+            className="font-body text-xs tracking-wide mb-3"
+            style={{ color: isDark ? 'rgba(255,255,255,0.78)' : '#1D4ED8', fontWeight: 500 }}
+          >
+            My Role: {p.role}
+          </p>
+        )}
+
         <p
           className="font-body text-sm leading-relaxed flex-1"
           style={{
-            color: isDark ? 'rgba(255,255,255,0.46)' : '#4B5563',
+            color: isDark ? 'rgba(255,255,255,0.62)' : '#4B5563',
             fontWeight: 300,
           }}
         >
@@ -126,7 +139,7 @@ const ProjectCard = memo(function ProjectCard({ p, isDark }) {
         </p>
 
         <div className="mt-5">
-          {/* Tech tags */}
+          {/* Tech/method tags */}
           <div
             className="flex flex-wrap gap-1.5 mb-4 cursor-default"
             onClick={(e) => e.stopPropagation()}
@@ -137,7 +150,7 @@ const ProjectCard = memo(function ProjectCard({ p, isDark }) {
                 className="font-body text-xs px-2.5 py-1 rounded"
                 style={{
                   background: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)',
-                  color: isDark ? 'rgba(255,255,255,0.4)' : '#4B5563',
+                  color: isDark ? 'rgba(255,255,255,0.52)' : '#4B5563',
                   border: isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.08)',
                 }}
               >
@@ -154,10 +167,19 @@ const ProjectCard = memo(function ProjectCard({ p, isDark }) {
           >
             <span
               className="font-body text-xs tracking-widest"
-              style={{ color: isDark ? 'rgba(255,255,255,0.46)' : '#6B7280' }}
+              style={{ color: isDark ? 'rgba(255,255,255,0.5)' : '#6B7280' }}
             >
               {p.year}
             </span>
+            {clickable && (
+              <span
+                aria-hidden="true"
+                className="card-arrow font-body text-sm opacity-0"
+                style={{ color: accent }}
+              >
+                →
+              </span>
+            )}
           </div>
         </div>
 
@@ -171,7 +193,7 @@ const ProjectCard = memo(function ProjectCard({ p, isDark }) {
 export default function AllProjects({ onBack }) {
   useSeo(SEO.projects);
   const { isDark } = useTheme();
-  const accent = isDark ? '#C9A84C' : '#2563EB';
+  const accent = isDark ? '#FFFFFF' : '#2563EB';
 
   const [activeFilter, setActiveFilter] = useState(ALL);
   const pageRef = useRef(null);
@@ -181,6 +203,11 @@ export default function AllProjects({ onBack }) {
     () => (activeFilter === ALL ? projects : projects.filter((p) => p.category === activeFilter)),
     [activeFilter]
   );
+
+  const handleBack = () => {
+    if (onBack) onBack();
+    else navigateToSection('projects');
+  };
 
   // Page entrance
   useEffect(() => {
@@ -228,7 +255,7 @@ export default function AllProjects({ onBack }) {
     <div
       ref={pageRef}
       className="min-h-screen relative transition-colors duration-400"
-      style={{ background: isDark ? '#000000' : '#FAF8F5' }}
+      style={{ background: isDark ? '#072450' : '#FAF8F5' }}
     >
       {/* Background ambient glows */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -241,7 +268,7 @@ export default function AllProjects({ onBack }) {
             height: '600px',
             borderRadius: '50%',
             background: isDark
-              ? 'radial-gradient(circle,rgba(201,168,76,0.06) 0%,transparent 70%)'
+              ? 'radial-gradient(circle,rgba(255,255,255,0.06) 0%,transparent 70%)'
               : 'radial-gradient(circle,rgba(37,99,235,0.06) 0%,transparent 70%)',
             filter: 'blur(80px)',
             contain: 'paint',
@@ -267,20 +294,20 @@ export default function AllProjects({ onBack }) {
       <main className="max-w-7xl mx-auto px-6 md:px-14 py-16 md:py-24 relative z-10">
         {/* Back button */}
         <button
-          onClick={onBack}
+          onClick={handleBack}
           className="ap-heading font-body flex items-center gap-2 mb-10 transition-all duration-300 hover:gap-3 cursor-pointer"
           style={{
             fontSize: '.72rem',
             letterSpacing: '.2em',
             textTransform: 'uppercase',
-            color: isDark ? 'rgba(255,255,255,0.45)' : '#6B7280',
+            color: isDark ? 'rgba(255,255,255,0.55)' : '#6B7280',
             background: 'transparent',
             border: 'none',
             padding: 0,
           }}
           onMouseEnter={(e) => (e.currentTarget.style.color = accent)}
           onMouseLeave={(e) =>
-            (e.currentTarget.style.color = isDark ? 'rgba(255,255,255,0.45)' : '#6B7280')
+            (e.currentTarget.style.color = isDark ? 'rgba(255,255,255,0.55)' : '#6B7280')
           }
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -313,7 +340,7 @@ export default function AllProjects({ onBack }) {
             <p
               className="ap-heading font-body text-sm"
               style={{
-                color: isDark ? 'rgba(255,255,255,0.46)' : '#6B7280',
+                color: isDark ? 'rgba(255,255,255,0.55)' : '#6B7280',
                 fontWeight: 300,
               }}
             >
@@ -325,21 +352,22 @@ export default function AllProjects({ onBack }) {
             style={{
               height: '1px',
               background: isDark
-                ? 'linear-gradient(to right,#C9A84C,rgba(201,168,76,0.06))'
+                ? 'linear-gradient(to right,#FFFFFF,rgba(255,255,255,0.06))'
                 : 'linear-gradient(to right,#2563EB,rgba(37,99,235,0.06))',
             }}
           />
         </div>
 
-        {/* Filter pills */}
-        <div className="flex flex-wrap gap-3 mb-12">
+        {/* Filter pills — 2-row horizontal swipe with ellipsis on mobile, wrapped row on desktop */}
+        <div className="grid grid-rows-2 grid-flow-col auto-cols-max gap-2 overflow-x-auto touch-pan-x pb-1 mb-10 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden md:flex md:flex-wrap md:gap-3 md:overflow-visible md:pb-0 md:mb-12">
           {categories.map((cat) => {
             const isActive = activeFilter === cat;
             return (
               <button
                 key={cat}
+                title={cat}
                 onClick={() => setActiveFilter(cat)}
-                className="ap-filter-btn font-body text-xs tracking-widest uppercase px-4 py-2 transition-all duration-300 rounded cursor-pointer"
+                className="ap-filter-btn font-body text-xs tracking-widest uppercase px-3 py-2 md:px-4 transition-all duration-300 rounded cursor-pointer max-w-[175px] truncate md:max-w-none"
                 style={{
                   background: isActive
                     ? accent
@@ -347,8 +375,8 @@ export default function AllProjects({ onBack }) {
                     ? 'rgba(255,255,255,0.04)'
                     : '#FFFFFF',
                   color: isActive
-                    ? isDark ? '#000000' : '#FFFFFF'
-                    : isDark ? 'rgba(255,255,255,0.55)' : '#4B5563',
+                    ? isDark ? '#072450' : '#FFFFFF'
+                    : isDark ? 'rgba(255,255,255,0.62)' : '#4B5563',
                   border: isActive
                     ? `1px solid ${accent}`
                     : isDark
@@ -372,7 +400,7 @@ export default function AllProjects({ onBack }) {
         {/* Count */}
         <p
           className="font-body text-xs tracking-widest uppercase mb-6"
-          style={{ color: isDark ? 'rgba(255,255,255,0.46)' : '#6B7280' }}
+          style={{ color: isDark ? 'rgba(255,255,255,0.55)' : '#6B7280' }}
         >
           Showing {filtered.length} project{filtered.length !== 1 ? 's' : ''}
           {activeFilter !== ALL && ` in ${activeFilter}`}
@@ -401,7 +429,7 @@ export default function AllProjects({ onBack }) {
             >
               No Projects Found
             </p>
-            <p className="font-body text-sm" style={{ color: isDark ? 'rgba(255,255,255,0.46)' : '#6B7280' }}>
+            <p className="font-body text-sm" style={{ color: isDark ? 'rgba(255,255,255,0.55)' : '#6B7280' }}>
               Try selecting a different category.
             </p>
           </div>
@@ -410,7 +438,7 @@ export default function AllProjects({ onBack }) {
         {/* Back CTA bottom */}
         <div className="mt-16 flex justify-center">
           <button
-            onClick={onBack}
+            onClick={handleBack}
             className="font-body flex items-center gap-3 transition-all duration-300 rounded cursor-pointer"
             style={{
               fontWeight: 600,
@@ -424,7 +452,7 @@ export default function AllProjects({ onBack }) {
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = accent;
-              e.currentTarget.style.color = isDark ? '#000000' : '#FFFFFF';
+              e.currentTarget.style.color = isDark ? '#072450' : '#FFFFFF';
               e.currentTarget.style.transform = 'translateY(-2px)';
             }}
             onMouseLeave={(e) => {

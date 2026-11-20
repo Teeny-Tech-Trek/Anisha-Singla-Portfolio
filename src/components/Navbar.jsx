@@ -9,16 +9,28 @@ const links = [
   { label: 'About', type: 'section', target: 'about' },
   { label: 'Capabilities', type: 'section', target: 'capabilities' },
   { label: 'Experience', type: 'section', target: 'experience' },
+  { label: 'Projects', type: 'section', target: 'projects' },
   { label: 'Education', type: 'section', target: 'education' },
   { label: 'Skills', type: 'section', target: 'skills' },
   { label: 'Volunteer', type: 'section', target: 'volunteer' },
-  { label: 'Projects', type: 'section', target: 'projects' },
+  { label: 'Contact', type: 'section', target: 'contact' },
 ];
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const navRef = useRef(null);
   const { toggle, isDark } = useTheme();
+
+  // Scroll detection for sticky header background
+  useEffect(() => {
+    const onScroll = () => {
+      setScrolled(window.scrollY > 30);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   // GSAP entrance
   useEffect(() => {
@@ -41,51 +53,68 @@ export default function Navbar() {
 
   const hrefFor = (link) => (link.type === 'route' ? link.target : `/#${link.target}`);
 
-  // Text colours
-  const linkColor = isDark ? '#d1d5db' : '#1f2937';
-  const logoColor = isDark ? '#C9A84C' : '#111827';
+  // Text colours - Pure white on Hero (unscrolled) or in dark mode for maximum contrast against hero & dark sections
+  const isLightScrolled = !isDark && scrolled;
+  const linkColor = isLightScrolled ? '#1f2937' : '#FFFFFF';
+  const logoColor = isLightScrolled ? '#111827' : '#FFFFFF';
+
+  // Contact button colors
+  const projectsBorder = isLightScrolled ? '#2563EB' : 'rgba(255, 255, 255, 0.55)';
+  const projectsColor = isLightScrolled ? '#1D4ED8' : '#FFFFFF';
+  const projectsBg = isLightScrolled ? 'rgba(37, 99, 235, 0.08)' : 'rgba(255, 255, 255, 0.14)';
+
+  // Theme toggle button colors
+  const toggleBorder = isLightScrolled ? 'rgba(0,0,0,0.15)' : 'rgba(255, 255, 255, 0.4)';
+  const toggleColor = isLightScrolled ? '#1f2937' : '#FFFFFF';
+  const toggleBg = isLightScrolled ? 'rgba(0,0,0,0.05)' : 'rgba(255, 255, 255, 0.14)';
 
   return (
     <header>
       <nav
         ref={navRef}
         data-scroll-header
-        className="fixed top-0 left-0 right-0 z-50 w-full max-w-full overflow-x-hidden"
+        className="fixed top-0 left-0 right-0 z-50 w-full max-w-full overflow-x-hidden transition-all duration-300"
         style={{
           background: 'transparent',
           border: 'none',
           borderBottom: 'none',
         }}
       >
-        {/* Blur Fade Background without any border */}
+        {/* Blur Fade Backdrop - Appears smoothly on scroll with no fixed solid bar or border */}
         <div
           className="pointer-events-none absolute inset-0 -z-10"
           style={{
+            opacity: scrolled ? 1 : 0,
             background: isDark
-              ? 'linear-gradient(to bottom, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.45) 60%, transparent 100%)'
-              : 'linear-gradient(to bottom, rgba(250, 248, 245, 0.92) 0%, rgba(250, 248, 245, 0.5) 60%, transparent 100%)',
+              ? 'linear-gradient(to bottom, rgba(7, 36, 80, 0.85) 0%, rgba(7, 36, 80, 0.42) 60%, transparent 100%)'
+              : 'linear-gradient(to bottom, rgba(250, 248, 245, 0.9) 0%, rgba(250, 248, 245, 0.48) 60%, transparent 100%)',
             backdropFilter: 'blur(16px)',
             WebkitBackdropFilter: 'blur(16px)',
             maskImage: 'linear-gradient(to bottom, black 0%, black 50%, transparent 100%)',
             WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 50%, transparent 100%)',
             border: 'none',
+            borderBottom: 'none',
             outline: 'none',
+            transition: 'opacity 0.35s ease, background 0.35s ease',
           }}
         />
-        <div className="mx-auto flex w-full max-w-7xl min-w-0 items-center justify-between px-5 py-5 sm:px-8 md:px-14">
+        <div data-scroll-bar className="mx-auto flex w-full max-w-7xl min-w-0 items-center justify-between px-5 py-5 sm:px-8 md:px-14">
           {/* Logo */}
           <span
             className="max-w-[70vw] shrink min-w-0 cursor-pointer whitespace-nowrap font-title text-2xl tracking-[.25em] sm:text-3xl sm:tracking-[.3em] font-extrabold transition-colors duration-200"
-            style={{ color: logoColor }}
+            style={{
+              color: logoColor,
+              textShadow: isLightScrolled ? 'none' : '0 2px 12px rgba(0,0,0,0.4)',
+            }}
             onClick={() => navigateToSection('home')}
           >
             ANISHA.
           </span>
 
           {/* Desktop links */}
-          <ul className="hidden xl:flex items-center gap-7">
+          <ul className="hidden xl:flex items-center gap-6">
             {links.map((link) =>
-              link.label === 'Projects' ? (
+              link.label === 'Contact' ? (
                 <li key={link.label}>
                   <a
                     href={hrefFor(link)}
@@ -93,22 +122,25 @@ export default function Navbar() {
                       e.preventDefault();
                       go(link);
                     }}
-                    className="font-body text-xs font-semibold rounded-lg tracking-widest uppercase px-5 py-2.5 transition-all duration-200 border"
+                    className="font-body text-xs font-semibold rounded-lg tracking-widest uppercase px-4 py-2 transition-all duration-200 border"
                     style={{
-                      borderColor: isDark ? '#C9A84C' : '#2563EB',
-                      color: isDark ? '#C9A84C' : '#1D4ED8',
-                      background: isDark ? 'transparent' : 'rgba(37, 99, 235, 0.08)',
+                      borderColor: projectsBorder,
+                      color: projectsColor,
+                      background: projectsBg,
+                      backdropFilter: isLightScrolled ? 'none' : 'blur(8px)',
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.background = isDark ? '#C9A84C' : '#2563EB';
-                      e.currentTarget.style.color = isDark ? '#000000' : '#FFFFFF';
+                      e.currentTarget.style.background = isLightScrolled ? '#2563EB' : '#FFFFFF';
+                      e.currentTarget.style.color = isLightScrolled ? '#FFFFFF' : '#072450';
+                      e.currentTarget.style.borderColor = isLightScrolled ? '#2563EB' : '#FFFFFF';
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.background = isDark ? 'transparent' : 'rgba(37, 99, 235, 0.08)';
-                      e.currentTarget.style.color = isDark ? '#C9A84C' : '#1D4ED8';
+                      e.currentTarget.style.background = projectsBg;
+                      e.currentTarget.style.color = projectsColor;
+                      e.currentTarget.style.borderColor = projectsBorder;
                     }}
                   >
-                    Projects
+                    Contact
                   </a>
                 </li>
               ) : (
@@ -119,15 +151,18 @@ export default function Navbar() {
                       e.preventDefault();
                       go(link);
                     }}
-                    className="group relative inline-flex min-h-[40px] items-center font-body text-xs font-medium tracking-widest uppercase transition-colors"
-                    style={{ color: linkColor }}
-                    onMouseEnter={(e) => (e.currentTarget.style.color = isDark ? '#C9A84C' : '#2563EB')}
+                    className="group relative inline-flex min-h-[40px] items-center font-body text-xs font-semibold tracking-widest uppercase transition-colors"
+                    style={{
+                      color: linkColor,
+                      textShadow: isLightScrolled ? 'none' : '0 1px 8px rgba(0,0,0,0.35)',
+                    }}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = isLightScrolled ? '#2563EB' : '#FFFFFF')}
                     onMouseLeave={(e) => (e.currentTarget.style.color = linkColor)}
                   >
                     <span>{link.label}</span>
                     <span
                       className="absolute -bottom-1 left-0 w-0 h-[2px] transition-all duration-300 group-hover:w-full"
-                      style={{ background: isDark ? '#C9A84C' : '#2563EB' }}
+                      style={{ background: isLightScrolled ? '#2563EB' : '#FFFFFF' }}
                     />
                   </a>
                 </li>
@@ -142,17 +177,18 @@ export default function Navbar() {
                 title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
                 className="inline-flex items-center justify-center w-10 h-10 rounded-full border transition-all duration-300 shadow-sm"
                 style={{
-                  borderColor: isDark ? 'rgba(201,168,76,0.4)' : 'rgba(0,0,0,0.15)',
-                  color: isDark ? '#E8C97A' : '#1f2937',
-                  background: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.4)',
+                  borderColor: toggleBorder,
+                  color: toggleColor,
+                  background: toggleBg,
+                  backdropFilter: 'blur(8px)',
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = isDark ? '#C9A84C' : '#2563EB';
-                  e.currentTarget.style.background = isDark ? 'rgba(201,168,76,0.2)' : 'rgba(37, 99, 235, 0.12)';
+                  e.currentTarget.style.borderColor = isLightScrolled ? '#2563EB' : 'rgba(255, 255, 255, 0.8)';
+                  e.currentTarget.style.background = isLightScrolled ? 'rgba(37, 99, 235, 0.12)' : 'rgba(255, 255, 255, 0.25)';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = isDark ? 'rgba(201,168,76,0.4)' : 'rgba(0,0,0,0.15)';
-                  e.currentTarget.style.background = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.4)';
+                  e.currentTarget.style.borderColor = toggleBorder;
+                  e.currentTarget.style.background = toggleBg;
                 }}
               >
                 {isDark ? <Sun size={17} aria-hidden="true" /> : <Moon size={17} aria-hidden="true" />}
@@ -167,9 +203,10 @@ export default function Navbar() {
               aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
               className="flex items-center justify-center w-10 h-10 rounded-full border transition-all duration-200"
               style={{
-                borderColor: isDark ? 'rgba(201,168,76,0.4)' : 'rgba(0,0,0,0.15)',
-                color: isDark ? '#E8C97A' : '#1f2937',
-                background: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.4)',
+                borderColor: toggleBorder,
+                color: toggleColor,
+                background: toggleBg,
+                backdropFilter: 'blur(8px)',
               }}
             >
               {isDark ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}
@@ -177,7 +214,7 @@ export default function Navbar() {
 
             <button
               className="flex items-center justify-center w-10 h-10 rounded-lg transition-colors"
-              style={{ color: isDark ? '#C9A84C' : '#1f2937' }}
+              style={{ color: toggleColor }}
               onClick={() => setOpen(!open)}
               aria-label={open ? 'Close menu' : 'Open menu'}
               aria-expanded={open}
@@ -192,8 +229,8 @@ export default function Navbar() {
           <div
             className="flex w-full max-w-full flex-col gap-4 overflow-x-hidden border-t px-6 py-6 xl:hidden"
             style={{
-              background: isDark ? 'rgba(10,10,10,0.96)' : 'rgba(250,248,245,0.98)',
-              borderColor: isDark ? 'rgba(201,168,76,0.15)' : 'rgba(0,0,0,0.08)',
+              background: isDark ? 'rgba(7, 36, 80, 0.98)' : 'rgba(250, 248, 245, 0.98)',
+              borderColor: isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0,0,0,0.08)',
               backdropFilter: 'blur(16px)',
             }}
           >
@@ -206,9 +243,9 @@ export default function Navbar() {
                   go(link);
                 }}
                 className="font-body text-sm font-semibold tracking-widest uppercase text-left transition-colors py-1"
-                style={{ color: isDark ? '#e5e7eb' : '#1f2937' }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = isDark ? '#C9A84C' : '#2563EB')}
-                onMouseLeave={(e) => (e.currentTarget.style.color = isDark ? '#e5e7eb' : '#1f2937')}
+                style={{ color: isDark ? '#FFFFFF' : '#1f2937' }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = isDark ? 'rgba(255, 255, 255, 0.8)' : '#2563EB')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = isDark ? '#FFFFFF' : '#1f2937')}
               >
                 {link.label}
               </a>

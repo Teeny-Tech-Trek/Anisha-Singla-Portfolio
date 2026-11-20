@@ -125,7 +125,7 @@ function TopBar({
         <span style={{
           fontFamily: 'sans-serif', fontSize: 9,
           letterSpacing: '.25em', textTransform: 'uppercase',
-          color: '#C9A84C', whiteSpace: 'nowrap', fontWeight: 700,
+          color: '#FFFFFF', whiteSpace: 'nowrap', fontWeight: 700,
         }}>
           {study.category}
         </span>
@@ -144,7 +144,7 @@ function TopBar({
         <CtrlBtn onClick={onPrev} disabled={pageNum <= 1} title="Previous (←)"><IcoPrev /></CtrlBtn>
         <span style={{
           fontFamily: 'monospace', fontSize: 11,
-          color: '#C9A84C', fontWeight: 700,
+          color: '#FFFFFF', fontWeight: 700,
           minWidth: 46, textAlign: 'center',
         }}>
           {pageNum || '—'}
@@ -164,9 +164,9 @@ function TopBar({
         style={{
           display: 'flex', alignItems: 'center', gap: 6,
           padding: '0 13px', height: 30,
-          border: `1px solid ${isPlaying ? '#C9A84C' : 'rgba(201,168,76,0.35)'}`,
-          background: isPlaying ? '#C9A84C' : 'transparent',
-          color: isPlaying ? '#000' : '#C9A84C',
+          border: `1px solid ${isPlaying ? '#FFFFFF' : 'rgba(255,255,255,0.35)'}`,
+          background: isPlaying ? '#FFFFFF' : 'transparent',
+          color: isPlaying ? '#072450' : '#FFFFFF',
           cursor: !canPlay ? 'not-allowed' : 'pointer',
           fontFamily: 'sans-serif', fontSize: 9, fontWeight: 700,
           letterSpacing: '.2em', textTransform: 'uppercase',
@@ -210,7 +210,7 @@ function TopBar({
             padding: '0 12px', height: 30,
             fontFamily: 'sans-serif', fontSize: 9, fontWeight: 700,
             letterSpacing: '.18em', textTransform: 'uppercase',
-            color: '#C9A84C', border: '1px solid rgba(201,168,76,0.35)',
+            color: '#FFFFFF', border: '1px solid rgba(255,255,255,0.35)',
             background: 'transparent', textDecoration: 'none',
             borderRadius: 5, whiteSpace: 'nowrap', flexShrink: 0,
           }}
@@ -291,7 +291,7 @@ function PageDots({ pageNum, numPages, onChange }) {
             style={{
               width: active ? 20 : 5, height: 5,
               borderRadius: 3, border: 'none',
-              background: active ? '#C9A84C' : 'rgba(255,255,255,0.18)',
+              background: active ? '#FFFFFF' : 'rgba(255,255,255,0.18)',
               cursor: 'pointer', padding: 0,
               transition: 'all .3s ease', flexShrink: 0,
             }}
@@ -327,9 +327,9 @@ function NoPdfOverlay({ study, onClose }) {
       }}>
         <div style={{
           width: 64, height: 64,
-          border: '1px solid rgba(201,168,76,0.25)', borderRadius: 12,
+          border: '1px solid rgba(255,255,255,0.25)', borderRadius: 12,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          color: 'rgba(201,168,76,0.45)',
+          color: 'rgba(255,255,255,0.45)',
         }}>
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
             <rect x="2" y="1" width="13" height="18" rx="2" stroke="currentColor" strokeWidth="1.3"/>
@@ -538,8 +538,8 @@ export default function PdfReader({ study, onClose }) {
           }}>
             <div style={{
               width: 32, height: 32,
-              border: '2px solid rgba(201,168,76,0.15)',
-              borderTop: '2px solid #C9A84C',
+              border: '2px solid rgba(255,255,255,0.18)',
+              borderTop: '2px solid #FFFFFF',
               borderRadius: '50%',
               animation: 'pdfSpin 0.75s linear infinite',
             }} />
@@ -588,10 +588,10 @@ export default function PdfReader({ study, onClose }) {
                 height: 38,
                 padding: '0 14px',
                 borderRadius: 9,
-                border: '1px solid rgba(201,168,76,0.42)',
+                border: '1px solid rgba(255,255,255,0.42)',
                 background: 'rgba(8,8,8,0.86)',
                 backdropFilter: 'blur(10px)',
-                color: '#C9A84C',
+                color: '#FFFFFF',
                 cursor: 'pointer',
                 boxShadow: '0 10px 26px rgba(0,0,0,0.45)',
                 fontFamily: 'sans-serif',
@@ -657,7 +657,7 @@ export default function PdfReader({ study, onClose }) {
         <div style={{
           height: '100%',
           width: `${numPages ? (pageNum / numPages) * 100 : 0}%`,
-          background: 'linear-gradient(to right, #C9A84C, rgba(201,168,76,0.5))',
+          background: 'linear-gradient(to right, #FFFFFF, rgba(255,255,255,0.5))',
           transition: 'width 0.4s ease',
         }} />
       </div>

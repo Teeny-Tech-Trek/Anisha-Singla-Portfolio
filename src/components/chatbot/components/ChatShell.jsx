@@ -143,15 +143,13 @@ function renderFormattedContent(text, actionSection) {
           onClick={(e) => {
             e.preventDefault();
             if (url === "#download_resume") {
-              const link = document.createElement("a");
-              link.href = "/resume.pdf";
-              link.download = "Anisha_Singla_Resume.pdf";
-              link.target = "_blank";
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
+              window.open(
+                "https://arbgtqtruugewk5g.public.blob.vercel-storage.com/Anisha_Singla_Resume.pdf",
+                "_blank",
+                "noopener,noreferrer"
+              );
             } else if (url === "#contact") {
-              navigateToSection("home");
+              navigateToSection("contact");
             } else if (url.startsWith("#")) {
               navigateToSection(url.slice(1));
             } else {
@@ -159,7 +157,7 @@ function renderFormattedContent(text, actionSection) {
             }
           }}
           style={{
-            color: "#E4C976",
+            color: "#FFFFFF",
             textDecoration: "underline",
             fontWeight: 600,
             cursor: "pointer",
@@ -206,8 +204,13 @@ function SendIcon() {
   );
 }
 
-function HomeGlyphSmall() {
-  return <span style={{ width: 13, height: 13, border: "1.5px solid currentColor", borderRadius: 3, display: "block" }} />;
+function CloseIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+  );
 }
 
 // Renders a preset response of type "video" — used by "🎬 Know Me in 64s".
@@ -230,7 +233,7 @@ function VideoMessage({ url, caption }) {
             href={url}
             target="_blank"
             rel="noreferrer"
-            style={{ color: "#E4C976", textDecoration: "underline", fontWeight: 600 }}
+            style={{ color: "#FFFFFF", textDecoration: "underline", fontWeight: 600 }}
           >
             Watch it here
           </a>{" "}
@@ -305,7 +308,7 @@ function VideoTakeover({ url, caption, onClose }) {
               href={url}
               target="_blank"
               rel="noreferrer"
-              style={{ color: "#E4C976", textDecoration: "underline", fontWeight: 600 }}
+              style={{ color: "#FFFFFF", textDecoration: "underline", fontWeight: 600 }}
             >
               Watch it here
             </a>{" "}
@@ -407,13 +410,11 @@ export default function ChatShell({ onExit, mobile = false }) {
   };
 
   const handleDownloadResume = () => {
-    const link = document.createElement("a");
-    link.href = "/resume.pdf";
-    link.download = "Anisha_Singla_Resume.pdf";
-    link.target = "_blank";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    window.open(
+      "https://arbgtqtruugewk5g.public.blob.vercel-storage.com/Anisha_Singla_Resume.pdf",
+      "_blank",
+      "noopener,noreferrer"
+    );
   };
 
   const pickChip = (label) => {
@@ -447,11 +448,9 @@ export default function ChatShell({ onExit, mobile = false }) {
             <div className="pa-online">● online</div>
           </div>
           <div className="pa-header-spacer" />
-          {mobile && (
-            <button type="button" className="pa-header-close" onClick={onExit} aria-label="Home — exit assistant">
-              <HomeGlyphSmall />
-            </button>
-          )}
+          <button type="button" className="pa-header-close" onClick={onExit} aria-label="Close assistant">
+            <CloseIcon />
+          </button>
         </header>
       )}
 

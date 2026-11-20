@@ -22,7 +22,7 @@ export default function ProjectLinks({ project }) {
     'tracking-wide transition-colors duration-200 cursor-pointer whitespace-nowrap ' +
     'focus-visible:outline-none focus-visible:ring-2 ' +
     (isDark
-      ? 'focus-visible:ring-[#C9A84C] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d0d0d]'
+      ? 'focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#072450]'
       : 'focus-visible:ring-[#2563EB] focus-visible:ring-offset-2 focus-visible:ring-offset-white');
 
   return (
@@ -44,7 +44,7 @@ export default function ProjectLinks({ project }) {
           aria-label={`${title} — read the case study`}
           className={`${baseBtn} ${
             isDark
-              ? 'border-white/15 bg-transparent text-white/70 hover:text-[#C9A84C] hover:border-[#C9A84C]'
+              ? 'border-white/15 bg-transparent text-white/70 hover:text-white hover:border-white'
               : 'border-black/15 bg-transparent text-gray-700 hover:text-[#2563EB] hover:border-[#2563EB]'
           }`}
         >
@@ -62,7 +62,7 @@ export default function ProjectLinks({ project }) {
           aria-label={`${title} — source code on GitHub (opens in new tab)`}
           className={`${baseBtn} ${
             isDark
-              ? 'border-[#C9A84C]/50 bg-transparent text-[#C9A84C] hover:bg-[#C9A84C] hover:text-black hover:border-[#C9A84C]'
+              ? 'border-white/50 bg-transparent text-white hover:bg-white hover:text-[#072450] hover:border-white'
               : 'border-[#2563EB]/50 bg-transparent text-[#2563EB] hover:bg-[#2563EB] hover:text-white hover:border-[#2563EB]'
           }`}
         >

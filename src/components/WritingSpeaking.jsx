@@ -6,9 +6,9 @@ import { writingItems } from '../data/writingData';
 const LINK_BUTTON_BASE =
   'inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 min-h-[44px] font-body text-xs ' +
   'tracking-wide transition-colors duration-200 cursor-pointer ' +
-  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A84C] ' +
-  'focus-visible:ring-offset-2 focus-visible:ring-offset-black whitespace-nowrap ' +
-  'border-[#C9A84C]/50 bg-transparent text-[#C9A84C] hover:bg-[#C9A84C] hover:text-black hover:border-[#C9A84C]';
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white ' +
+  'focus-visible:ring-offset-2 focus-visible:ring-offset-[#072450] whitespace-nowrap ' +
+  'border-white/50 bg-transparent text-white hover:bg-white hover:text-[#072450] hover:border-white';
 
 function WritingRow({ item }) {
   const hasLink = !!item.url || !!item.urls?.length;
@@ -63,7 +63,7 @@ function WritingRow({ item }) {
         {content}
         <span
           className="font-body"
-          style={{ fontSize: '11px', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(201,168,76,0.6)', marginTop: '6px' }}
+          style={{ fontSize: '11px', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)', marginTop: '6px' }}
         >
           Link coming soon
         </span>
@@ -77,7 +77,7 @@ function WritingRow({ item }) {
       target="_blank"
       rel="noopener noreferrer"
       aria-label={`${item.label} — opens in new tab`}
-      className="flex flex-col justify-center py-4 h-full transition-colors duration-200 hover:text-gold"
+      className="flex flex-col justify-center py-4 h-full transition-colors duration-200 hover:text-white"
       style={{ minHeight: '44px' }}
     >
       {content}

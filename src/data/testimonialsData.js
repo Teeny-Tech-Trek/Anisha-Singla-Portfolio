@@ -1,11 +1,3 @@
-// Single testimonial, pending consent confirmation from the quoted source
-// (Priyanka Rao) for portfolio-site use — see Testimonial.jsx SHOW_TESTIMONIAL.
-// Do not add further entries without an explicit source document.
-export const testimonials = [
-  {
-    id: 'priyanka-rao',
-    quote: 'The best technical lead I have ever worked with.',
-    name: 'Priyanka Rao',
-    title: 'CEO, AI Champions',
-  },
-];
+// Testimonials array kept empty in accordance with the NDA rule:
+// "Do not feature the AI Champions founder's recommendation on a public surface; it names an NDA engagement."
+export const testimonials = [];

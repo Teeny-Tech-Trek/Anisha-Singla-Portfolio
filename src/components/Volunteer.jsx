@@ -12,9 +12,9 @@ const groups = [
   {
     category: 'LEADERSHIP',
     items: [
-      { role:'President, AI Club', org:'George Brown Polytechnic', date:'Oct 2023 – Apr 2024', location:'Toronto, Canada' },
-      { role:'VP, AI Club',        org:'George Brown Polytechnic', date:'Nov 2022 – Oct 2023', location:'Toronto, Canada' },
-      { role:'Event Manager',      org:'CGC Jhanjeri',             date:'Aug 2018 – Apr 2020', location:'Mohali, India' },
+      { role:'President, AI Club', org:'George Brown College', date:'Oct 2023 – Apr 2024', location:'Toronto, Canada' },
+      { role:'VP, AI Club',        org:'George Brown College', date:'Nov 2022 – Oct 2023', location:'Toronto, Canada' },
+      { role:'Event Manager',      org:'CGC Jhanjeri',         date:'Aug 2018 – Apr 2020', location:'Mohali, India' },
     ],
   },
   {
@@ -34,7 +34,7 @@ function Item({ item }) {
     <div
       className="vol-item"
       style={{
-        borderLeft: isDark ? '2px solid #2a2a2a' : '2px solid rgba(0,0,0,0.14)',
+        borderLeft: isDark ? '2px solid rgba(255,255,255,0.35)' : '2px solid rgba(0,0,0,0.14)',
         paddingLeft: 14,
         marginBottom: 16,
         transition: 'border-color 150ms ease',
@@ -51,7 +51,7 @@ function Item({ item }) {
       >
         {item.role}
       </h3>
-      <p style={{ color: isDark ? '#C9A84C' : '#1D4ED8', fontSize: 12, marginTop: 3, fontWeight: isDark ? 400 : 600 }}>
+      <p style={{ color: isDark ? '#FFFFFF' : '#1D4ED8', fontSize: 12, marginTop: 3, fontWeight: isDark ? 400 : 600 }}>
         {item.org}
       </p>
       <p style={{ fontFamily: MONO, color: isDark ? '#7c7c7c' : '#6B7280', fontSize: 11, marginTop: 6 }}>
@@ -63,7 +63,7 @@ function Item({ item }) {
 
 export default function Volunteer() {
   const { isDark } = useTheme();
-  const accent = isDark ? '#C9A84C' : '#2563EB';
+  const accent = isDark ? '#FFFFFF' : '#2563EB';
 
   return (
     <section id="volunteer" className="py-2 px-6 md:px-14" style={{ background: 'var(--bg-primary)' }}>
@@ -80,7 +80,7 @@ export default function Volunteer() {
                 style={{
                   display: 'inline-block',
                   background: accent,
-                  color: isDark ? '#151206' : '#FFFFFF',
+                  color: isDark ? '#072450' : '#FFFFFF',
                   fontFamily: MONO,
                   fontSize: 11,
                   fontWeight: 700,

@@ -10,7 +10,7 @@ import { useTheme } from '../context/ThemeContext';
 const StudyRow = memo(function StudyRow({ study, href, onClick, isDark }) {
   const rowRef = useRef(null);
   const [hovered, setHovered] = useState(false);
-  const accent = isDark ? '#C9A84C' : '#2563EB';
+  const accent = isDark ? '#FFFFFF' : '#2563EB';
 
   const handleEnter = () => {
     setHovered(true);
@@ -49,7 +49,7 @@ const StudyRow = memo(function StudyRow({ study, href, onClick, isDark }) {
         style={{
           width: 2,
           background: isDark
-            ? 'linear-gradient(to bottom, #C9A84C, rgba(201,168,76,0.2))'
+            ? 'linear-gradient(to bottom, #FFFFFF, rgba(255,255,255,0.2))'
             : 'linear-gradient(to bottom, #2563EB, rgba(37,99,235,0.2))',
           transform: hovered ? 'scaleY(1)' : 'scaleY(0)',
           transition: 'transform 0.3s ease',
@@ -91,7 +91,7 @@ const StudyRow = memo(function StudyRow({ study, href, onClick, isDark }) {
                 fontSize: 'clamp(1.8rem, 3.5vw, 3rem)',
                 letterSpacing: '.04em',
                 color: hovered
-                  ? isDark ? 'rgba(201,168,76,0.5)' : 'rgba(37,99,235,0.6)'
+                  ? isDark ? 'rgba(255,255,255,0.65)' : 'rgba(37,99,235,0.6)'
                   : isDark ? 'rgba(255,255,255,0.35)' : '#9CA3AF',
                 transition: 'color .3s',
               }}
@@ -118,15 +118,15 @@ const StudyRow = memo(function StudyRow({ study, href, onClick, isDark }) {
                 className="font-body text-[10px] tracking-[.08em] uppercase px-2.5 py-1 font-medium rounded"
                 style={{
                   color: hovered
-                    ? isDark ? 'rgba(201,168,76,0.9)' : '#1D4ED8'
+                    ? isDark ? 'rgba(255,255,255,0.92)' : '#1D4ED8'
                     : isDark ? 'rgba(255,255,255,0.6)' : '#4B5563',
                   border: `1px solid ${
                     hovered
-                      ? isDark ? 'rgba(201,168,76,0.3)' : 'rgba(37,99,235,0.3)'
+                      ? isDark ? 'rgba(255,255,255,0.35)' : 'rgba(37,99,235,0.3)'
                       : isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.1)'
                   }`,
                   background: hovered
-                    ? isDark ? 'rgba(201,168,76,0.08)' : 'rgba(37,99,235,0.08)'
+                    ? isDark ? 'rgba(255,255,255,0.09)' : 'rgba(37,99,235,0.08)'
                     : isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)',
                   transition: 'all .3s',
                 }}
@@ -143,11 +143,11 @@ const StudyRow = memo(function StudyRow({ study, href, onClick, isDark }) {
             className="font-body text-xs tracking-widest uppercase px-3 py-1.5 font-semibold whitespace-nowrap rounded"
             style={{
               background: hovered
-                ? isDark ? 'rgba(201,168,76,0.18)' : 'rgba(37,99,235,0.14)'
-                : isDark ? 'rgba(201,168,76,0.1)' : 'rgba(37,99,235,0.08)',
-              color: isDark ? '#C9A84C' : '#1D4ED8',
+                ? isDark ? 'rgba(255,255,255,0.18)' : 'rgba(37,99,235,0.14)'
+                : isDark ? 'rgba(255,255,255,0.1)' : 'rgba(37,99,235,0.08)',
+              color: isDark ? '#FFFFFF' : '#1D4ED8',
               border: `1px solid ${
-                isDark ? 'rgba(201,168,76,0.3)' : 'rgba(37,99,235,0.22)'
+                isDark ? 'rgba(255,255,255,0.3)' : 'rgba(37,99,235,0.22)'
               }`,
               transition: 'background .3s',
               display: 'inline-block',
@@ -209,7 +209,7 @@ const categories = [ALL, ...Array.from(new Set(caseStudies.map((s) => s.category
 export default function AllCaseStudies() {
   useSeo(SEO.caseStudies);
   const { isDark } = useTheme();
-  const accent = isDark ? '#C9A84C' : '#2563EB';
+  const accent = isDark ? '#FFFFFF' : '#2563EB';
 
   const [activeFilter, setActiveFilter] = useState(ALL);
   const pageRef = useRef(null);
@@ -265,7 +265,7 @@ export default function AllCaseStudies() {
       <div
         ref={pageRef}
         className="min-h-screen pt-24 pb-20 px-6 md:px-14 transition-colors duration-400"
-        style={{ background: isDark ? '#000000' : '#FAF8F5' }}
+        style={{ background: isDark ? '#072450' : '#FAF8F5' }}
       >
         {/* Glow */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -278,7 +278,7 @@ export default function AllCaseStudies() {
               height: '600px',
               borderRadius: '50%',
               background: isDark
-                ? 'radial-gradient(circle,rgba(201,168,76,0.06) 0%,transparent 70%)'
+                ? 'radial-gradient(circle,rgba(255,255,255,0.05) 0%,transparent 70%)'
                 : 'radial-gradient(circle,rgba(37,99,235,0.06) 0%,transparent 70%)',
               filter: 'blur(80px)',
               contain: 'paint',
@@ -347,7 +347,7 @@ export default function AllCaseStudies() {
               style={{
                 height: 1,
                 background: isDark
-                  ? 'linear-gradient(to right,#C9A84C,rgba(201,168,76,0.06))'
+                  ? 'linear-gradient(to right,#FFFFFF,rgba(255,255,255,0.08))'
                   : 'linear-gradient(to right,#2563EB,rgba(37,99,235,0.06))',
               }}
             />
@@ -369,7 +369,7 @@ export default function AllCaseStudies() {
                       ? 'rgba(255,255,255,0.06)'
                       : '#FFFFFF',
                     color: isActive
-                      ? isDark ? '#000000' : '#FFFFFF'
+                      ? isDark ? '#072450' : '#FFFFFF'
                       : isDark ? 'rgba(255,255,255,0.65)' : '#4B5563',
                     border: isActive
                       ? `1px solid ${accent}`
@@ -475,7 +475,7 @@ export default function AllCaseStudies() {
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = accent;
-                e.currentTarget.style.color = isDark ? '#000000' : '#FFFFFF';
+                e.currentTarget.style.color = isDark ? '#072450' : '#FFFFFF';
                 e.currentTarget.style.transform = 'translateY(-2px)';
               }}
               onMouseLeave={(e) => {
