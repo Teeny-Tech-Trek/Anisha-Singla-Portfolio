@@ -92,7 +92,7 @@ function parseMessageContent(text) {
 
 
 // Helper to render **bold headings** & inline [Read More](#section) links cleanly at text end.
-function renderFormattedContent(text, actionSection) {
+function renderFormattedContent(text, actionSection, onExit) {
   if (!text) return null;
 
   let contentToRender = text;
@@ -149,10 +149,16 @@ function renderFormattedContent(text, actionSection) {
                 "noopener,noreferrer"
               );
             } else if (url === "#contact") {
+              if (typeof onExit === "function") onExit();
               navigateToSection("contact");
+            } else if (url === "#about") {
+              if (typeof onExit === "function") onExit();
+              navigateTo(ROUTES.ABOUT);
             } else if (url.startsWith("#")) {
+              if (typeof onExit === "function") onExit();
               navigateToSection(url.slice(1));
             } else {
+              if (typeof onExit === "function") onExit();
               navigateTo(url);
             }
           }}
@@ -268,7 +274,7 @@ function VideoMessage({ url, caption }) {
 
 // Follow-up bubble shown right after the video takeover is closed — a quick
 // "thanks for watching" nudge toward the About page.
-function PostVideoCta({ title, subtitle, buttonLabel }) {
+function PostVideoCta({ title, subtitle, buttonLabel, onExit }) {
   return (
     <div className="pa-post-video">
       <p className="pa-text" style={{ marginBottom: 4 }}>{title}</p>
@@ -276,7 +282,10 @@ function PostVideoCta({ title, subtitle, buttonLabel }) {
       <button
         type="button"
         className="pa-cta-btn"
-        onClick={() => navigateTo(ROUTES.ABOUT)}
+        onClick={() => {
+          if (typeof onExit === "function") onExit();
+          navigateTo(ROUTES.ABOUT);
+        }}
       >
         {buttonLabel} <span aria-hidden="true">➔</span>
       </button>
@@ -489,10 +498,11 @@ export default function ChatShell({ onExit, mobile = false }) {
                       title={message.content.title}
                       subtitle={message.content.subtitle}
                       buttonLabel={message.content.buttonLabel}
+                      onExit={onExit}
                     />
                   ) : (
                     <p className="pa-text" style={{ whiteSpace: "pre-wrap" }}>
-                      {isUser ? message.content : renderFormattedContent(parsed.cleanText, parsed.actionSection)}
+                      {isUser ? message.content : renderFormattedContent(parsed.cleanText, parsed.actionSection, onExit)}
                       {/* Streaming cursor — blinks while tokens are flowing */}
                       {isThisBubbleStreaming && (
                         <span

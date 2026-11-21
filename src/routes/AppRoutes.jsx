@@ -90,7 +90,7 @@ function HomeRoute() {
         </Suspense>
         <WritingSpeaking />
         <Volunteer />
-        <Contact />
+        {/* <Contact /> */}
       </main>
       <Footer />
     </div>

@@ -149,6 +149,7 @@ export default function Hero() {
 
   // Video-time (seconds) at which each line appears.
   const cuesRef = useRef(HERO_CUES);
+  const unmutedEverRef = useRef(false);
 
   const tw1 = useTypewriter(LINE1, { enabled: stage >= 1, duration: 400 });
   const tw2 = useTypewriter(`${NAME1}\n${NAME2}`, { enabled: stage >= 2, duration: 600 });
@@ -261,23 +262,34 @@ export default function Hero() {
   }, []);
 
   // Ensure video always plays unmuted. If browser autoplay policy temporarily
-  // holds audio on cold load, any user interaction instantly un-mutes it.
+  // holds audio on cold load, any user interaction instantly un-mutes and rewinds
+  // so the spoken greeting is heard clearly from the beginning.
   useEffect(() => {
     const unlock = () => {
       const v = videoRef.current;
-      if (!v || v.ended || videoStoppedRef.current) return;
+      if (!v) return;
       if (!isHeroInViewRef.current) return;
 
-      if (v.muted) {
+      if (v.muted || !unmutedEverRef.current) {
         v.muted = false;
         v.volume = 1;
-        if (v.paused && !v.ended && !videoStoppedRef.current) {
-          v.play()?.catch?.(() => { });
+        const wasMuted = !unmutedEverRef.current;
+        unmutedEverRef.current = true;
+        videoStoppedRef.current = false;
+
+        if (wasMuted && (v.currentTime > 0.4 || v.ended)) {
+          try {
+            v.currentTime = 0;
+            setStage(0);
+          } catch {
+            /* ignore seek error */
+          }
         }
+        v.play()?.catch?.(() => { });
       }
     };
 
-    const events = ['pointerdown', 'pointerup', 'click', 'keydown', 'touchstart', 'touchend', 'scroll'];
+    const events = ['pointerdown', 'pointerup', 'click', 'keydown', 'touchstart', 'touchend', 'scroll', 'wheel'];
     events.forEach((e) => window.addEventListener(e, unlock, { passive: true }));
     return () => {
       events.forEach((e) => window.removeEventListener(e, unlock));
@@ -305,7 +317,10 @@ export default function Hero() {
     const onPlaying = () => setIsVideoPlaying(true);
 
     const safePlay = async () => {
-      if (!isHeroInViewRef.current || document.hidden || video.ended || videoStoppedRef.current) {
+      if (!isHeroInViewRef.current || document.hidden) {
+        return;
+      }
+      if (video.ended && unmutedEverRef.current) {
         return;
       }
 
@@ -314,6 +329,7 @@ export default function Hero() {
       video.volume = 1;
       try {
         await video.play();
+        unmutedEverRef.current = true;
       } catch {
         // If initial autoplay with sound is held by browser policy before user gesture,
         // start muted so video frames flow visually, and unlock listener un-mutes on first interaction.
@@ -683,6 +699,22 @@ export default function Hero() {
         id="home"
         ref={heroSectionRef}
         className={`hero-shell${startTyping ? ' is-in' : ''}`}
+        onClick={() => {
+          const v = videoRef.current;
+          if (!v) return;
+          v.muted = false;
+          v.volume = 1;
+          const wasMuted = !unmutedEverRef.current;
+          unmutedEverRef.current = true;
+          videoStoppedRef.current = false;
+          if (wasMuted && (v.currentTime > 0.4 || v.ended)) {
+            try {
+              v.currentTime = 0;
+              setStage(0);
+            } catch {}
+          }
+          v.play()?.catch?.(() => {});
+        }}
       >
         {/* ── BACKGROUND ── */}
         <div className="hero-bg" aria-hidden="true">
