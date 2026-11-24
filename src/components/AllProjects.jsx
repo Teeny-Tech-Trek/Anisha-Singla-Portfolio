@@ -10,9 +10,8 @@ import { navigateTo, navigateToSection } from '../routes';
 const ALL = 'All';
 const categories = [ALL, ...Array.from(new Set(projects.map((p) => p.category)))];
 
-const ProjectCard = memo(function ProjectCard({ p, isDark }) {
+const ProjectCard = memo(function ProjectCard({ p }) {
   const cardRef = useRef(null);
-  const accent = isDark ? '#FFFFFF' : '#2563EB';
 
   const clickable = !!p.links?.caseStudy;
 
@@ -36,9 +35,7 @@ const ProjectCard = memo(function ProjectCard({ p, isDark }) {
       y: -6,
       duration: 0.3,
       ease: 'power2.out',
-      boxShadow: isDark
-        ? '0 16px 45px rgba(255,255,255,0.12)'
-        : '0 16px 45px rgba(37,99,235,0.12)',
+      boxShadow: '0 20px 45px rgba(37,99,235,0.2), 0 8px 24px rgba(0,0,0,0.1)',
     });
     const arrow = cardRef.current.querySelector('.card-arrow');
     if (arrow) gsap.to(arrow, { x: 5, opacity: 1, duration: 0.25 });
@@ -49,7 +46,7 @@ const ProjectCard = memo(function ProjectCard({ p, isDark }) {
       y: 0,
       duration: 0.3,
       ease: 'power2.out',
-      boxShadow: isDark ? 'none' : '0 8px 30px rgba(0,0,0,0.04)',
+      boxShadow: '0 10px 30px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04)',
     });
     const arrow = cardRef.current.querySelector('.card-arrow');
     if (arrow) gsap.to(arrow, { x: 0, opacity: 0, duration: 0.25 });
@@ -61,12 +58,13 @@ const ProjectCard = memo(function ProjectCard({ p, isDark }) {
       role={clickable ? 'link' : undefined}
       tabIndex={clickable ? 0 : undefined}
       aria-label={clickable ? `${p.title} — open case study` : undefined}
-      className="relative overflow-hidden transition-all duration-300 rounded-lg"
+      className="relative overflow-hidden rounded-xl"
       style={{
-        background: isDark ? '#0B2D62' : '#FFFFFF',
-        border: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.08)',
-        borderTop: `2px solid ${isDark ? 'rgba(255,255,255,0.35)' : '#2563EB'}`,
-        boxShadow: isDark ? 'none' : '0 8px 30px rgba(0,0,0,0.04)',
+        background: '#FFFFFF',
+        border: '1px solid rgba(37,99,235,0.16)',
+        borderTop: '3px solid #2563EB',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04)',
+        transition: 'box-shadow .35s ease',
         height: '100%',
         cursor: clickable ? 'pointer' : 'default',
       }}
@@ -77,7 +75,7 @@ const ProjectCard = memo(function ProjectCard({ p, isDark }) {
     >
       <div
         className="absolute inset-0 pointer-events-none"
-        style={{ background: p.gradient, opacity: isDark ? 0.55 : 0.3 }}
+        style={{ background: 'linear-gradient(180deg, rgba(37,99,235,0.02) 0%, transparent 60%)' }}
       />
 
       <div className="relative z-10 p-6 flex flex-col h-full min-h-[270px]">
@@ -86,9 +84,10 @@ const ProjectCard = memo(function ProjectCard({ p, isDark }) {
           <span
             className="font-body text-xs tracking-widest uppercase px-3 py-1 rounded"
             style={{
-              background: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(37,99,235,0.08)',
-              color: isDark ? '#FFFFFF' : '#1D4ED8',
-              border: isDark ? '1px solid rgba(255,255,255,0.25)' : '1px solid rgba(37,99,235,0.22)',
+              background: 'rgba(37,99,235,0.08)',
+              color: '#1D4ED8',
+              border: '1px solid rgba(37,99,235,0.22)',
+              fontWeight: 600,
             }}
           >
             {p.category}
@@ -97,9 +96,9 @@ const ProjectCard = memo(function ProjectCard({ p, isDark }) {
           <span
             className="font-body text-xs font-semibold px-3 py-1 rounded"
             style={{
-              background: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(15,23,42,0.05)',
-              color: isDark ? 'rgba(255,255,255,0.75)' : '#475569',
-              border: `1px solid ${isDark ? 'rgba(255,255,255,0.14)' : 'rgba(15,23,42,0.1)'}`,
+              background: 'rgba(37,99,235,0.05)',
+              color: '#2563EB',
+              border: '1px solid rgba(37,99,235,0.18)',
             }}
           >
             {p.year}
@@ -112,8 +111,8 @@ const ProjectCard = memo(function ProjectCard({ p, isDark }) {
             fontFamily: "'Bebas Neue',sans-serif",
             fontSize: '1.75rem',
             letterSpacing: '.04em',
-            lineHeight: 1,
-            color: isDark ? '#FFFFFF' : '#111827',
+            lineHeight: 1.05,
+            color: '#1D4ED8',
           }}
         >
           {p.title}
@@ -122,7 +121,7 @@ const ProjectCard = memo(function ProjectCard({ p, isDark }) {
         {p.role && (
           <p
             className="font-body text-xs tracking-wide mb-3"
-            style={{ color: isDark ? 'rgba(255,255,255,0.78)' : '#1D4ED8', fontWeight: 500 }}
+            style={{ color: '#2563EB', fontWeight: 600 }}
           >
             My Role: {p.role}
           </p>
@@ -131,8 +130,8 @@ const ProjectCard = memo(function ProjectCard({ p, isDark }) {
         <p
           className="font-body text-sm leading-relaxed flex-1"
           style={{
-            color: isDark ? 'rgba(255,255,255,0.62)' : '#4B5563',
-            fontWeight: 300,
+            color: '#334155',
+            fontWeight: 400,
           }}
         >
           {p.description}
@@ -149,9 +148,10 @@ const ProjectCard = memo(function ProjectCard({ p, isDark }) {
                 key={t}
                 className="font-body text-xs px-2.5 py-1 rounded"
                 style={{
-                  background: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)',
-                  color: isDark ? 'rgba(255,255,255,0.52)' : '#4B5563',
-                  border: isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.08)',
+                  background: 'rgba(37,99,235,0.06)',
+                  color: '#1D4ED8',
+                  border: '1px solid rgba(37,99,235,0.18)',
+                  fontWeight: 500,
                 }}
               >
                 {t}
@@ -161,21 +161,21 @@ const ProjectCard = memo(function ProjectCard({ p, isDark }) {
           <div
             className="flex items-center justify-between"
             style={{
-              borderTop: isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.06)',
+              borderTop: '1px solid rgba(37,99,235,0.12)',
               paddingTop: '1rem',
             }}
           >
             <span
-              className="font-body text-xs tracking-widest"
-              style={{ color: isDark ? 'rgba(255,255,255,0.5)' : '#6B7280' }}
+              className="font-body text-xs tracking-widest font-medium"
+              style={{ color: '#2563EB' }}
             >
               {p.year}
             </span>
             {clickable && (
               <span
                 aria-hidden="true"
-                className="card-arrow font-body text-sm opacity-0"
-                style={{ color: accent }}
+                className="card-arrow font-body text-sm opacity-0 font-bold"
+                style={{ color: '#2563EB' }}
               >
                 →
               </span>

@@ -394,11 +394,25 @@ export default function PdfReader({ study, onClose }) {
 
   /* Load PDF */
   useEffect(() => {
-    if (!study?.pdfUrl) { setLoading(false); return; }
-    setLoading(true); setError(false);
-    setPdfDoc(null); setNumPages(0); setPageNum(1); setRotation(normalizeRotation(study?.autoRotate));
-
     let cancelled = false;
+
+    if (!study?.pdfUrl) {
+      queueMicrotask(() => {
+        if (!cancelled) setLoading(false);
+      });
+      return undefined;
+    }
+
+    queueMicrotask(() => {
+      if (cancelled) return;
+      setLoading(true);
+      setError(false);
+      setPdfDoc(null);
+      setNumPages(0);
+      setPageNum(1);
+      setRotation(normalizeRotation(study?.autoRotate));
+    });
+
     const t = pdfjsLib.getDocument(study.pdfUrl);
 
     t.promise
@@ -478,7 +492,15 @@ export default function PdfReader({ study, onClose }) {
 
   /* Stop at last page */
   useEffect(() => {
-    if (pageNum >= numPages && isPlaying) setIsPlaying(false);
+    let cancelled = false;
+    if (pageNum >= numPages && isPlaying) {
+      queueMicrotask(() => {
+        if (!cancelled) setIsPlaying(false);
+      });
+    }
+    return () => {
+      cancelled = true;
+    };
   }, [pageNum, numPages, isPlaying]);
 
   const prevPage = pageNum > 1          ? pageNum - 1 : null;

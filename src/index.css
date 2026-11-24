@@ -314,10 +314,14 @@ body::after {
 
 
 [data-theme="light"] {
-  /* 1. Global typography & text */
-  h1, h2, h3, h4, h5, h6,
-  .section-title,
-  .text-white {
+  /* 1. Global typography & text on light surfaces */
+  h1:not(.hero-shell *):not([data-dark-context] *),
+  h2:not(.hero-shell *):not([data-dark-context] *),
+  h3:not(.hero-shell *):not([data-dark-context] *),
+  h4:not(.hero-shell *):not([data-dark-context] *),
+  h5:not(.hero-shell *):not([data-dark-context] *),
+  h6:not(.hero-shell *):not([data-dark-context] *),
+  .section-title:not(.hero-shell *) {
     color: #111827 !important;
   }
 

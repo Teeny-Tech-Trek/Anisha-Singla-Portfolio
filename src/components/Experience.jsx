@@ -251,7 +251,7 @@ export default function Experience() {
       let manualLockUntil = 0;
       let refreshCall = null;
 
-      const ACCORDION_DUR = 1.65 * D;
+      const ACCORDION_DUR = 0.55 * D;
 
       /* ── rail fill down to the active node ── */
       const fillTo = (i, instant = false) => {
@@ -271,7 +271,7 @@ export default function Experience() {
       /* ── re-measure downstream ScrollTriggers after accordion settles ── */
       const scheduleRefresh = () => {
         refreshCall?.kill();
-        refreshCall = gsap.delayedCall(ACCORDION_DUR + 0.12, () => {
+        refreshCall = gsap.delayedCall(ACCORDION_DUR + 0.08, () => {
           ScrollTrigger.refresh();
         });
       };
@@ -309,9 +309,9 @@ export default function Experience() {
 
           gsap.to(inner, {
             opacity: on ? 1 : 0,
-            y: on ? 0 : 12,
-            duration: on ? 1.15 * D : 0.75 * D,
-            delay: on ? 0.18 * D : 0,
+            y: on ? 0 : 8,
+            duration: on ? 0.45 * D : 0.3 * D,
+            delay: on ? 0.08 * D : 0,
             ease: 'power2.out',
             force3D: true,
             overwrite: 'auto',
@@ -353,7 +353,7 @@ export default function Experience() {
                   ? '0 0 0 5px rgba(255,255,255,0.16), 0 0 22px rgba(255,255,255,0.7)'
                   : '0 0 0 5px rgba(37,99,235,0.14), 0 0 18px rgba(37,99,235,0.55)')
               : '0 0 0 0 rgba(0,0,0,0)',
-            duration: 1.0 * D,
+            duration: 0.4 * D,
             ease: on ? 'back.out(1.4)' : 'power2.out',
             force3D: true,
             overwrite: 'auto',
@@ -361,13 +361,13 @@ export default function Experience() {
 
           gsap.to(row.querySelector('.tl-role'), {
             color: on ? (isDark ? GOLD_LITE : BLUE) : (isDark ? '#ffffff' : '#111827'),
-            duration: 0.8 * D,
+            duration: 0.35 * D,
             overwrite: 'auto',
           });
 
           gsap.to(row.querySelector('.tl-conn'), {
             opacity: on ? 1 : 0.6,
-            duration: 0.8 * D,
+            duration: 0.35 * D,
             overwrite: 'auto',
           });
         });

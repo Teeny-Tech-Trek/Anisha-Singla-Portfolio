@@ -10,7 +10,6 @@ const CHIP_QUESTIONS = {
   "Tech stack":       "What's your core tech stack and what do you build best with?",
   "Experience":       "Give me a quick snapshot of your professional experience.",
   "Download Resume":  "Download Resume",
-  "Contact":          "How can I get in touch with you?",
   "🎬 Know Me in 64s": "Tell me about yourself in 64 seconds.",
 };
 const CHIPS = Object.keys(CHIP_QUESTIONS);
@@ -78,12 +77,6 @@ function parseMessageContent(text) {
       lower.includes("agile") || lower.includes("product management")
     ) {
       actionSection = "skills";
-    } else if (
-      lower.includes("contact") || lower.includes("email") || lower.includes("reach out") ||
-      lower.includes("touch") || lower.includes("connect") || lower.includes("hire") ||
-      lower.includes("phone") || lower.includes("location")
-    ) {
-      actionSection = "contact";
     }
   }
 
@@ -108,11 +101,7 @@ function renderFormattedContent(text, actionSection, onExit) {
 
   // If there's an action section and text doesn't already end with a markdown link, append inline Read More link
   if (actionSection && actionSection !== "download_resume" && !/\[[^\]]+\]\([^)]+\)\s*$/.test(contentToRender.trim())) {
-    if (actionSection === "contact") {
-      contentToRender += " [Read More](#home)";
-    } else {
-      contentToRender += ` [Read More](#${actionSection})`;
-    }
+    contentToRender += ` [Read More](#${actionSection})`;
   }
 
 
@@ -148,9 +137,6 @@ function renderFormattedContent(text, actionSection, onExit) {
                 "_blank",
                 "noopener,noreferrer"
               );
-            } else if (url === "#contact") {
-              if (typeof onExit === "function") onExit();
-              navigateToSection("contact");
             } else if (url === "#about") {
               if (typeof onExit === "function") onExit();
               navigateTo(ROUTES.ABOUT);
@@ -366,7 +352,7 @@ export default function ChatShell({ onExit, mobile = false }) {
     sendMessage,
     scrollToBottom,
     viewportRef,
-    streamingBubbleIdRef,
+    streamingBubbleId,
     closeIntroVideo,
   } = useChatbotContext();
   const inputRef = useRef(null);
@@ -404,8 +390,8 @@ export default function ChatShell({ onExit, mobile = false }) {
 
   // The typing indicator shows only before the first token arrives on the
   // currently-streaming bubble (i.e. its content is still empty).
-  const streamingMsg = streamingBubbleIdRef?.current
-    ? messages.find((m) => m.id === streamingBubbleIdRef.current)
+  const streamingMsg = streamingBubbleId
+    ? messages.find((m) => m.id === streamingBubbleId)
     : null;
   const showTypingDots = isStreaming && (!streamingMsg || !streamingMsg.content);
 
@@ -476,7 +462,7 @@ export default function ChatShell({ onExit, mobile = false }) {
           const isThisBubbleStreaming =
             !isUser &&
             isStreaming &&
-            streamingBubbleIdRef?.current === message.id;
+            streamingBubbleId === message.id;
           const hasCitations = !isUser && Array.isArray(message.citations) && message.citations.length > 0;
           const isVideoMessage =
             !isUser && message.content && typeof message.content === "object" && message.content.type === "video";

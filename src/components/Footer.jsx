@@ -11,7 +11,6 @@ const links = [
   { label: 'Education', type: 'section', target: 'education' },
   { label: 'Skills', type: 'section', target: 'skills' },
   { label: 'Volunteer', type: 'section', target: 'volunteer' },
-  { label: 'Contact', type: 'section', target: 'contact' },
 ];
 
 export default function Footer() {
@@ -49,35 +48,22 @@ export default function Footer() {
         </span>
 
         <div className="flex flex-wrap justify-center gap-6">
-          {links.map((l) =>
-            l.target === 'contact' ? (
-              <button
-                key={l.label}
-                onClick={() => go(l)}
-                className="font-body text-xs tracking-widest uppercase transition-colors"
-                style={{ color: isDark ? 'rgba(255,255,255,0.6)' : '#4B5563' }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = accent)}
-                onMouseLeave={(e) => (e.currentTarget.style.color = isDark ? 'rgba(255,255,255,0.6)' : '#4B5563')}
-              >
-                {l.label}
-              </button>
-            ) : (
-              <a
-                key={l.label}
-                href={hrefFor(l)}
-                onClick={(e) => {
-                  e.preventDefault();
-                  go(l);
-                }}
-                className="font-body text-xs tracking-widest uppercase transition-colors"
-                style={{ color: isDark ? 'rgba(255,255,255,0.6)' : '#4B5563' }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = accent)}
-                onMouseLeave={(e) => (e.currentTarget.style.color = isDark ? 'rgba(255,255,255,0.6)' : '#4B5563')}
-              >
-                {l.label}
-              </a>
-            )
-          )}
+          {links.map((l) => (
+            <a
+              key={l.label}
+              href={hrefFor(l)}
+              onClick={(e) => {
+                e.preventDefault();
+                go(l);
+              }}
+              className="font-body text-xs tracking-widest uppercase transition-colors"
+              style={{ color: isDark ? 'rgba(255,255,255,0.6)' : '#4B5563' }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = accent)}
+              onMouseLeave={(e) => (e.currentTarget.style.color = isDark ? 'rgba(255,255,255,0.6)' : '#4B5563')}
+            >
+              {l.label}
+            </a>
+          ))}
         </div>
 
         <SocialBar size="sm" />

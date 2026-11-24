@@ -159,7 +159,7 @@ export default function AboutDetail() {
   }, []);
 
   return (
-    <div ref={pageRef} className="min-h-screen pt-24 pb-20 px-6 md:px-14 relative" style={{ background: '#072450' }}>
+    <div ref={pageRef} data-dark-context="true" className="min-h-screen pt-24 pb-20 px-6 md:px-14 relative" style={{ background: '#072450' }}>
 
       {/* Ambient background glow */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>

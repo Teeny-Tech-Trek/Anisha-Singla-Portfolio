@@ -711,7 +711,9 @@ export default function Hero() {
             try {
               v.currentTime = 0;
               setStage(0);
-            } catch {}
+            } catch (err) {
+              void err;
+            }
           }
           v.play()?.catch?.(() => {});
         }}
@@ -840,17 +842,6 @@ export default function Hero() {
                     <polyline points="10 9 9 9 8 9" />
                   </svg>
                   View Resume
-                </a>
-
-                <a
-                  className="hero-button solid"
-                  href="/#contact"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    scrollToSection('contact');
-                  }}
-                >
-                  Get in touch
                 </a>
               </div>
 

@@ -269,7 +269,7 @@ export default function CaseStudyDetail({ slug }) {
   }
 
   return (
-    <div ref={pageRef} className="min-h-screen pt-24 pb-20 px-6 md:px-14" style={{ background: '#072450' }}>
+    <div ref={pageRef} data-dark-context="true" className="min-h-screen pt-24 pb-20 px-6 md:px-14" style={{ background: '#072450' }}>
 
       {/* ambient glow */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>

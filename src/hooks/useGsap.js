@@ -328,19 +328,35 @@ function usePerElementAnimation(selector, buildControls, options = {}) {
   return ref;
 }
 
+function isReducedMotionPreferred() {
+  return (
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  );
+}
+
 export function useFadeUp(selector = '.fade-up', options = {}) {
   return usePerElementAnimation(
     selector,
     ({ element, index }) => {
+      if (isReducedMotionPreferred()) {
+        gsap.set(element, { opacity: 1, y: 0 });
+        return {
+          play: () => gsap.set(element, { opacity: 1, y: 0 }),
+          reset: () => {},
+          cleanup: () => {},
+        };
+      }
+
       const tween = gsap.fromTo(
         element,
-        { opacity: 0, y: 50 },
+        { opacity: 0, y: 40 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.9,
+          duration: 0.8,
           ease: 'power3.out',
-          delay: index * 0.12,
+          delay: Math.min(index * 0.08, 0.35),
           paused: true,
         }
       );
@@ -367,15 +383,24 @@ export function useStaggerLeft(selector = '.stagger', options = {}) {
         return null;
       }
 
+      if (isReducedMotionPreferred()) {
+        gsap.set(elements, { opacity: 1, x: 0 });
+        return {
+          play: () => gsap.set(elements, { opacity: 1, x: 0 }),
+          reset: () => {},
+          cleanup: () => {},
+        };
+      }
+
       const tween = gsap.fromTo(
         elements,
-        { opacity: 0, x: -60 },
+        { opacity: 0, x: -50 },
         {
           opacity: 1,
           x: 0,
-          duration: 0.85,
+          duration: 0.75,
           ease: 'power3.out',
-          stagger: 0.13,
+          stagger: 0.1,
           paused: true,
         }
       );
@@ -402,15 +427,24 @@ export function useStaggerRight(selector = '.stagger-r', options = {}) {
         return null;
       }
 
+      if (isReducedMotionPreferred()) {
+        gsap.set(elements, { opacity: 1, x: 0 });
+        return {
+          play: () => gsap.set(elements, { opacity: 1, x: 0 }),
+          reset: () => {},
+          cleanup: () => {},
+        };
+      }
+
       const tween = gsap.fromTo(
         elements,
-        { opacity: 0, x: 60 },
+        { opacity: 0, x: 50 },
         {
           opacity: 1,
           x: 0,
-          duration: 0.85,
+          duration: 0.75,
           ease: 'power3.out',
-          stagger: 0.13,
+          stagger: 0.1,
           paused: true,
         }
       );

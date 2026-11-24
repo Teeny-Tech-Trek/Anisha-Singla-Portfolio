@@ -1,29 +1,43 @@
 import { FaArrowUpRightFromSquare } from 'react-icons/fa6';
 import { writingItems } from '../data/writingData';
-
-// Same base styling as the project-card action buttons (ProjectLinks.jsx) so
-// this small link button reads as the same UI element across the site.
-const LINK_BUTTON_BASE =
-  'inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 min-h-[44px] font-body text-xs ' +
-  'tracking-wide transition-colors duration-200 cursor-pointer ' +
-  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white ' +
-  'focus-visible:ring-offset-2 focus-visible:ring-offset-[#072450] whitespace-nowrap ' +
-  'border-white/50 bg-transparent text-white hover:bg-white hover:text-[#072450] hover:border-white';
+import { useTheme } from '../context/ThemeContext';
 
 function WritingRow({ item }) {
+  const { isDark } = useTheme();
+  const accent = isDark ? '#FFFFFF' : '#2563EB';
   const hasLink = !!item.url || !!item.urls?.length;
+
+  const linkButtonBase =
+    'inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 min-h-[44px] font-body text-xs ' +
+    'tracking-wide transition-colors duration-200 cursor-pointer ' +
+    'focus-visible:outline-none focus-visible:ring-2 whitespace-nowrap ' +
+    (isDark
+      ? 'border-white/50 bg-transparent text-white hover:bg-white hover:text-[#072450] hover:border-white focus-visible:ring-white focus-visible:ring-offset-[#072450]'
+      : 'border-[#2563EB]/40 bg-[#2563EB]/5 text-[#1D4ED8] hover:bg-[#2563EB] hover:text-white hover:border-[#2563EB] focus-visible:ring-[#2563EB] focus-visible:ring-offset-white');
 
   const content = (
     <>
       <p
         className="font-body"
-        style={{ fontSize: '16px', fontWeight: 600, color: hasLink ? '#fff' : 'rgba(255,255,255,0.55)' }}
+        style={{
+          fontSize: '16px',
+          fontWeight: 600,
+          color: hasLink
+            ? (isDark ? '#FFFFFF' : '#111827')
+            : (isDark ? 'rgba(255,255,255,0.55)' : '#6B7280'),
+        }}
       >
         {item.label}
       </p>
       <p
         className="font-body"
-        style={{ fontSize: '16px', lineHeight: 1.5, color: 'rgba(255,255,255,0.5)', fontWeight: 300, marginTop: '2px' }}
+        style={{
+          fontSize: '15px',
+          lineHeight: 1.5,
+          color: isDark ? 'rgba(255,255,255,0.6)' : '#4B5563',
+          fontWeight: 300,
+          marginTop: '3px',
+        }}
       >
         {item.description}
       </p>
@@ -45,7 +59,7 @@ function WritingRow({ item }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`${item.label} — ${label} (opens in new tab)`}
-                className={LINK_BUTTON_BASE}
+                className={linkButtonBase}
               >
                 <FaArrowUpRightFromSquare size={11} aria-hidden="true" />
                 {label}
@@ -63,7 +77,13 @@ function WritingRow({ item }) {
         {content}
         <span
           className="font-body"
-          style={{ fontSize: '11px', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)', marginTop: '6px' }}
+          style={{
+            fontSize: '11px',
+            letterSpacing: '0.12em',
+            textTransform: 'uppercase',
+            color: isDark ? 'rgba(255,255,255,0.55)' : '#9CA3AF',
+            marginTop: '6px',
+          }}
         >
           Link coming soon
         </span>
@@ -77,8 +97,10 @@ function WritingRow({ item }) {
       target="_blank"
       rel="noopener noreferrer"
       aria-label={`${item.label} — opens in new tab`}
-      className="flex flex-col justify-center py-4 h-full transition-colors duration-200 hover:text-white"
-      style={{ minHeight: '44px' }}
+      className="flex flex-col justify-center py-4 h-full transition-colors duration-200"
+      style={{ minHeight: '44px', color: isDark ? '#FFFFFF' : '#111827' }}
+      onMouseEnter={(e) => (e.currentTarget.style.color = accent)}
+      onMouseLeave={(e) => (e.currentTarget.style.color = isDark ? '#FFFFFF' : '#111827')}
     >
       {content}
     </a>
@@ -86,18 +108,29 @@ function WritingRow({ item }) {
 }
 
 export default function WritingSpeaking() {
+  const { isDark } = useTheme();
+
   return (
     <section id="writing" className="py-20 md:py-28 px-6 md:px-14" style={{ background: 'var(--bg-primary)' }}>
       <div className="max-w-4xl mx-auto">
         <p className="section-label">Writing &amp; Speaking</p>
-        <h2 className="section-title text-white mb-10">Beyond the Build</h2>
+        <h2 className="section-title mb-10" style={{ color: isDark ? '#FFFFFF' : '#111827' }}>
+          Beyond the Build
+        </h2>
 
         <div
           className="grid grid-cols-1 sm:grid-cols-2 gap-x-10"
-          style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}
+          style={{
+            borderTop: isDark ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.08)',
+          }}
         >
-          {writingItems.map(item => (
-            <div key={item.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+          {writingItems.map((item) => (
+            <div
+              key={item.id}
+              style={{
+                borderBottom: isDark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.08)',
+              }}
+            >
               <WritingRow item={item} />
             </div>
           ))}

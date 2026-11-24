@@ -11,14 +11,15 @@ export default function SocialBar({ size = 'md', className = '' }) {
 
   return (
     <div className={`flex items-center gap-3 ${className}`}>
-      {socials.map(({ label, href, Icon }) => {
-        const external = !href.startsWith('mailto:');
+      {socials.map((item) => {
+        const external = !item.href.startsWith('mailto:');
+        const Icon = item.Icon;
 
         return (
           <a
-            key={label}
-            href={href}
-            aria-label={label}
+            key={item.label}
+            href={item.href}
+            aria-label={item.label}
             {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
             className={`grid place-items-center ${box} rounded-lg transition-all duration-200
                         focus-visible:outline-none focus-visible:ring-2 ${
@@ -28,7 +29,7 @@ export default function SocialBar({ size = 'md', className = '' }) {
             onMouseEnter={e => { e.currentTarget.style.color = accent; e.currentTarget.style.borderColor = accent; }}
             onMouseLeave={e => { e.currentTarget.style.color = textColor; e.currentTarget.style.borderColor = borderColor; }}
           >
-            <Icon aria-hidden="true" />
+            {Icon({ 'aria-hidden': 'true' })}
           </a>
         );
       })}

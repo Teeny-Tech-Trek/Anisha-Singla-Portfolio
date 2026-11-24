@@ -1,11 +1,11 @@
 // ============================================================================
 // NetTwin chat API helper — the single, reusable place the chat call lives.
 //
-//   POST {VITE_API_BASE_URL}/api/chat
-//   Content-Type: application/json
-//   { twinId, userEmail, sessionId, messages: [{ role:"user", content }] }
-//   -> 200 { success:true, reply, citations:[], sourceChunks:[] }
-//   -> err { success:false, error:"<CODE>", message:"<text>" }   (4xx/5xx)
+//   POST {VITE_API_BASE_URL}/api/chat
+//   Content-Type: application/json
+//   { twinId, userEmail, sessionId, messages: [{ role:"user", content }] }
+//   -> 200 { success:true, reply, citations:[], sourceChunks:[] }
+//   -> err { success:false, error:"<CODE>", message:"<text>" }   (4xx/5xx)
 //
 // The backend keeps conversation history keyed on sessionId, so each request
 // only needs to send the latest user message. Non-streaming (the stream
@@ -246,7 +246,6 @@ async function* _readSseStream(body) {
   let streamedAny = false;
 
   try {
-    // eslint-disable-next-line no-constant-condition
     while (true) {
       const { value, done } = await reader.read();
       if (done) break;

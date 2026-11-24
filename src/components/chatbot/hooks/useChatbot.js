@@ -34,7 +34,7 @@ const PRESET_INSTANT_RESPONSES = {
 
   "Download Resume": `Anisha's resume is available upon request. Feel free to request it via email at anishasingla23@gmail.com!`,
 
-  "Contact": `You can reach me directly via email at anishasingla23@gmail.com or connect with me on LinkedIn at linkedin.com/in/singlaanisha. Open to AI Business Analyst, AI Implementation, and AI Enablement roles! [Get in Touch](#contact)`,
+  "Contact": `You can reach me directly via email at anishasingla23@gmail.com or connect with me on LinkedIn at linkedin.com/in/singlaanisha. Open to AI Business Analyst, AI Implementation, and AI Enablement roles!`,
 
   "🎬 Know Me in 64s": {
     type: "video",
@@ -67,6 +67,7 @@ export function useChatbot() {
   // Track the ID of the currently-streaming assistant bubble so ChatShell
   // can show the blinking cursor on the right bubble.
   const streamingBubbleIdRef = useRef(null);
+  const [streamingBubbleId, setStreamingBubbleId] = useState(null);
 
   // Resolve the twin and its stable session id once on mount.
   const twinIdRef = useRef(getTwinId());
@@ -193,6 +194,7 @@ export function useChatbot() {
     setIsOpen(true);
     setIsStreaming(true);
     streamingBubbleIdRef.current = assistantMessage.id;
+    setStreamingBubbleId(assistantMessage.id);
     setMessages((current) => [...current, userMessage, assistantMessage]);
 
 
@@ -306,6 +308,7 @@ export function useChatbot() {
           }
           abortControllerRef.current = null;
           streamingBubbleIdRef.current = null;
+          setStreamingBubbleId(null);
           setIsStreaming(false);
         };
         waitAndCleanup();
@@ -323,6 +326,7 @@ export function useChatbot() {
     openChat,
     scrollToBottom,
     sendMessage,
+    streamingBubbleId,
     streamingBubbleIdRef,
     toggleChat,
     viewportRef,

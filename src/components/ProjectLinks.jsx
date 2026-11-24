@@ -1,9 +1,7 @@
 import { FaGithub, FaFileLines } from 'react-icons/fa6';
 import { navigateTo } from '../routes';
-import { useTheme } from '../context/ThemeContext';
 
 export default function ProjectLinks({ project }) {
-  const { isDark } = useTheme();
   const links = project?.links;
 
   // The live/demo link is intentionally NOT a button — clicking the card itself
@@ -18,18 +16,15 @@ export default function ProjectLinks({ project }) {
   const stop = (event) => event.stopPropagation();
 
   const baseBtn =
-    'inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 min-h-[44px] font-body text-xs ' +
-    'tracking-wide transition-colors duration-200 cursor-pointer whitespace-nowrap ' +
-    'focus-visible:outline-none focus-visible:ring-2 ' +
-    (isDark
-      ? 'focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#072450]'
-      : 'focus-visible:ring-[#2563EB] focus-visible:ring-offset-2 focus-visible:ring-offset-white');
+    'inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 min-h-[40px] font-body text-xs ' +
+    'font-semibold tracking-wide transition-all duration-200 cursor-pointer whitespace-nowrap ' +
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563EB] focus-visible:ring-offset-2';
 
   return (
     <div
-      className="mt-4 flex flex-row flex-nowrap items-center gap-1.5 overflow-x-auto scrollbar-none"
+      className="mt-4 flex flex-row flex-nowrap items-center gap-2 overflow-x-auto scrollbar-none"
       style={{
-        borderTop: isDark ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.06)',
+        borderTop: '1px solid rgba(37,99,235,0.12)',
         paddingTop: '1rem',
       }}
     >
@@ -42,11 +37,7 @@ export default function ProjectLinks({ project }) {
             navigateTo(links.caseStudy);
           }}
           aria-label={`${title} — read the case study`}
-          className={`${baseBtn} ${
-            isDark
-              ? 'border-white/15 bg-transparent text-white/70 hover:text-white hover:border-white'
-              : 'border-black/15 bg-transparent text-gray-700 hover:text-[#2563EB] hover:border-[#2563EB]'
-          }`}
+          className={`${baseBtn} border-[#2563EB]/30 bg-[#2563EB]/5 text-[#1D4ED8] hover:bg-[#2563EB] hover:text-white hover:border-[#2563EB]`}
         >
           <FaFileLines size={12} aria-hidden="true" />
           Case study
@@ -60,11 +51,7 @@ export default function ProjectLinks({ project }) {
           rel="noopener noreferrer"
           onClick={stop}
           aria-label={`${title} — source code on GitHub (opens in new tab)`}
-          className={`${baseBtn} ${
-            isDark
-              ? 'border-white/50 bg-transparent text-white hover:bg-white hover:text-[#072450] hover:border-white'
-              : 'border-[#2563EB]/50 bg-transparent text-[#2563EB] hover:bg-[#2563EB] hover:text-white hover:border-[#2563EB]'
-          }`}
+          className={`${baseBtn} border-[#2563EB] bg-[#2563EB] text-white hover:bg-[#1D4ED8] hover:border-[#1D4ED8]`}
         >
           <FaGithub size={14} aria-hidden="true" />
           Code

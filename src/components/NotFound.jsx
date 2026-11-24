@@ -9,7 +9,7 @@ export default function NotFound() {
   useSeo(SEO.notFound);
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-hidden flex flex-col justify-between" style={{ background: '#072450' }}>
+    <div data-dark-context="true" className="min-h-screen w-full max-w-full overflow-x-hidden flex flex-col justify-between" style={{ background: '#072450' }}>
       <Navbar />
 
       <main className="flex-1 flex flex-col items-center justify-center text-center px-4 py-24 z-10 relative">

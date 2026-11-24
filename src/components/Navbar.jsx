@@ -9,11 +9,10 @@ const links = [
   { label: 'About', type: 'section', target: 'about' },
   { label: 'Capabilities', type: 'section', target: 'capabilities' },
   { label: 'Experience', type: 'section', target: 'experience' },
-  { label: 'Projects', type: 'section', target: 'projects' },
   { label: 'Education', type: 'section', target: 'education' },
   { label: 'Skills', type: 'section', target: 'skills' },
   { label: 'Volunteer', type: 'section', target: 'volunteer' },
-  { label: 'Contact', type: 'section', target: 'contact' },
+  { label: 'Projects', type: 'section', target: 'projects' },
 ];
 
 export default function Navbar() {
@@ -58,7 +57,7 @@ export default function Navbar() {
   const linkColor = isLightScrolled ? '#1f2937' : '#FFFFFF';
   const logoColor = isLightScrolled ? '#111827' : '#FFFFFF';
 
-  // Contact button colors
+  // Projects button colors
   const projectsBorder = isLightScrolled ? '#2563EB' : 'rgba(255, 255, 255, 0.55)';
   const projectsColor = isLightScrolled ? '#1D4ED8' : '#FFFFFF';
   const projectsBg = isLightScrolled ? 'rgba(37, 99, 235, 0.08)' : 'rgba(255, 255, 255, 0.14)';
@@ -114,7 +113,7 @@ export default function Navbar() {
           {/* Desktop links */}
           <ul className="hidden xl:flex items-center gap-6">
             {links.map((link) =>
-              link.label === 'Contact' ? (
+              link.label === 'Projects' ? (
                 <li key={link.label}>
                   <a
                     href={hrefFor(link)}
@@ -140,7 +139,7 @@ export default function Navbar() {
                       e.currentTarget.style.borderColor = projectsBorder;
                     }}
                   >
-                    Contact
+                    Projects
                   </a>
                 </li>
               ) : (
@@ -234,22 +233,41 @@ export default function Navbar() {
               backdropFilter: 'blur(16px)',
             }}
           >
-            {links.map((link) => (
-              <a
-                key={link.label}
-                href={hrefFor(link)}
-                onClick={(e) => {
-                  e.preventDefault();
-                  go(link);
-                }}
-                className="font-body text-sm font-semibold tracking-widest uppercase text-left transition-colors py-1"
-                style={{ color: isDark ? '#FFFFFF' : '#1f2937' }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = isDark ? 'rgba(255, 255, 255, 0.8)' : '#2563EB')}
-                onMouseLeave={(e) => (e.currentTarget.style.color = isDark ? '#FFFFFF' : '#1f2937')}
-              >
-                {link.label}
-              </a>
-            ))}
+            {links.map((link) =>
+              link.label === 'Projects' ? (
+                <a
+                  key={link.label}
+                  href={hrefFor(link)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    go(link);
+                  }}
+                  className="font-body text-sm font-semibold tracking-widest uppercase text-center rounded-lg border py-2.5 px-4 mt-1 transition-all duration-200"
+                  style={{
+                    borderColor: isDark ? 'rgba(255, 255, 255, 0.45)' : '#2563EB',
+                    color: isDark ? '#FFFFFF' : '#1D4ED8',
+                    background: isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(37, 99, 235, 0.08)',
+                  }}
+                >
+                  Projects
+                </a>
+              ) : (
+                <a
+                  key={link.label}
+                  href={hrefFor(link)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    go(link);
+                  }}
+                  className="font-body text-sm font-semibold tracking-widest uppercase text-left transition-colors py-1"
+                  style={{ color: isDark ? '#FFFFFF' : '#1f2937' }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = isDark ? 'rgba(255, 255, 255, 0.8)' : '#2563EB')}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = isDark ? '#FFFFFF' : '#1f2937')}
+                >
+                  {link.label}
+                </a>
+              )
+            )}
           </div>
         )}
       </nav>

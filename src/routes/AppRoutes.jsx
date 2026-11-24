@@ -9,7 +9,6 @@ import Experience from '../components/Experience';
 import Education from '../components/Education';
 import WritingSpeaking from '../components/WritingSpeaking';
 import Volunteer from '../components/Volunteer';
-import Contact from '../components/Contact';
 import Footer from '../components/Footer';
 import NotFound from '../components/NotFound';
 import { ROUTES, consumePendingSection, getCurrentPath, navigateToSection, scrollToSection } from './index';
@@ -90,7 +89,6 @@ function HomeRoute() {
         </Suspense>
         <WritingSpeaking />
         <Volunteer />
-        {/* <Contact /> */}
       </main>
       <Footer />
     </div>
